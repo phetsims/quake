@@ -30,9 +30,10 @@
     "url": "https://github.com/phetsims/quake.git"
   },
   "eslintConfig": {
-    "extends": "../chipper/eslint/node_eslintrc.js",
+    "extends": "../chipper/eslint/sim_eslintrc.js",
     "ignorePatterns": [
-      "platforms/"
+      "platforms/",
+      "node_modules/"
     ],
     "globals": {
       "alert": "readonly"
