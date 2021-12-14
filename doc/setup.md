@@ -17,3 +17,7 @@ others.
 7. Run `cordove build` to build the app
 
 TODO: @jbphet 12/6/2021 - This needs refinement and testing, and maybe expansion, but at least it's a start.
+
+TODO: Notes about things that should be added:
+- The debugging process is a combination of testing using the "browser" platform, the Android emulator (run from Android
+studio), and using a physical Android device (mine was connected via USB).
