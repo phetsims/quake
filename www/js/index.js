@@ -35,7 +35,7 @@ class ScreenDebugLogger {
 }
 
 /**
- * This handler function is called when Cordova is fully loaded.  In it, all of the behavior that is specific to the
+ * This handler function is called when Cordova is fully loaded.  In it, all the behavior that is specific to the
  * Haptics Playground app is set up.
  */
 function onDeviceReady() {
