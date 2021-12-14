@@ -57,6 +57,12 @@ function onDeviceReady() {
   const vibrateButton = document.getElementById( 'vibrateButton' );
   vibrateButton.addEventListener( 'click', () => {
     logger.log( 'vibrate button pressed' );
-    navigator.vibrate( 100 );
+    try {
+      navigator.vibrate( 100 );
+      logger.log( 'vibrate called' );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to call vibrate: ' + e );
+    }
   } );
 }
