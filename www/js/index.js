@@ -1,7 +1,13 @@
 // Copyright 2021, University of Colorado Boulder
 
-// Wait for the deviceready event before using any of Cordova's device APIs.
-// See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
+/**
+ * Main entry point for the Cordova-based Haptics Playground app.
+ *
+ * @author John Blanco (PhET Interactive Simulations)
+ */
+
+// Wait for the deviceready event before using any of Cordova's device APIs. See
+// https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
 document.addEventListener( 'deviceready', onDeviceReady, false );
 
 class ScreenDebugLogger {
@@ -42,11 +48,13 @@ function onDeviceReady() {
   console.log( 'Running cordova-' + cordova.platformId + '@' + cordova.version ); // eslint-disable-line
   document.getElementById( 'deviceready' ).classList.add( 'ready' );
 
+  // Create the logger that will output debug messages to the app's screen.
   const logger = new ScreenDebugLogger();
-  logger.log( 'device ready' );
-  logger.log( 'message 1' );
-  logger.log( 'message 2' );
-  logger.log( 'message 3' );
-  logger.log( 'message 4' );
-  logger.log( 'message 5' );
+
+  // Hook up the vibration button.
+  const vibrateButton = document.getElementById( 'vibrateButton' );
+  vibrateButton.addEventListener( 'click', () => {
+    logger.log( 'vibrate button pressed' );
+    navigator.vibrate( 100 );
+  } );
 }
