@@ -14,6 +14,7 @@ class ScreenDebugLogger {
 
   constructor() {
     this.debugArea = document.getElementById( 'debugArea' );
+    this.timeOfConstruction = Date.now();
 
     // @private {Array.<string>} - an array that holds the currently displayed messages
     this.messageBuffer = [];
@@ -26,17 +27,18 @@ class ScreenDebugLogger {
   log( message ) {
     const maxMessages = 5;
     if ( this.messageBuffer.length >= maxMessages ) {
-      this.messageBuffer.shift();
+      this.messageBuffer.pop();
     }
-    this.messageBuffer.push( message );
-    let messageText = '';
+    const messageWithTimestamp = ( ( Date.now() - this.timeOfConstruction ) / 1000 ).toFixed( 3 ) + ': ' + message; // eslint-disable-line bad-sim-text
+    this.messageBuffer.unshift( messageWithTimestamp );
+    let debugAreaHTML = '';
     this.messageBuffer.forEach( ( message, index ) => {
-      messageText += message;
+      debugAreaHTML += message;
       if ( index < this.messageBuffer.length - 1 ) {
-        messageText += '<br>';
+        debugAreaHTML += '<br>';
       }
-      this.debugArea.innerHTML = messageText;
     } );
+    this.debugArea.innerHTML = debugAreaHTML;
   }
 }
 
