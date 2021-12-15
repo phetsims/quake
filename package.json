@@ -36,7 +36,8 @@
   "eslintConfig": {
     "extends": "../chipper/eslint/sim_eslintrc.js",
     "ignorePatterns": [
-      "platforms/"
+      "platforms/",
+      "plugins/"
     ],
     "globals": {
       "alert": "readonly"

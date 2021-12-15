@@ -23,16 +23,48 @@ function onDeviceReady() {
   // Create the logger that will output debug messages to the app's screen.
   const logger = new ScreenDebugLogger();
 
-  // Hook up the vibration button.
-  const vibrateButton = document.getElementById( 'vibrateButton' );
-  vibrateButton.addEventListener( 'click', () => {
-    logger.log( 'vibrate button pressed' );
+  // Hook up the buttons.
+  const bumpButton = document.getElementById( 'bumpButton' );
+  bumpButton.addEventListener( 'click', () => {
+    logger.log( 'bump button pressed' );
     try {
-      navigator.vibrate( 100 );
-      logger.log( 'vibrate called' );
+      navigator.vibrate( 10 );
     }
     catch( e ) {
-      logger.log( 'error when trying to call vibrate: ' + e );
+      logger.log( 'error when trying to call bump: ' + e );
+    }
+  } );
+
+  const shortVibrationButton = document.getElementById( 'shortVibrationButton' );
+  shortVibrationButton.addEventListener( 'click', () => {
+    logger.log( 'shortVibration button pressed' );
+    try {
+      navigator.vibrate( 100 );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to call shortVibration: ' + e );
+    }
+  } );
+
+  const longerVibrationButton = document.getElementById( 'longerVibrationButton' );
+  longerVibrationButton.addEventListener( 'click', () => {
+    logger.log( 'longerVibration button pressed' );
+    try {
+      navigator.vibrate( 400 );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to call longerVibration: ' + e );
+    }
+  } );
+
+  const pulseButton = document.getElementById( 'pulseButton' );
+  pulseButton.addEventListener( 'click', () => {
+    logger.log( 'pulse button pressed' );
+    try {
+      navigator.vibrate( [ 200, 200, 200, 200 ] );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to call pulse: ' + e );
     }
   } );
 }
