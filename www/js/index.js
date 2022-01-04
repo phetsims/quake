@@ -67,4 +67,20 @@ function onDeviceReady() {
       logger.log( 'error when trying to call pulse: ' + e );
     }
   } );
+
+  // Get a local reference to the global device object so that we only have to disable lint for one line.
+  const thisDevice = device; // eslint-disable-line
+
+  const deviceButton = document.getElementById( 'deviceButton' );
+  deviceButton.addEventListener( 'click', () => {
+    try {
+      logger.log( `model = ${thisDevice.model}` );
+      logger.log( `platform = ${thisDevice.platform}` );
+      logger.log( `version = ${thisDevice.version}` );
+      logger.log( `manufacturer = ${thisDevice.manufacturer}` );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to access device.model: ' + e );
+    }
+  } );
 }
