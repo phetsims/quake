@@ -1,0 +1,40 @@
+{
+  "author": {
+    "name": "PhET Interactive Simulations"
+  },
+  "bugs": {
+    "url": "https://github.com/phetsims/quake/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-native-vibration",
+    "platforms": [
+      "android",
+      "browser"
+    ]
+  },
+  "deprecated": false,
+  "description": "Cordova Native Vibration",
+  "engines": {
+    "cordovaDependencies": {
+      "3.0.0": {
+        "cordova": ">100"
+      }
+    }
+  },
+  "keywords": [
+    "cordova",
+    "vibration",
+    "haptics",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "license": "GPL",
+  "name": "cordova-plugin-native-vibration",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phetsims/quake.git"
+  },
+  "types": "./types/index.d.ts",
+  "version": "0.0.1"
+}
