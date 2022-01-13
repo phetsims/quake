@@ -56,7 +56,7 @@ function getBrowserInfo( getModel ) {
 
 module.exports = {
   getDeviceInfo: function( success, error ) {
-    global.setTimeout( () => {
+    window.setTimeout( () => {
       success( {
         cordova: platform.cordovaVersion,
         platform: getPlatform(),

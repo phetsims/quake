@@ -18,20 +18,28 @@ module.exports = grunt => {
 
   // Register the task that installs or updates the custom native vibration plugin.
   grunt.registerTask(
-    'install-or-update-plugin',
+    'install-plugin',
     'Install or update the custom native vibration plugin',
     () => {
+
+      // Note to future maintainers: This task removes a previous installation of the plugin and then adds it back in
+      // order to make sure that the most recent version is installed. I (jbphet) tried using the `update` command,
+      // which exists, but didn't seem to work, at least not as of early January 2022.
+
       grunt.log.writeln( `Checking whether ${CUSTOM_VIBRATION_PLUGIN_NAME} plugin is present...` );
       let commandResult = child_process.execSync( 'cordova plugin list' );
       if ( commandResult.includes( CUSTOM_VIBRATION_PLUGIN_NAME ) ) {
-        grunt.log.writeln( '  Plugin was previously added, updating it...' );
-        commandResult = child_process.execSync( 'cordova plugin update cordova-plugin-native-vibration' );
+        grunt.log.writeln( '  Removing previous version of plugin...' );
+        const removePluginCommand = `cordova plugin remove ${CUSTOM_VIBRATION_PLUGIN_NAME}`;
+        console.log( `  command = ${removePluginCommand}` );
+        commandResult = child_process.execSync( removePluginCommand );
+        grunt.log.writeln( `  Command result: ${commandResult}` );
       }
-      else {
-        grunt.log.writeln( '  Plugin not installed, adding it...' );
-        commandResult = child_process.execSync( `cordova plugin add ./${CUSTOM_VIBRATION_PLUGIN_NAME}/` );
-      }
-      grunt.log.writeln( `${commandResult}` );
+      grunt.log.writeln( '  Adding current version of plugin...' );
+      const addPluginCommand = `cordova plugin add ./${CUSTOM_VIBRATION_PLUGIN_NAME}/`;
+      console.log( `  command = ${addPluginCommand}` );
+      commandResult = child_process.execSync( addPluginCommand );
+      grunt.log.writeln( `  Command result: ${commandResult}` );
       grunt.log.writeln( 'Plugin is installed and current.' );
     }
   );
@@ -49,5 +57,5 @@ module.exports = grunt => {
   );
 
   // register default task
-  grunt.registerTask( 'default', [ 'lint', 'install-or-update-plugin', 'build' ] );
+  grunt.registerTask( 'default', [ 'lint', 'install-plugin', 'build' ] );
 };

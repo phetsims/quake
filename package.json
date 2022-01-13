@@ -27,8 +27,8 @@
       "cordova-plugin-native-vibration": {}
     },
     "platforms": [
-      "android",
-      "browser"
+      "browser",
+      "android"
     ]
   },
   "repository": {

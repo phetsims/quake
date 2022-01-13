@@ -73,6 +73,13 @@ function onDeviceReady() {
 
   const deviceButton = document.getElementById( 'deviceButton' );
   deviceButton.addEventListener( 'click', () => {
+
+    // Invoke a method on the object created by the plugin.
+    thisDevice.getInfo(
+      info => { console.log( `info = ${info}` ); },
+      error => { console.log( `error = ${error}` ); }
+    );
+
     try {
       logger.log( `model = ${thisDevice.model}` );
       logger.log( `platform = ${thisDevice.platform}` );
