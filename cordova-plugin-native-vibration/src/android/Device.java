@@ -59,7 +59,7 @@ public class Device extends CordovaPlugin {
      */
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if ("getDeviceInfo".equals(action)) {
-            this.vibrator.vibrate( VibrationEffect.createOneShot( 50, VibrationEffect.DEFAULT_AMPLITUDE ) );
+            this.vibrator.vibrate( VibrationEffect.createOneShot( 50, 255 ) );
             JSONObject r = new JSONObject();
             r.put("uuid", Device.uuid);
             r.put("version", this.getOSVersion());
