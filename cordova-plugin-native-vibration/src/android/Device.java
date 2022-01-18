@@ -43,32 +43,32 @@ public class Device extends CordovaPlugin {
      * @param cordova The context of the main Activity.
      * @param webView The CordovaWebView Cordova is running in.
      */
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-        super.initialize(cordova, webView);
+    public void initialize( CordovaInterface cordova, CordovaWebView webView ) {
+        super.initialize( cordova, webView );
         Device.uuid = getUuid();
-        this.vibrator = (Vibrator) cordova.getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        this.vibrator = (Vibrator) cordova.getActivity().getSystemService( Context.VIBRATOR_SERVICE );
     }
 
     /**
      * Executes the request and returns PluginResult.
      *
-     * @param action            The action to execute.
-     * @param args              JSONArry of arguments for the plugin.
-     * @param callbackContext   The callback id used when calling back into JavaScript.
-     * @return                  True if the action was valid, false if not.
+     * @param action          The action to execute.
+     * @param args            JSONArry of arguments for the plugin.
+     * @param callbackContext The callback id used when calling back into JavaScript.
+     * @return True if the action was valid, false if not.
      */
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if ("getDeviceInfo".equals(action)) {
+    public boolean execute( String action, JSONArray args, CallbackContext callbackContext ) throws JSONException {
+        if ( "getDeviceInfo".equals( action ) ) {
             this.vibrator.vibrate( VibrationEffect.createOneShot( 50, 255 ) );
             JSONObject r = new JSONObject();
-            r.put("uuid", Device.uuid);
-            r.put("version", this.getOSVersion());
-            r.put("platform", this.getPlatform());
-            r.put("model", this.getModel());
-            r.put("manufacturer", this.getManufacturer());
-	        r.put("isVirtual", this.isVirtual());
-            r.put("serial", this.getSerialNumber());
-            callbackContext.success(r);
+            r.put( "uuid", Device.uuid );
+            r.put( "version", this.getOSVersion() );
+            r.put( "platform", this.getPlatform() );
+            r.put( "model", this.getModel() );
+            r.put( "manufacturer", this.getManufacturer() );
+            r.put( "isVirtual", this.isVirtual() );
+            r.put( "serial", this.getSerialNumber() );
+            callbackContext.success( r );
         }
         else {
             return false;
@@ -87,9 +87,10 @@ public class Device extends CordovaPlugin {
      */
     public String getPlatform() {
         String platform;
-        if (isAmazonDevice()) {
+        if ( isAmazonDevice() ) {
             platform = AMAZON_PLATFORM;
-        } else {
+        }
+        else {
             platform = ANDROID_PLATFORM;
         }
         return platform;
@@ -101,7 +102,7 @@ public class Device extends CordovaPlugin {
      * @return
      */
     public String getUuid() {
-        String uuid = Settings.Secure.getString(this.cordova.getActivity().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        String uuid = Settings.Secure.getString( this.cordova.getActivity().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID );
         return uuid;
     }
 
@@ -143,7 +144,7 @@ public class Device extends CordovaPlugin {
 
     public String getTimeZoneID() {
         TimeZone tz = TimeZone.getDefault();
-        return (tz.getID());
+        return ( tz.getID() );
     }
 
     /**
@@ -152,15 +153,15 @@ public class Device extends CordovaPlugin {
      * @return
      */
     public boolean isAmazonDevice() {
-        if (android.os.Build.MANUFACTURER.equals(AMAZON_DEVICE)) {
+        if ( android.os.Build.MANUFACTURER.equals( AMAZON_DEVICE ) ) {
             return true;
         }
         return false;
     }
 
     public boolean isVirtual() {
-	return android.os.Build.FINGERPRINT.contains("generic") ||
-	    android.os.Build.PRODUCT.contains("sdk");
+        return android.os.Build.FINGERPRINT.contains( "generic" ) ||
+               android.os.Build.PRODUCT.contains( "sdk" );
     }
 
 }

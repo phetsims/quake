@@ -2,10 +2,10 @@
 
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-    xmlns:rim="http://www.blackberry.com/ns/widgets"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    id="cordova-plugin-native-vibration"
-    version="0.0.1`">
+        xmlns:rim="http://www.blackberry.com/ns/widgets"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-native-vibration"
+        version="0.0.1`">
     <name>NativeVibration</name>
     <description>Cordova Native Vibration Plugin</description>
     <license>GPL</license>
@@ -14,18 +14,18 @@
     <issue>https://github.com/phetsims/quake/issues</issue>
 
     <js-module src="www/device.js" name="device">
-        <clobbers target="device" />
+        <clobbers target="device"/>
     </js-module>
 
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Device" >
+            <feature name="Device">
                 <param name="android-package" value="edu.colorado.phet.device.Device"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/Device.java" target-dir="src/edu/colorado/phet/cordova/device" />
+        <source-file src="src/android/Device.java" target-dir="src/edu/colorado/phet/cordova/device"/>
     </platform>
 
     <!-- ios -->
@@ -36,14 +36,14 @@
             </feature>
         </config-file>
 
-        <header-file src="src/ios/CDVDevice.h" />
-        <source-file src="src/ios/CDVDevice.m" />
+        <header-file src="src/ios/CDVDevice.h"/>
+        <source-file src="src/ios/CDVDevice.m"/>
     </platform>
 
     <!-- windows -->
     <platform name="windows">
         <js-module src="src/windows/DeviceProxy.js" name="DeviceProxy">
-            <runs />
+            <runs/>
         </js-module>
     </platform>
 
@@ -51,12 +51,12 @@
     <platform name="browser">
         <config-file target="config.xml" parent="/*">
             <feature name="Device">
-                <param name="browser-package" value="Device" />
+                <param name="browser-package" value="Device"/>
             </feature>
         </config-file>
 
         <js-module src="src/browser/DeviceProxy.js" name="DeviceProxy">
-            <runs />
+            <runs/>
         </js-module>
     </platform>
 
@@ -68,8 +68,8 @@
             </feature>
         </config-file>
 
-        <header-file src="src/osx/CDVDevice.h" />
-        <source-file src="src/osx/CDVDevice.m" />
+        <header-file src="src/osx/CDVDevice.h"/>
+        <source-file src="src/osx/CDVDevice.m"/>
     </platform>
 
 
