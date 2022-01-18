@@ -25,7 +25,7 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/Device.java" target-dir="src/edu/phet/cordova/device" />
+        <source-file src="src/android/Device.java" target-dir="src/edu/colorado/phet/cordova/device" />
     </platform>
 
     <!-- ios -->
