@@ -16,6 +16,21 @@ const CUSTOM_VIBRATION_PLUGIN_NAME = 'cordova-plugin-native-vibration';
 module.exports = grunt => {
   Gruntfile( grunt );
 
+// function to indent the results of a command-line operation
+  const logIndentedMessage = ( commandResult, indentation ) => {
+    let indentationString = '';
+    for ( let i = 0; i < indentation; i++ ) {
+      indentationString += ' ';
+    }
+
+    // For platform independence, replace any CR-LF occurrences with a simple LF.
+    const modifiedCommandResult = commandResult.toString().replace( '\r\n', '\n' );
+    const lines = modifiedCommandResult.split( '\n' );
+    lines.forEach( line => {
+      grunt.log.writeln( `${indentationString}${line}` );
+    } );
+  };
+
   // Register the task that installs or updates the custom native vibration plugin.
   grunt.registerTask(
     'install-plugin',
@@ -31,16 +46,17 @@ module.exports = grunt => {
       if ( commandResult.includes( CUSTOM_VIBRATION_PLUGIN_NAME ) ) {
         grunt.log.writeln( '  Removing previous version of plugin...' );
         const removePluginCommand = `cordova plugin remove ${CUSTOM_VIBRATION_PLUGIN_NAME}`;
-        console.log( `  command = ${removePluginCommand}` );
+        grunt.log.writeln( `  command = ${removePluginCommand}` );
         commandResult = child_process.execSync( removePluginCommand );
-        grunt.log.writeln( `  Command result: ${commandResult}` );
+        grunt.log.writeln( '  result:' );
+        logIndentedMessage( commandResult, 4 );
       }
       grunt.log.writeln( '  Adding current version of plugin...' );
       const addPluginCommand = `cordova plugin add ./${CUSTOM_VIBRATION_PLUGIN_NAME}/`;
-      console.log( `  command = ${addPluginCommand}` );
+      grunt.log.writeln( `  command = ${addPluginCommand}` );
       commandResult = child_process.execSync( addPluginCommand );
-      grunt.log.writeln( `  Command result: ${commandResult}` );
-      grunt.log.writeln( 'Plugin is installed and current.' );
+      grunt.log.writeln( '  result:' );
+      logIndentedMessage( commandResult, 4 );
     }
   );
 
