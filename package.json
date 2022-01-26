@@ -3,7 +3,7 @@
   "displayName": "haptics-playground",
   "version": "0.1.0",
   "description": "An Apache Cordova application that allows experimentation with haptic vibration.",
-  "main": "index.js",
+  "main": "haptics-playground-main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -43,6 +43,7 @@
     ],
     "globals": {
       "alert": "readonly",
+      "cordova": "readonly",
       "navigator": "readonly"
     }
   }

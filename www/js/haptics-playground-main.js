@@ -17,7 +17,11 @@ document.addEventListener( 'deviceready', onDeviceReady, false );
  * Haptics Playground app is set up.
  */
 function onDeviceReady() {
-  console.log( 'Running cordova-' + cordova.platformId + '@' + cordova.version ); // eslint-disable-line
+
+  // startup message
+  console.log( `Running cordova-${cordova.platformId}@${cordova.version}` );
+
+  // This is some sort of a cordova thing, I (@jbphet) am not entirely sure what it does yet.
   document.getElementById( 'deviceready' ).classList.add( 'ready' );
 
   // Create the logger that will output debug messages to the app's screen.
@@ -76,7 +80,7 @@ function onDeviceReady() {
 
     // Invoke a method on the object created by the plugin.
     thisDevice.getInfo(
-      info => { console.log( `info = ${info}` ); },
+      info => { console.log( `info = ${JSON.stringify( info )}` ); },
       error => { console.log( `error = ${error}` ); }
     );
 
