@@ -7,7 +7,7 @@
     <author email="phethelp@colorado.edu" href="https://phet.colorado.edu">
         PhET Interactive Simulations
     </author>
-    <content src="index.html" />
+    <content src="haptics-playground.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
