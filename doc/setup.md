@@ -7,16 +7,22 @@ app to run on different platforms.  This document describes the steps necessary 
 
 It is assumed that `node` and `npm` are already set up and available.
 
-1. Install Android Studio.  The SDKs are needed to build the Android app.
-2. If cordova isn't already installed, install it globally using `npm install -g cordova`
-3. Pull the contents of the repo.  This repo has no dependencies on other PhET repos, so it isn't necessary to pull any
-others.
-4. Run `npm install` to get the needed node modules
-5. Run `cordova platform add android` to install the Android platform files
-6. Run `cordova platform add ios` to install the iOS platform files
-7. Run `cordove build` to build the app
-
-TODO: @jbphet 12/6/2021 - This needs refinement and testing, and maybe expansion, but at least it's a start.
+1. Make sure you have a Java 1.8.x JDK installed.  Cordova requires this.  The latest JDKs don't work.  Don't know why.
+2. You'll need an environment variable `JAVA_HOME` that points to the root direction of the JDK.  The value will look something like `C:\Program Files\Java\jdk1.8.0_301` on a Windows system.
+3. Install Android Studio.  The SDKs are needed to build the Android app, and the studio is used for testing and debugging.
+4. From within Android Studio, use Tools->SDK Manager to install SDK 8.1, API version 26.
+5. Add an environment variable (if it doesn't already exist) `ANDROID_SDK_ROOT` that points to your Android SDK root.  The value will be something like `C:\Users\bob\AppData\Local\Android\Sdk`
+6. Install `gradle`, which is a build tool used by Android Studio, by following the instructions in the section "Installing manually" of the installation guide at https://gradle.org/install/ (binary only).
+8. Add the path to gradle to your system path.
+9. If cordova isn't already installed, install it globally using `npm install -g cordova`
+10. Clone the repo.  This repo has no dependencies on other PhET repos, so it isn't necessary to clone or pull any others.
+11. The following commands should all be run from the root directory of the repo.
+12. Run `npm install` to get the needed node modules.
+13. Run `cordova platform add android` to install the Android platform files.
+14. Run `cordova platform add browser` to install the browser platform files.
+15. Run `cordova plugin add cordova-plugin-vibration` to add the vibration plugin.
+16. Run `grunt` to build the app.
+17. From Android Studio, open the project at <your-dev-root>/quake/platforms/android
 
 TODO: Notes about things that should be added:
 - The debugging process is a combination of testing using the "browser" platform, the Android emulator (run from Android
