@@ -1,6 +1,6 @@
 // Copyright 2022, University of Colorado Boulder
 
-package edu.colorado.phet.device;
+package edu.colorado.phet.nativevibration;
 
 import java.util.TimeZone;
 
@@ -17,8 +17,8 @@ import android.provider.Settings;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 
-public class Device extends CordovaPlugin {
-    public static final String TAG = "Device";
+public class NativeVibration extends CordovaPlugin {
+    public static final String TAG = "NativeVibration";
 
     public static String platform;                            // Device OS
     public static String uuid;                                // Device UUID
@@ -33,7 +33,7 @@ public class Device extends CordovaPlugin {
     /**
      * Constructor.
      */
-    public Device() {
+    public NativeVibration() {
     }
 
     /**
@@ -45,7 +45,7 @@ public class Device extends CordovaPlugin {
      */
     public void initialize( CordovaInterface cordova, CordovaWebView webView ) {
         super.initialize( cordova, webView );
-        Device.uuid = getUuid();
+        NativeVibration.uuid = getUuid();
         this.vibrator = (Vibrator) cordova.getActivity().getSystemService( Context.VIBRATOR_SERVICE );
     }
 
@@ -61,7 +61,7 @@ public class Device extends CordovaPlugin {
         if ( "getDeviceInfo".equals( action ) ) {
             this.vibrator.vibrate( VibrationEffect.createOneShot( 50, 255 ) );
             JSONObject r = new JSONObject();
-            r.put( "uuid", Device.uuid );
+            r.put( "uuid", NativeVibration.uuid );
             r.put( "version", this.getOSVersion() );
             r.put( "platform", this.getPlatform() );
             r.put( "model", this.getModel() );

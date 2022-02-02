@@ -73,7 +73,7 @@ function onDeviceReady() {
   } );
 
   // Get a local reference to the global device object so that we only have to disable lint for one line.
-  const thisDevice = device; // eslint-disable-line
+  const thisDevice = nativeVibration; // eslint-disable-line
 
   const deviceButton = document.getElementById( 'deviceButton' );
   deviceButton.addEventListener( 'click', () => {
@@ -91,7 +91,7 @@ function onDeviceReady() {
       logger.log( `manufacturer = ${thisDevice.manufacturer}` );
     }
     catch( e ) {
-      logger.log( 'error when trying to access device.model: ' + e );
+      logger.log( 'error when trying to access device information: ' + e );
     }
   } );
 }

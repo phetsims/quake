@@ -69,4 +69,4 @@ module.exports = {
   }
 };
 
-require( 'cordova/exec/proxy' ).add( 'Device', module.exports );
+require( 'cordova/exec/proxy' ).add( 'NativeVibration', module.exports );
