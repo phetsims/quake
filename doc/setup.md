@@ -13,15 +13,16 @@ It is assumed that `node` and `npm` are already set up and available.
 4. From within Android Studio, use Tools->SDK Manager to install SDK 8.1, API version 26.
 5. Add an environment variable (if it doesn't already exist) `ANDROID_SDK_ROOT` that points to your Android SDK root.  The value will be something like `C:\Users\bob\AppData\Local\Android\Sdk`
 6. Install `gradle`, which is a build tool used by Android Studio, by following the instructions in the section "Installing manually" of the installation guide at https://gradle.org/install/ (binary only).
-8. Add the path to gradle to your system path.
-9. If cordova isn't already installed, install it globally using `npm install -g cordova`
-10. Clone the repo.  This repo has no dependencies on other PhET repos, so it isn't necessary to clone or pull any others.
-11. The following commands should all be run from the root directory of the repo.
-12. Run `npm install` to get the needed node modules.
-13. Run `cordova platform add android` to install the Android platform files.
-14. Run `cordova platform add browser` to install the browser platform files.
-15. Run `cordova plugin add cordova-plugin-vibration` to add the vibration plugin.
-16. Run `grunt` to build the app.
+7. Add the path to gradle to your system path. 
+8. If cordova isn't already installed, install it globally using `npm install -g cordova`
+9. Clone the repo.  This repo has no dependencies on other PhET repos, so it isn't necessary to clone or pull any others.
+10. The following commands should all be run from the root directory of the repo.
+11. Run `npm install` to get the needed node modules.
+12. Run `cordova platform add android` to install the Android platform files.
+13. Run `cordova platform add browser` to install the browser platform files.
+14. Run `cordova plugin add cordova-plugin-vibration` to add the vibration plugin.
+15. Run `grunt` to build the app.
+16. There is an odd problem that I (jbphet) and other developers ran into where builds fail due to the name of some of the build tools.  If you run into this, follow the steps from this Stack Overflow article and rename some of the tools: https://stackoverflow.com/questions/68387270/android-studio-error-installed-build-tools-revision-31-0-0-is-corrupted
 17. From Android Studio, open the project at <your-dev-root>/quake/platforms/android
 
 TODO: Notes about things that should be added:
