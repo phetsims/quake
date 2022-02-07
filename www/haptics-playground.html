@@ -20,7 +20,7 @@
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/haptics-playground.css">
   <title>Haptics Playground</title>
 </head>
 <body>
@@ -41,7 +41,14 @@
   <br><br><br>
   <button id="deviceButton">Device</button>
   <br><br><br>
+
   <p id="debugArea">Debug Area</p>
+
+  <div id="navbar">
+    <button id="clicks" class="nav-bar-button">Clicks<br><img src="img/clicksIcon.png"/></button>
+    <button id="buzzes" class="nav-bar-button">Buzzes<br><img src="img/buzzesIcon.png"/></button>
+    <button id="patterns" class="nav-bar-button">Patterns<br><img src="img/patternsIcon.png"/></button>
+  </div>
 </div>
 <script src="cordova.js"></script>
 <script type="module" src="js/haptics-playground-main.js"></script>

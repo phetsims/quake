@@ -118,9 +118,38 @@ h1 {
   -webkit-animation: fade 3000ms infinite;
 }
 
-
 @media screen and (prefers-color-scheme: dark) {
   body {
     background-image: linear-gradient(to bottom, #585858 0%, #1B1B1B 51%);
   }
+}
+
+#navbar {
+  width: 100%;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #2196f3;
+  color: white;
+}
+
+#clicks {
+  float: left;
+}
+
+#patterns {
+  float: right
+}
+
+.nav-bar-button {
+  padding: 5px 10px;
+  margin: 10px 15px;
+  font-size: large;
+  border: 1px white solid;
+  background-color: #2196f3;
+  color: white;
+}
+.nav-bar-button img{
+  max-width: 50px;
 }

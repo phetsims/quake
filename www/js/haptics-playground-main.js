@@ -94,4 +94,18 @@ function onDeviceReady() {
       logger.log( 'error when trying to access device information: ' + e );
     }
   } );
+
+  // Hook up handlers for the navigation bar buttons.
+  const clicksNavBarButton = document.getElementById( 'clicks' );
+  clicksNavBarButton.addEventListener( 'click', () => {
+    alert( 'Clicks nav bar button pressed' );
+  } );
+  const buzzesNavBarButton = document.getElementById( 'buzzes' );
+  buzzesNavBarButton.addEventListener( 'click', () => {
+    alert( 'Buzzes nav bar button pressed' );
+  } );
+  const patternsNavBarButton = document.getElementById( 'patterns' );
+  patternsNavBarButton.addEventListener( 'click', () => {
+    alert( 'Patterns nav bar button pressed' );
+  } );
 }
