@@ -38,7 +38,6 @@ body {
 
 /* Portrait layout (default) */
 .app {
-  background: url(../img/park-playground.png) no-repeat center top; /* 170px x 200px */
   position: absolute;
   left: 50%;
   top: 20%;
@@ -48,6 +47,19 @@ body {
   padding: 210px 0px 0px 0px; /* image height is 200px */
   margin: -115px 0px 0px -112px; /* offset vertical: half of image height and text area height */
   /* offset horizontal: half of text area width */
+}
+
+#header {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #5b9d48;
+  color: white;
+}
+
+#header img {
+  height: 130px;
 }
 
 /* Landscape layout (with min-width) */
@@ -150,6 +162,7 @@ h1 {
   background-color: #2196f3;
   color: white;
 }
-.nav-bar-button img{
+
+.nav-bar-button img {
   max-width: 50px;
 }
