@@ -9,12 +9,18 @@
 
 // constants
 const MAX_MESSAGES = 5;
+const MODE = 'console'; // Valid modes are 'screen' and 'console'.
 
 class ScreenDebugLogger {
 
   constructor() {
     this.debugArea = document.getElementById( 'debugArea' );
     this.timeOfConstruction = Date.now();
+
+    // Hide the debug area if this is just being logged to the console.
+    if ( MODE !== 'scree' ) {
+      this.debugArea.style.visibility = 'hidden';
+    }
 
     // @private {Array.<string>} - an array that holds the currently displayed messages
     this.messageBuffer = [];
@@ -25,19 +31,24 @@ class ScreenDebugLogger {
    * @public
    */
   log( message ) {
-    if ( this.messageBuffer.length >= MAX_MESSAGES ) {
-      this.messageBuffer.pop();
-    }
     const messageWithTimestamp = ( ( Date.now() - this.timeOfConstruction ) / 1000 ).toFixed( 3 ) + ': ' + message; // eslint-disable-line bad-sim-text
-    this.messageBuffer.unshift( messageWithTimestamp );
-    let debugAreaHTML = '';
-    this.messageBuffer.forEach( ( message, index ) => {
-      debugAreaHTML += message;
-      if ( index < this.messageBuffer.length - 1 ) {
-        debugAreaHTML += '<br>';
+    if ( MODE === 'screen' ) {
+      if ( this.messageBuffer.length >= MAX_MESSAGES ) {
+        this.messageBuffer.pop();
       }
-    } );
-    this.debugArea.innerHTML = debugAreaHTML;
+      this.messageBuffer.unshift( messageWithTimestamp );
+      let debugAreaHTML = '';
+      this.messageBuffer.forEach( ( message, index ) => {
+        debugAreaHTML += message;
+        if ( index < this.messageBuffer.length - 1 ) {
+          debugAreaHTML += '<br>';
+        }
+      } );
+      this.debugArea.innerHTML = debugAreaHTML;
+    }
+    else {
+      console.log( messageWithTimestamp );
+    }
   }
 }
 

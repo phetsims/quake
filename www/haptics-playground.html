@@ -28,23 +28,25 @@
   <div id="header">
     <img src="img/playgroundHeaderV6b2.png"/>
   </div>
-  <div id="deviceready" class="blink">
-    <p class="event listening">Connecting to Device</p>
-    <p class="event received">Device is Ready</p>
-  </div>
+  <h1>Clicks</h1>
   <br>
-  <button id="bumpButton">Bump</button>
+  <button id="singleClickButton">Single</button>
   <br><br><br>
-  <button id="shortVibrationButton">Short Vibration</button>
+  <button id="doubleClickButton">Double</button>
   <br><br><br>
-  <button id="longerVibrationButton">Longer Vibration</button>
+  <button id="nClicksButton">N</button>
+  <input type="number"/>
   <br><br><br>
-  <button id="pulseButton">Pulse</button>
-  <br><br><br>
-  <button id="deviceButton">Device</button>
-  <br><br><br>
+  <div>
+    <label for="intensity-slider">Intensity</label>
+    <input type="range" min="0" max="99" value="0" class="slider" id="intensity-slider">
+  </div>
+  <div>
+    <label for="duration-slider">Duration</label>
+    <input type="range" min="1" max="100" value="0" class="slider" id="duration-slider">
+  </div>
 
-  <p id="debugArea">Debug Area</p>
+  <p id="debugArea" visi>Debug Area</p>
 
   <div id="navbar">
     <button id="clicks" class="nav-bar-button">Clicks<br><img src="img/clicksIcon.png"/></button>

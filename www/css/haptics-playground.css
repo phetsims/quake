@@ -99,14 +99,6 @@ h1 {
   display: none;
 }
 
-#deviceready.ready .event.listening {
-  display: none;
-}
-
-#deviceready.ready .event.received {
-  display: block;
-}
-
 #debugArea {
   font-family: "Arial Black", Gadget, sans-serif;
   text-align: left;
@@ -123,11 +115,6 @@ h1 {
   to {
     opacity: 1.0;
   }
-}
-
-.blink {
-  animation: fade 3000ms infinite;
-  -webkit-animation: fade 3000ms infinite;
 }
 
 @media screen and (prefers-color-scheme: dark) {

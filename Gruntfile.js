@@ -2,5 +2,4 @@
 
 /* eslint-env node */
 
-// use chipper's gruntfile
 module.exports = require( './js/Gruntfile.js' );

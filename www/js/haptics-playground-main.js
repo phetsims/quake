@@ -21,16 +21,13 @@ function onDeviceReady() {
   // startup message
   console.log( `Running cordova-${cordova.platformId}@${cordova.version}` );
 
-  // This is some sort of a cordova thing, I (@jbphet) am not entirely sure what it does yet.
-  document.getElementById( 'deviceready' ).classList.add( 'ready' );
-
   // Create the logger that will output debug messages to the app's screen.
   const logger = new ScreenDebugLogger();
 
   // Hook up the buttons.
-  const bumpButton = document.getElementById( 'bumpButton' );
-  bumpButton.addEventListener( 'click', () => {
-    logger.log( 'bump button pressed' );
+  const singleClickButton = document.getElementById( 'singleClickButton' );
+  singleClickButton.addEventListener( 'click', () => {
+    logger.log( 'single click button pressed' );
     try {
       navigator.vibrate( 10 );
     }
@@ -39,9 +36,9 @@ function onDeviceReady() {
     }
   } );
 
-  const shortVibrationButton = document.getElementById( 'shortVibrationButton' );
-  shortVibrationButton.addEventListener( 'click', () => {
-    logger.log( 'shortVibration button pressed' );
+  const doubleClickButton = document.getElementById( 'doubleClickButton' );
+  doubleClickButton.addEventListener( 'click', () => {
+    logger.log( 'double button pressed' );
     try {
       navigator.vibrate( 100 );
     }
@@ -50,9 +47,9 @@ function onDeviceReady() {
     }
   } );
 
-  const longerVibrationButton = document.getElementById( 'longerVibrationButton' );
-  longerVibrationButton.addEventListener( 'click', () => {
-    logger.log( 'longerVibration button pressed' );
+  const nClicksButton = document.getElementById( 'nClicksButton' );
+  nClicksButton.addEventListener( 'click', () => {
+    logger.log( 'N clicks button pressed' );
     try {
       navigator.vibrate( 400 );
     }
@@ -61,39 +58,8 @@ function onDeviceReady() {
     }
   } );
 
-  const pulseButton = document.getElementById( 'pulseButton' );
-  pulseButton.addEventListener( 'click', () => {
-    logger.log( 'pulse button pressed' );
-    try {
-      navigator.vibrate( [ 200, 200, 200, 200 ] );
-    }
-    catch( e ) {
-      logger.log( 'error when trying to call pulse: ' + e );
-    }
-  } );
-
   // Get a local reference to the global device object so that we only have to disable lint for one line.
   const thisDevice = nativeVibration; // eslint-disable-line
-
-  const deviceButton = document.getElementById( 'deviceButton' );
-  deviceButton.addEventListener( 'click', () => {
-
-    // Invoke a method on the object created by the plugin.
-    thisDevice.getInfo(
-      info => { console.log( `info = ${JSON.stringify( info )}` ); },
-      error => { console.log( `error = ${error}` ); }
-    );
-
-    try {
-      logger.log( `model = ${thisDevice.model}` );
-      logger.log( `platform = ${thisDevice.platform}` );
-      logger.log( `version = ${thisDevice.version}` );
-      logger.log( `manufacturer = ${thisDevice.manufacturer}` );
-    }
-    catch( e ) {
-      logger.log( 'error when trying to access device information: ' + e );
-    }
-  } );
 
   // Hook up handlers for the navigation bar buttons.
   const clicksNavBarButton = document.getElementById( 'clicks' );
