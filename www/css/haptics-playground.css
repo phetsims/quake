@@ -36,6 +36,16 @@ body {
   width: 100%;
 }
 
+#header {
+  text-align: center;
+  background-color: #FDC966;
+}
+
+#header img {
+  width: auto;
+  height: 130px;
+}
+
 /* Portrait layout (default) */
 .app {
   position: absolute;
@@ -47,19 +57,6 @@ body {
   padding: 210px 0px 0px 0px; /* image height is 200px */
   margin: -115px 0px 0px -112px; /* offset vertical: half of image height and text area height */
   /* offset horizontal: half of text area width */
-}
-
-#header {
-  text-align: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: #5b9d48;
-  color: white;
-}
-
-#header img {
-  height: 130px;
 }
 
 /* Landscape layout (with min-width) */
