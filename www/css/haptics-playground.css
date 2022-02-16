@@ -25,13 +25,11 @@ body {
 
 #header {
   text-align: center;
-  background-color: #E4E4E4;
 }
 
 #image-container {
   min-width: 20px;
   min-height: 20px;
-  padding: 1px;
   display: inline-block;
 }
 
@@ -50,9 +48,9 @@ body {
 }
 
 #image-container::after {
-  -webkit-box-shadow: inset 0 0 10px 10px #cccccc;
-  -moz-box-shadow: inset 0 0 10px 10px #cccccc;
-  box-shadow: inset 0 0 10px 10px #cccccc;
+  -webkit-box-shadow: inset 0 0 10px 10px #E4E4E4;
+  -moz-box-shadow: inset 0 0 10px 10px #E4E4E4;
+  box-shadow: inset 0 0 10px 10px #E4E4E4;
   bottom: 0;
   content: "";
   display: block;
