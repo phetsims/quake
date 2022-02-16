@@ -47,8 +47,8 @@ function onDeviceReady() {
     }
   } );
 
-  const nClicksButton = document.getElementById( 'nClicksButton' );
-  nClicksButton.addEventListener( 'click', () => {
+  const multiClicksButton = document.getElementById( 'multi-clicks-button' );
+  multiClicksButton.addEventListener( 'click', () => {
     logger.log( 'N clicks button pressed' );
     try {
       navigator.vibrate( 400 );

@@ -70,7 +70,7 @@ body {
   left: 50%;
   top: 20%;
   height: 50px; /* text area height */
-  width: 225px; /* text area width */
+  width: 300px; /* text area width */
   text-align: center;
   padding: 210px 0 0 0; /* image height is 200px */
   margin: -115px 0 0 -112px; /* offset vertical: half of image height and text area height */
@@ -89,7 +89,7 @@ body {
 
 h1 {
   font-size: 24px;
-  font-weight: normal;
+  font-weight: bold;
   margin: 0;
   overflow: visible;
   padding: 0;
@@ -128,6 +128,7 @@ h1 {
 
 .labeled-slider {
   font-size: large;
+  display: grid;
 }
 
 #number-of-clicks {
