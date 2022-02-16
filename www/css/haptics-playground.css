@@ -25,7 +25,7 @@ body {
 
 #header {
   text-align: center;
-  background-color: #cccccc;
+  background-color: #E4E4E4;
 }
 
 #image-container {
@@ -42,7 +42,7 @@ body {
 }
 
 #header-image-shadow {
-  background-color: #cccccc;
+  background-color: #4ba3c7;
   position: relative;
   text-align: center;
   width: 100%;
@@ -94,6 +94,44 @@ h1 {
   overflow: visible;
   padding: 0;
   text-align: center;
+}
+
+.app-page {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.vertical-button-set {
+  display: flex;
+  flex-direction: column;
+}
+
+.vertical-slider-set {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.button-and-number {
+  display: -webkit-box;
+}
+
+.app-button {
+  padding: 5px 10px;
+  margin: 10px 15px;
+  font-size: large;
+  border: 1px black solid;
+  background-color: #9ACBFF;
+  color: black;
+}
+
+.labeled-slider {
+  font-size: large;
+}
+
+#number-of-clicks {
+  width: 50px;
 }
 
 .event {

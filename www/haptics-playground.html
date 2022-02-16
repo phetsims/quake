@@ -32,32 +32,36 @@
 </div>
 
 <div class="app">
-  <h1>Clicks</h1>
-  <br>
-  <button id="singleClickButton">Single</button>
-  <br><br><br>
-  <button id="doubleClickButton">Double</button>
-  <br><br><br>
-  <button id="nClicksButton">N</button>
-  <input type="number"/>
-  <br><br><br>
-  <div>
-    <label for="intensity-slider">Intensity</label>
-    <input type="range" min="0" max="99" value="0" class="slider" id="intensity-slider">
-  </div>
-  <div>
-    <label for="duration-slider">Duration</label>
-    <input type="range" min="1" max="100" value="0" class="slider" id="duration-slider">
-  </div>
-
-  <p id="debugArea" visi>Debug Area</p>
-
-  <div id="navbar">
-    <button id="clicks" class="nav-bar-button">Clicks<br><img src="img/clicksIcon.png"/></button>
-    <button id="buzzes" class="nav-bar-button">Buzzes<br><img src="img/buzzesIcon.png"/></button>
-    <button id="patterns" class="nav-bar-button">Patterns<br><img src="img/patternsIcon.png"/></button>
+  <div id="clicks-page" class="app-page">
+    <h1>Clicks</h1>
+    <div class="vertical-button-set">
+      <button id="singleClickButton" class="app-button">Single</button>
+      <button id="doubleClickButton" class="app-button">Double</button>
+      <div class="button-and-number">
+        <button id="nClicksButton" class="app-button">N</button>
+        <input type="number" id="number-of-clicks"/>
+      </div>
+    </div>
+    <div class="vertical-slider-set">
+      <div class="labeled-slider">
+        <label for="intensity-slider">Intensity</label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="intensity-slider">
+      </div>
+      <div class="labeled-slider">
+        <label for="duration-slider">Duration</label>
+        <input type="range" min="1" max="100" value="0" class="slider" id="duration-slider">
+      </div>
+    </div>
+    <p id="debugArea">Debug Area</p>
   </div>
 </div>
+
+<div id="navbar">
+  <button id="clicks" class="nav-bar-button">Clicks<br><img src="img/clicksIcon.png"/></button>
+  <button id="buzzes" class="nav-bar-button">Buzzes<br><img src="img/buzzesIcon.png"/></button>
+  <button id="patterns" class="nav-bar-button">Patterns<br><img src="img/patternsIcon.png"/></button>
+</div>
+
 <script src="cordova.js"></script>
 <script type="module" src="js/haptics-playground-main.js"></script>
 </body>
