@@ -25,7 +25,10 @@ body {
 
 #header {
   text-align: center;
-  background-color: #D0DCEB;
+  background-color: #d0dceb;
+  overflow: hidden;
+  display: block;
+  position: relative;
 }
 
 #header img {
@@ -34,6 +37,15 @@ body {
   max-height: 130px;
   margin-left: auto;
   margin-right: auto;
+  vertical-align: middle;
+}
+
+#header:after{
+  content: "";
+  position: absolute;
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  box-shadow: inset -1px 1px 30px 10px #d0dceb;
 }
 
 /* Portrait layout (default) */
