@@ -24,6 +24,8 @@ function onDeviceReady() {
   // Create the logger that will output debug messages to the app's screen.
   const logger = new ScreenDebugLogger();
 
+  console.log( `nativeVibration = ${nativeVibration}` );
+
   // Hook up the buttons.
   const singleClickButton = document.getElementById( 'singleClickButton' );
   singleClickButton.addEventListener( 'click', () => {
@@ -57,9 +59,6 @@ function onDeviceReady() {
       logger.log( 'error when trying to call longerVibration: ' + e );
     }
   } );
-
-  // Get a local reference to the global device object so that we only have to disable lint for one line.
-  const thisDevice = nativeVibration; // eslint-disable-line
 
   // Hook up handlers for the navigation bar buttons.
   const clicksNavBarButton = document.getElementById( 'clicks' );

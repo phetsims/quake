@@ -44,7 +44,8 @@
     "globals": {
       "alert": "readonly",
       "cordova": "readonly",
-      "navigator": "readonly"
+      "navigator": "readonly",
+      "nativeVibration": "readonly"
     }
   }
 }

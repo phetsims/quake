@@ -9,7 +9,7 @@
 
 // constants
 const MAX_MESSAGES = 5;
-const MODE = 'console'; // Valid modes are 'screen' and 'console'.
+const MODE = 'screen'; // Valid modes are 'screen' and 'console'.
 
 class ScreenDebugLogger {
 
@@ -18,7 +18,7 @@ class ScreenDebugLogger {
     this.timeOfConstruction = Date.now();
 
     // Hide the debug area if this is just being logged to the console.
-    if ( MODE !== 'scree' ) {
+    if ( MODE !== 'screen' ) {
       this.debugArea.style.visibility = 'hidden';
     }
 
