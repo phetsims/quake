@@ -34,27 +34,25 @@ class NativeVibration {
     this.isVirtual = null;
     this.serial = null;
 
-    const self = this;
-
     channel.onCordovaReady.subscribe( () => {
-      self.getInfo(
+      this.getInfo(
         info => {
           // ignoring info.cordova returning from native, we should use value from cordova.version defined in cordova.js
           // TODO: CB-5105 native implementations should not return info.cordova
           const buildLabel = cordova.version;
-          self.available = true;
-          self.platform = info.platform;
-          self.version = info.version;
-          self.uuid = info.uuid;
-          self.cordova = buildLabel;
-          self.model = info.model;
-          self.isVirtual = info.isVirtual;
-          self.manufacturer = info.manufacturer || 'unknown';
-          self.serial = info.serial || 'unknown';
+          this.available = true;
+          this.platform = info.platform;
+          this.version = info.version;
+          this.uuid = info.uuid;
+          this.cordova = buildLabel;
+          this.model = info.model;
+          this.isVirtual = info.isVirtual;
+          this.manufacturer = info.manufacturer || 'unknown';
+          this.serial = info.serial || 'unknown';
           channel.onCordovaInfoReady.fire();
         },
         e => {
-          self.available = false;
+          this.available = false;
           utils.alert( '[ERROR] Error initializing Cordova: ' + e );
         } );
     } );
@@ -67,9 +65,23 @@ class NativeVibration {
    * @public
    */
   getInfo( successCallback, errorCallback ) {
-    argscheck.checkArgs( 'fF', 'NativeVibration.getInfo', [ successCallback, errorCallback ] );
+    argscheck.checkArgs( 'FF', 'NativeVibration.getInfo', [ successCallback, errorCallback ] );
     exec( successCallback, errorCallback, 'NativeVibration', 'getDeviceInfo', [] );
   }
+
+  /**
+   * trigger a haptic vibration
+   * @param {Function} successCallback
+   * @param {Function} errorCallback
+   * @public
+   */
+  vibrate( successCallback, errorCallback ) {
+    argscheck.checkArgs( 'FF', 'NativeVibration.vibrate', [ successCallback, errorCallback ] );
+    exec( successCallback, errorCallback, 'NativeVibration', 'vibrate', [
+      [ { duration: 0.1, intensity: 1 }, { duration: 0.5, intensity: 0 }, { duration: 100, intensity: 1 } ]
+    ] );
+  }
+
 }
 
 module.exports = new NativeVibration();

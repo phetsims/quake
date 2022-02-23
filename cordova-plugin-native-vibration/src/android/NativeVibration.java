@@ -16,6 +16,7 @@ import android.content.Context;
 import android.provider.Settings;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 
 public class NativeVibration extends CordovaPlugin {
     public static final String TAG = "NativeVibration";
@@ -51,15 +52,13 @@ public class NativeVibration extends CordovaPlugin {
 
     /**
      * Executes the request and returns PluginResult.
-     *
-     * @param action          The action to execute.
-     * @param args            JSONArry of arguments for the plugin.
-     * @param callbackContext The callback id used when calling back into JavaScript.
-     * @return True if the action was valid, false if not.
+     * @param action - the action to execute
+     * @param args - JSONArry of arguments for the plugin
+     * @param callbackContext - the callback id used when calling back into JavaScript
+     * @return true if the action was valid, false if not
      */
     public boolean execute( String action, JSONArray args, CallbackContext callbackContext ) throws JSONException {
         if ( "getDeviceInfo".equals( action ) ) {
-            this.vibrator.vibrate( VibrationEffect.createOneShot( 50, 255 ) );
             JSONObject r = new JSONObject();
             r.put( "uuid", NativeVibration.uuid );
             r.put( "version", this.getOSVersion() );
@@ -68,6 +67,15 @@ public class NativeVibration extends CordovaPlugin {
             r.put( "manufacturer", this.getManufacturer() );
             r.put( "isVirtual", this.isVirtual() );
             r.put( "serial", this.getSerialNumber() );
+            callbackContext.success( r );
+        }
+        else if ( "vibrate".equals( action ) ) {
+            Log.i( "NativeVibration", "about to vibrate" );
+            Log.i( "NativeVibration", args.getJSONArray( 0 ).toString() );
+            Log.i( "NativeVibration", args.getJSONArray( 0 ).getJSONObject( 0 ).get( "duration" ).toString() );
+            Log.i( "NativeVibration", args.getJSONArray( 0 ).getJSONObject( 0 ).get( "intensity" ).toString() );
+            Log.i( "NativeVibration", "done" );
+            JSONObject r = new JSONObject();
             callbackContext.success( r );
         }
         else {
@@ -137,8 +145,7 @@ public class NativeVibration extends CordovaPlugin {
     }
 
     public String getSDKVersion() {
-        @SuppressWarnings("deprecation")
-        String sdkversion = android.os.Build.VERSION.SDK;
+        @SuppressWarnings("deprecation") String sdkversion = android.os.Build.VERSION.SDK;
         return sdkversion;
     }
 
@@ -160,8 +167,7 @@ public class NativeVibration extends CordovaPlugin {
     }
 
     public boolean isVirtual() {
-        return android.os.Build.FINGERPRINT.contains( "generic" ) ||
-               android.os.Build.PRODUCT.contains( "sdk" );
+        return android.os.Build.FINGERPRINT.contains( "generic" ) || android.os.Build.PRODUCT.contains( "sdk" );
     }
 
 }

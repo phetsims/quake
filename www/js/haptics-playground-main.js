@@ -24,17 +24,15 @@ function onDeviceReady() {
   // Create the logger that will output debug messages to the app's screen.
   const logger = new ScreenDebugLogger();
 
-  console.log( `nativeVibration = ${nativeVibration}` );
-
   // Hook up the buttons.
   const singleClickButton = document.getElementById( 'singleClickButton' );
   singleClickButton.addEventListener( 'click', () => {
     logger.log( 'single click button pressed' );
     try {
-      navigator.vibrate( 10 );
+      nativeVibration.vibrate();
     }
     catch( e ) {
-      logger.log( 'error when trying to call bump: ' + e );
+      logger.log( 'error when trying to call vibrate: ' + e );
     }
   } );
 
@@ -42,10 +40,10 @@ function onDeviceReady() {
   doubleClickButton.addEventListener( 'click', () => {
     logger.log( 'double button pressed' );
     try {
-      navigator.vibrate( 100 );
+      nativeVibration.vibrate();
     }
     catch( e ) {
-      logger.log( 'error when trying to call shortVibration: ' + e );
+      logger.log( 'error when trying to call vibrate: ' + e );
     }
   } );
 
@@ -53,10 +51,10 @@ function onDeviceReady() {
   multiClicksButton.addEventListener( 'click', () => {
     logger.log( 'N clicks button pressed' );
     try {
-      navigator.vibrate( 400 );
+      nativeVibration.vibrate();
     }
     catch( e ) {
-      logger.log( 'error when trying to call longerVibration: ' + e );
+      logger.log( 'error when trying to call vibrate: ' + e );
     }
   } );
 
