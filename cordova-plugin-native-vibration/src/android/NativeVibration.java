@@ -52,8 +52,9 @@ public class NativeVibration extends CordovaPlugin {
 
     /**
      * Executes the request and returns PluginResult.
-     * @param action - the action to execute
-     * @param args - JSONArry of arguments for the plugin
+     *
+     * @param action          - the action to execute
+     * @param args            - JSONArry of arguments for the plugin
      * @param callbackContext - the callback id used when calling back into JavaScript
      * @return true if the action was valid, false if not
      */
@@ -74,6 +75,17 @@ public class NativeVibration extends CordovaPlugin {
             Log.i( "NativeVibration", args.getJSONArray( 0 ).toString() );
             Log.i( "NativeVibration", args.getJSONArray( 0 ).getJSONObject( 0 ).get( "duration" ).toString() );
             Log.i( "NativeVibration", args.getJSONArray( 0 ).getJSONObject( 0 ).get( "intensity" ).toString() );
+            JSONArray vibrationSpecs = args.getJSONArray( 0 );
+            long[] durations = new long[vibrationSpecs.length()];
+            int[] intensities = new int[vibrationSpecs.length()];
+            for ( int i = 0; i < vibrationSpecs.length(); i++ ) {
+                JSONObject vibrationSpec = vibrationSpecs.getJSONObject( i );
+                Log.i( "NativeVibration", vibrationSpec.get( "duration" ).toString() );
+                durations[i] = Math.round( vibrationSpec.getDouble( "duration" ) * 1000 );
+                Log.i( "NativeVibration", vibrationSpec.get( "intensity" ).toString() );
+                intensities[i] = (int) Math.round( vibrationSpec.getDouble( "intensity" ) * 255 );
+            }
+            this.vibrator.vibrate( VibrationEffect.createWaveform( durations, intensities, -1 ) );
             Log.i( "NativeVibration", "done" );
             JSONObject r = new JSONObject();
             callbackContext.success( r );

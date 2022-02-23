@@ -78,7 +78,7 @@ class NativeVibration {
   vibrate( successCallback, errorCallback ) {
     argscheck.checkArgs( 'FF', 'NativeVibration.vibrate', [ successCallback, errorCallback ] );
     exec( successCallback, errorCallback, 'NativeVibration', 'vibrate', [
-      [ { duration: 0.1, intensity: 1 }, { duration: 0.5, intensity: 0 }, { duration: 100, intensity: 1 } ]
+      [ { duration: 0.2, intensity: 1 }, { duration: 0.2, intensity: 0 }, { duration: 0.2, intensity: 1 } ]
     ] );
   }
 
