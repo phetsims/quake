@@ -8,6 +8,10 @@
 
 import ScreenDebugLogger from './ScreenDebugLogger.js';
 
+// constants
+const NOOP = () => {};
+const ALERT_ERROR = e => { alert( `Error: ${e}` ); };
+
 // Wait for the deviceready event before using any of Cordova's device APIs. See
 // https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
 document.addEventListener( 'deviceready', onDeviceReady, false );
@@ -29,7 +33,7 @@ function onDeviceReady() {
   singleClickButton.addEventListener( 'click', () => {
     logger.log( 'single click button pressed' );
     try {
-      nativeVibration.vibrate();
+      nativeVibration.vibrateOnce( NOOP, ALERT_ERROR, 0.2, 1 );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -40,7 +44,7 @@ function onDeviceReady() {
   doubleClickButton.addEventListener( 'click', () => {
     logger.log( 'double button pressed' );
     try {
-      nativeVibration.vibrate();
+      nativeVibration.vibrateDoubleClick( NOOP, ALERT_ERROR, 0.1, 1, 0.1 );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -51,7 +55,17 @@ function onDeviceReady() {
   multiClicksButton.addEventListener( 'click', () => {
     logger.log( 'N clicks button pressed' );
     try {
-      nativeVibration.vibrate();
+      nativeVibration.vibrate(
+        NOOP,
+        ALERT_ERROR,
+        [
+          nativeVibration.createVibrationSpec( 0.2, 1 ),
+          nativeVibration.createVibrationSpec( 0.2, 0 ),
+          nativeVibration.createVibrationSpec( 0.2, 1 ),
+          nativeVibration.createVibrationSpec( 0.2, 0 ),
+          nativeVibration.createVibrationSpec( 0.2, 1 )
+        ]
+      );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );

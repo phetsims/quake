@@ -18,6 +18,7 @@ const cordova = require( 'cordova' );
 
 // TODO: This was in the leveraged Device plugin.  Can it be removed?
 channel.createSticky( 'onCordovaInfoReady' );
+
 // Tell cordova channel to wait on the CordovaInfoReady event
 channel.waitForInitialization( 'onCordovaInfoReady' );
 
@@ -59,7 +60,8 @@ class NativeVibration {
   }
 
   /**
-   * Get device info
+   * Get device info.
+   * TODO: This should be removed once vibration is fully functional.
    * @param {Function} successCallback The function to call when the heading data is available
    * @param {Function} errorCallback The function to call when there is an error getting the heading data. (OPTIONAL)
    * @public
@@ -70,18 +72,90 @@ class NativeVibration {
   }
 
   /**
-   * trigger a haptic vibration
-   * @param {Function} successCallback
-   * @param {Function} errorCallback
+   * Trigger a haptic vibration based on a list of vibration specs.
+   * @param {function} successCallback
+   * @param {function} errorCallback
+   * @param {VibrationSpec[]} vibrationSpecArray
    * @public
    */
-  vibrate( successCallback, errorCallback ) {
+  vibrate( successCallback, errorCallback, vibrationSpecArray ) {
     argscheck.checkArgs( 'FF', 'NativeVibration.vibrate', [ successCallback, errorCallback ] );
-    exec( successCallback, errorCallback, 'NativeVibration', 'vibrate', [
-      [ { duration: 0.2, intensity: 1 }, { duration: 0.2, intensity: 0 }, { duration: 0.2, intensity: 1 } ]
-    ] );
+    exec( successCallback, errorCallback, 'NativeVibration', 'vibrate', [ vibrationSpecArray ] );
   }
 
+  /**
+   * Create a vibration spec from the specified values.  This exists to make it easy to create vibration specs using
+   * the nativeVibration instance, since it is generally used as a global.
+   * @param {number} duration - duration in seconds
+   * @param {number} intensity - intensity from 0 to 1
+   * @returns {VibrationSpec}
+   * @public
+   */
+  createVibrationSpec( duration, intensity ) {
+    return new VibrationSpec( duration, intensity );
+  }
+
+  /**
+   * convenience method for a one-shot vibration
+   * @param {function} successCallback
+   * @param {function} errorCallback
+   * @param {number} duration - duration in seconds
+   * @param {number} intensity - intensity from 0 to 1
+   * @public
+   */
+  vibrateOnce( successCallback, errorCallback, duration, intensity ) {
+    this.vibrate( successCallback, errorCallback, [ this.createVibrationSpec( duration, intensity ) ] );
+  }
+
+  /**
+   * convenience method for a double click vibration pattern
+   * @param {function} successCallback
+   * @param {function} errorCallback
+   * @param {number} duration - duration in seconds
+   * @param {number} intensity - intensity from 0 to 1
+   * @param {number} interClickTime - time between clicks, in seconds
+   * @public
+   */
+  vibrateDoubleClick( successCallback, errorCallback, duration, intensity, interClickTime ) {
+    this.vibrate(
+      successCallback,
+      errorCallback,
+      [
+        this.createVibrationSpec( duration, intensity ),
+        this.createVibrationSpec( interClickTime, 0 ),
+        this.createVibrationSpec( duration, intensity )
+      ]
+    );
+  }
+}
+
+/**
+ * VibrationSpec is a simple, data-only class that includes the information necessary for a single vibration event of
+ * a specific duration and intensity.
+ */
+class VibrationSpec {
+
+  /**
+   * @param {number} duration - duration of the vibration in seconds
+   * @param {number} intensity - intensity of the vibration from 0 (min) to 1 (max)
+   */
+  constructor( duration, intensity ) {
+
+    // parameter checking
+    if ( duration < 0 ) {
+      throw new Error( 'invalid duration' );
+    }
+
+    if ( intensity < 0 || intensity > 1 ) {
+      throw new Error( 'invalid intensity' );
+    }
+
+    // @public (read-only) {number} - duration of the vibration in seconds
+    this.duration = duration;
+
+    // @public (read-only) {number} - intensity of the vibration from 0 (min) to 1 (max)
+    this.intensity = intensity;
+  }
 }
 
 module.exports = new NativeVibration();
