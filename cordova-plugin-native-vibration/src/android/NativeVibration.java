@@ -83,7 +83,12 @@ public class NativeVibration extends CordovaPlugin {
                 Log.i( "NativeVibration", vibrationSpec.get( "duration" ).toString() );
                 durations[i] = Math.round( vibrationSpec.getDouble( "duration" ) * 1000 );
                 Log.i( "NativeVibration", vibrationSpec.get( "intensity" ).toString() );
-                intensities[i] = (int) Math.round( vibrationSpec.getDouble( "intensity" ) * 255 );
+                int adjustedIntensity = (int) Math.round( vibrationSpec.getDouble( "intensity" ) * 255 );
+                if ( adjustedIntensity < 250 ){
+                    adjustedIntensity = 1;
+                }
+                Log.i( "NativeVibration", String.valueOf( adjustedIntensity ) );
+                intensities[i] = adjustedIntensity;
             }
             this.vibrator.vibrate( VibrationEffect.createWaveform( durations, intensities, -1 ) );
             Log.i( "NativeVibration", "done" );

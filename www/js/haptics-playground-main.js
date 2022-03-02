@@ -28,12 +28,47 @@ function onDeviceReady() {
   // Create the logger that will output debug messages to the app's screen.
   const logger = new ScreenDebugLogger();
 
+  // Hook up the sliders.
+
+  const clickDurationSlider = new ParameterSlider(
+    'click-duration-slider',
+    50,
+    500,
+    25,
+    200,
+    'Click Duration',
+    'ms'
+  );
+
+  const clickIntensitySlider = new ParameterSlider(
+    'click-intensity-slider',
+    0.1,
+    1,
+    0.1,
+    1,
+    'Click Intensity'
+  );
+
+  const interClickTimeSlider = new ParameterSlider(
+    'inter-click-time-slider',
+    50,
+    500,
+    25,
+    200,
+    'Inter-Click Time'
+  );
+
   // Hook up the buttons.
   const singleClickButton = document.getElementById( 'singleClickButton' );
   singleClickButton.addEventListener( 'click', () => {
     logger.log( 'single click button pressed' );
     try {
-      nativeVibration.vibrateOnce( NOOP, ALERT_ERROR, 0.2, 1 );
+      nativeVibration.vibrateOnce(
+        NOOP,
+        ALERT_ERROR,
+        clickDurationSlider.value / 1000,
+        clickIntensitySlider.value
+      );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -44,7 +79,13 @@ function onDeviceReady() {
   doubleClickButton.addEventListener( 'click', () => {
     logger.log( 'double button pressed' );
     try {
-      nativeVibration.vibrateDoubleClick( NOOP, ALERT_ERROR, 0.1, 1, 0.1 );
+      nativeVibration.vibrateDoubleClick(
+        NOOP,
+        ALERT_ERROR,
+        clickDurationSlider.value / 1000,
+        clickIntensitySlider.value,
+        interClickTimeSlider.value / 1000
+      );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -59,11 +100,11 @@ function onDeviceReady() {
         NOOP,
         ALERT_ERROR,
         [
-          nativeVibration.createVibrationSpec( 0.2, 1 ),
-          nativeVibration.createVibrationSpec( 0.2, 0 ),
-          nativeVibration.createVibrationSpec( 0.2, 1 ),
-          nativeVibration.createVibrationSpec( 0.2, 0 ),
-          nativeVibration.createVibrationSpec( 0.2, 1 )
+          nativeVibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value ),
+          nativeVibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 ),
+          nativeVibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value ),
+          nativeVibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 ),
+          nativeVibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value )
         ]
       );
     }
@@ -85,4 +126,50 @@ function onDeviceReady() {
   patternsNavBarButton.addEventListener( 'click', () => {
     alert( 'Patterns nav bar button pressed' );
   } );
+}
+
+/**
+ * simple assertion function, aids in debugging
+ */
+const assert = ( conditional, message ) => {
+  if ( !conditional ) {
+    alert( message );
+    throw new Error( message );
+  }
+};
+
+/**
+ * ParameterSlider defines the behavior for a slider that controls a numeric parameter.  There must be a corresponding
+ * element in the HTML document.
+ */
+class ParameterSlider {
+
+  constructor( id, minValue, maxValue, step, initialValue, textualLabel, units = '' ) {
+
+    // parameter checking
+    assert( initialValue >= minValue && initialValue <= maxValue, 'unusable initial value' );
+    const inputSlider = document.getElementById( id );
+    assert( inputSlider, `no slider found for id ${id}` );
+
+    // Set up the slider.
+    inputSlider.min = minValue;
+    inputSlider.max = maxValue;
+    inputSlider.step = step;
+    inputSlider.value = initialValue;
+
+    // Update the label on the slider when values change.
+    const label = document.getElementById( `${id}-label` );
+    const updateSliderLabel = () => {
+      label.innerHTML = `${textualLabel}: ${inputSlider.value} ${units}`;
+    };
+    updateSliderLabel();
+    inputSlider.oninput = updateSliderLabel;
+
+    // Make the input slider available to the methods.
+    this.inputSlider = inputSlider;
+  }
+
+  get value() {
+    return this.inputSlider.value;
+  }
 }

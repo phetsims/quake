@@ -32,7 +32,9 @@
 
 <div class="app">
   <div id="clicks-page" class="app-page">
+
     <h1>Clicks</h1>
+
     <div class="vertical-button-set">
       <button id="singleClickButton" class="app-button">Single</button>
       <button id="doubleClickButton" class="app-button">Double</button>
@@ -41,17 +43,24 @@
         <input type="number" id="number-of-clicks"/>
       </div>
     </div>
+
     <div class="vertical-slider-set">
       <div class="labeled-slider">
-        <label for="intensity-slider">Intensity</label>
-        <input type="range" min="0" max="99" value="0" class="slider" id="intensity-slider">
+        <label for="click-duration-slider" id="click-duration-slider-label"></label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="click-duration-slider">
       </div>
       <div class="labeled-slider">
-        <label for="inter-click-time-slider">Inter-Click Time</label>
+        <label for="click-intensity-slider" id="click-intensity-slider-label">Intensity</label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="click-intensity-slider">
+      </div>
+      <div class="labeled-slider">
+        <label for="inter-click-time-slider" id="inter-click-time-slider-label">Inter-Click Time</label>
         <input type="range" min="1" max="100" value="0" class="slider" id="inter-click-time-slider">
       </div>
     </div>
+
     <p id="debugArea">Debug Area</p>
+
   </div>
 </div>
 
