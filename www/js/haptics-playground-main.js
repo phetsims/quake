@@ -92,21 +92,24 @@ function onDeviceReady() {
     }
   } );
 
+  const numberOfClicksInput = document.getElementById( 'number-of-clicks' );
+  numberOfClicksInput.value = 3;
   const multiClicksButton = document.getElementById( 'multi-clicks-button' );
   multiClicksButton.addEventListener( 'click', () => {
     logger.log( 'N clicks button pressed' );
     try {
-      nativeVibration.vibrate(
-        NOOP,
-        ALERT_ERROR,
-        [
-          nativeVibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value ),
-          nativeVibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 ),
-          nativeVibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value ),
-          nativeVibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 ),
+      const vibrationSpecList = [];
+      for ( let i = 0; i < numberOfClicksInput.value; i++ ) {
+        vibrationSpecList.push(
           nativeVibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value )
-        ]
-      );
+        );
+        if ( i !== numberOfClicksInput.value - 1 ) {
+          vibrationSpecList.push(
+            nativeVibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 )
+          );
+        }
+      }
+      nativeVibration.vibrate( NOOP, ALERT_ERROR, vibrationSpecList );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
