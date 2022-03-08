@@ -68,7 +68,22 @@
   </div>
 
   <div id="buzzes-page" class="app-screen">
+
     <h1>Buzzes</h1>
+
+    <button id="buzzButton" class="app-button">Buzz</button>
+
+    <div class="vertical-slider-set">
+      <div class="labeled-slider">
+        <label for="click-intensity-slider" id="buzz-intensity-slider-label">Intensity</label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="buzz-intensity-slider">
+      </div>
+      <div class="labeled-slider">
+        <label for="click-duration-slider" id="buzz-duration-slider-label"></label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="buzz-duration-slider">
+      </div>
+    </div>
+
   </div>
 
   <div id="patterns-page" class="app-screen">

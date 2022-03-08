@@ -28,7 +28,9 @@ function onDeviceReady() {
   // Create the logger that will output debug messages to the app's screen.
   const logger = new ScreenDebugLogger();
 
-  // Hook up the sliders.
+  //--------------------------------------------------------------------------------------------------------------------
+  // Set up the "Clicks" screen.
+  //--------------------------------------------------------------------------------------------------------------------
 
   const clickDurationSlider = new ParameterSlider(
     'click-duration-slider',
@@ -58,7 +60,7 @@ function onDeviceReady() {
     'Inter-Click Time'
   );
 
-  // Hook up the buttons.
+  // Hook up the buttons for the "Clicks" screen.
   const singleClickButton = document.getElementById( 'singleClickButton' );
   singleClickButton.addEventListener( 'click', () => {
     logger.log( 'single click button pressed' );
@@ -110,6 +112,45 @@ function onDeviceReady() {
         }
       }
       nativeVibration.vibrate( NOOP, ALERT_ERROR, vibrationSpecList );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to call vibrate: ' + e );
+    }
+  } );
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Set up the "Buzzes" screen.
+  //--------------------------------------------------------------------------------------------------------------------
+
+  const buzzDurationSlider = new ParameterSlider(
+    'buzz-duration-slider',
+    50,
+    500,
+    25,
+    200,
+    'Buzz Duration',
+    'ms'
+  );
+
+  const buzzIntensitySlider = new ParameterSlider(
+    'buzz-intensity-slider',
+    0.1,
+    1,
+    0.1,
+    1,
+    'Buzz Intensity'
+  );
+
+  const buzzButton = document.getElementById( 'buzzButton' );
+  buzzButton.addEventListener( 'click', () => {
+    logger.log( 'buzz button pressed' );
+    try {
+      nativeVibration.vibrateOnce(
+        NOOP,
+        ALERT_ERROR,
+        buzzDurationSlider.value / 1000,
+        buzzIntensitySlider.value
+      );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );

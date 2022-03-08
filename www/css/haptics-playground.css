@@ -15,6 +15,7 @@ body {
 }
 
 h1 {
+  color: black;
   font-size: 24px;
   font-weight: bold;
   margin: 0;
@@ -177,9 +178,10 @@ h1 {
 }
 
 /*
-* Styling for the range sliders.  This was mostly taken from web examples, and seems WAY more complicated than it
+* Range input (aka slider) styling.  This was mostly taken from web examples, and seems WAY more complicated than it
 * should be.
 */
+
 input[type=range] {
   width: 100%;
   margin: 10px 0;
@@ -205,7 +207,7 @@ input[type=range]::-webkit-slider-thumb {
   width: 30px;
   height: 30px;
   background: #48A954;
-  border: 2px solid ghostwhite;
+  /*border: 2px solid ghostwhite;*/
   border-radius: 8px;
   cursor: pointer;
   -webkit-appearance: none;
