@@ -5,13 +5,22 @@ Main CSS file for the Haptics Playground app.  This was leveraged highly from th
 */
 
 body {
-  background-color: #0000aa;
+  background-color: #E4E4E4;
   background-image: linear-gradient(to bottom, #E4E4E4 0%, #9ACBFF 51%);
   font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
   font-size: 12px;
   height: 100vh;
   margin: 0;
   width: 100%;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  overflow: visible;
+  padding: 0;
+  text-align: center;
 }
 
 #header {
@@ -41,7 +50,7 @@ body {
   box-shadow: inset -1px 1px 10px 7px #d0dceb;
 }
 
-/* Portrait layout (default) */
+/* portrait layout (default) */
 .app {
   display: flex;
   align-items: center;
@@ -59,20 +68,11 @@ body {
   }
 }
 
-h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
-  overflow: visible;
-  padding: 0;
-  text-align: center;
-}
-
-.app-page {
+.app-screen {
   width: 30vw;
-  display: flex;
   flex-direction: column;
   gap: 30px;
+  display: none; /* invisible until made visible by the JS code */
 }
 
 .vertical-button-set {
@@ -155,7 +155,7 @@ h1 {
   position: fixed;
   bottom: 0;
   left: 0;
-  background-color: #2196f3;
+  background-color: #0576FF;
   color: white;
 }
 
@@ -164,8 +164,12 @@ h1 {
   margin: 10px 15px;
   font-size: large;
   border: 1px white solid;
-  background-color: #2196f3;
+  background-color: #0576FF;
   color: white;
+}
+
+.nav-bar-button.selected {
+  background-color: #51ABF6;
 }
 
 .nav-bar-button img {

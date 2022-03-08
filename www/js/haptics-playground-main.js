@@ -116,33 +116,44 @@ function onDeviceReady() {
     }
   } );
 
+  //--------------------------------------------------------------------------------------------------------------------
+  // nav bar
+  //--------------------------------------------------------------------------------------------------------------------
+
   // Map of the nav bar button IDs to the screens with which each is associated.
   const navBarButtonIdToScreenIdMap = new Map();
   navBarButtonIdToScreenIdMap.set( 'clicks', 'clicks-page' );
   navBarButtonIdToScreenIdMap.set( 'buzzes', 'buzzes-page' );
   navBarButtonIdToScreenIdMap.set( 'patterns', 'patterns-page' );
 
-  // Handler that activates the clicked button and page and deactivates the others.
-  const handleNavBarButtonClick = event => {
+  // Define a function that will highlight the button and show only the selected screen.
+  const selectButtonAndScreen = buttonID => {
     navBarButtonIdToScreenIdMap.forEach( ( value, key ) => {
       const page = document.getElementById( value );
-      page.style.display = key === event.currentTarget.id ? 'block' : 'none';
+      const button = document.getElementById( key );
+      if ( key === buttonID ) {
+        page.style.display = 'block';
+        button.classList.add( 'selected' );
+      }
+      else {
+        page.style.display = 'none';
+        button.classList.remove( 'selected' );
+      }
     } );
   };
 
-  // Initialize the screen states.
-  navBarButtonIdToScreenIdMap.forEach( ( value, key ) => {
-    const page = document.getElementById( value );
-    page.style.display = key === 'clicks' ? 'block' : 'none';
-  } );
+  // Set the initially selected button.
+  selectButtonAndScreen( 'clicks' );
 
-  // Hook up handlers for the navigation bar buttons.
-  const clicksNavBarButton = document.getElementById( 'clicks' );
-  clicksNavBarButton.addEventListener( 'click', handleNavBarButtonClick );
-  const buzzesNavBarButton = document.getElementById( 'buzzes' );
-  buzzesNavBarButton.addEventListener( 'click', handleNavBarButtonClick );
-  const patternsNavBarButton = document.getElementById( 'patterns' );
-  patternsNavBarButton.addEventListener( 'click', handleNavBarButtonClick );
+  // Define a handler that can be used for each of the nav bar buttons.
+  const handleNavBarButtonClick = event => {
+    selectButtonAndScreen( event.currentTarget.id );
+  };
+
+  // Hook up handlers for each of the nav bar buttons.
+  Array.from( navBarButtonIdToScreenIdMap.keys() ).forEach( key => {
+    document.getElementById( key ).addEventListener( 'click', handleNavBarButtonClick );
+  } );
 }
 
 /**
