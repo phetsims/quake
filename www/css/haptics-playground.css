@@ -4,22 +4,13 @@ Copyright 2022, University of Colorado Boulder
 Main CSS file for the Haptics Playground app.  This was leveraged highly from the example Apache Cordova app.
 */
 
-* {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
-}
-
 body {
-  -webkit-touch-callout: none; /* prevent callout to copy image, etc when tap to hold */
-  -webkit-text-size-adjust: none; /* prevent webkit from resizing text to fit */
-  -webkit-user-select: none; /* prevent copy paste, to allow, change 'none' to 'text' */
-  background-color: #9ACBFF;
+  background-color: #0000aa;
   background-image: linear-gradient(to bottom, #E4E4E4 0%, #9ACBFF 51%);
   font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
   font-size: 12px;
   height: 100vh;
   margin: 0;
-  /* Padding to avoid the "unsafe" areas behind notches in the screen */
-  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
   width: 100%;
 }
 
@@ -29,7 +20,7 @@ body {
   justify-content: center;
 }
 
-#image-container{
+#image-container {
   position: relative;
   display: inline-block;
 }
@@ -37,38 +28,34 @@ body {
 #header img {
   display: block;
   width: auto;
-  max-height: 130px;
+  max-height: 150px;
 }
 
-#image-container::after{
+#image-container::after {
   content: "";
   position: absolute;
   width: 100%;
   height: 100%;
-  left: 0; top: 0;
+  left: 0;
+  top: 0;
   box-shadow: inset -1px 1px 10px 7px #d0dceb;
 }
 
 /* Portrait layout (default) */
 .app {
-  position: absolute;
-  left: 50%;
-  top: 20%;
-  height: 50px; /* text area height */
-  width: 300px; /* text area width */
-  text-align: center;
-  padding: 210px 0 0 0; /* image height is 200px */
-  margin: -115px 0 0 -112px; /* offset vertical: half of image height and text area height */
-  /* offset horizontal: half of text area width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10vh;
 }
 
 /* Landscape layout (with min-width) */
 @media screen and (min-aspect-ratio: 1/1) and (min-width: 400px) {
   .app {
-    background-position: left center;
-    padding: 75px 0 75px 170px; /* padding-top + padding-bottom + text area = image height */
-    margin: -90px 0 0 -198px; /* offset vertical: half of image height */
-    /* offset horizontal: half of image width and text area width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2vh;
   }
 }
 
@@ -82,6 +69,7 @@ h1 {
 }
 
 .app-page {
+  width: 30vw;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -107,8 +95,9 @@ h1 {
   margin: 10px 15px;
   font-size: large;
   border: 1px black solid;
-  background-color: #9ACBFF;
-  color: black;
+  background-color: #48A954;
+  color: ghostwhite;
+  border-radius: 8px;
 }
 
 .labeled-slider {
@@ -156,12 +145,6 @@ h1 {
   }
 }
 
-@media screen and (prefers-color-scheme: dark) {
-  body {
-    background-image: linear-gradient(to bottom, #585858 0%, #1B1B1B 51%);
-  }
-}
-
 /* Nav bar styling */
 
 #navbar {
@@ -188,3 +171,61 @@ h1 {
 .nav-bar-button img {
   max-width: 50px;
 }
+
+/*
+* Styling for the range sliders.  This was mostly taken from web examples, and seems WAY more complicated than it
+* should be.
+*/
+input[type=range] {
+  width: 100%;
+  margin: 10px 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  background: #916A43;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  margin-top: -11px;
+  width: 30px;
+  height: 30px;
+  background: #48A954;
+  border: 2px solid ghostwhite;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #916A43;
+}
+
+input[type=range]::-moz-range-track {
+  background: #916A43;
+  border: 2px solid #000000;
+  border-radius: 5px;
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  background: #555bc8;
+  border: 2px solid ghostwhite;
+  border-radius: 8px;
+  cursor: pointer;
+}
+

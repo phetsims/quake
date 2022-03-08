@@ -9,7 +9,7 @@
 
 // constants
 const MAX_MESSAGES = 5;
-const MODE = 'screen'; // Valid modes are 'screen' and 'console'.
+const MODE = 'console'; // Valid modes are 'screen' and 'console'.
 
 class ScreenDebugLogger {
 
