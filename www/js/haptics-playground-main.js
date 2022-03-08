@@ -124,10 +124,10 @@ function onDeviceReady() {
 
   const buzzDurationSlider = new ParameterSlider(
     'buzz-duration-slider',
-    50,
-    500,
-    25,
     200,
+    2000,
+    25,
+    1000,
     'Buzz Duration',
     'ms'
   );
@@ -173,7 +173,7 @@ function onDeviceReady() {
       const page = document.getElementById( value );
       const button = document.getElementById( key );
       if ( key === buttonID ) {
-        page.style.display = 'block';
+        page.style.display = 'flex';
         button.classList.add( 'selected' );
       }
       else {

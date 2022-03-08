@@ -9,6 +9,7 @@ body {
   background-image: linear-gradient(to bottom, #E4E4E4 0%, #9ACBFF 51%);
   font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
   font-size: 12px;
+  color: black;
   height: 100vh;
   margin: 0;
   width: 100%;
@@ -21,6 +22,10 @@ h1 {
   margin: 0;
   overflow: visible;
   padding: 0;
+  text-align: center;
+}
+
+h2 {
   text-align: center;
 }
 
@@ -59,7 +64,7 @@ h1 {
   margin-top: 10vh;
 }
 
-/* Landscape layout (with min-width) */
+/* landscape layout (with min-width) */
 @media screen and (min-aspect-ratio: 1/1) and (min-width: 400px) {
   .app {
     display: flex;
@@ -70,7 +75,7 @@ h1 {
 }
 
 .app-screen {
-  width: 30vw;
+  width: 40vw;
   flex-direction: column;
   gap: 30px;
   display: none; /* invisible until made visible by the JS code */
@@ -84,11 +89,11 @@ h1 {
 .vertical-slider-set {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 
 .button-and-number {
-  display: -webkit-box;
+  display: block;
 }
 
 .app-button {
@@ -99,6 +104,10 @@ h1 {
   background-color: #48A954;
   color: ghostwhite;
   border-radius: 8px;
+}
+
+#multi-clicks-button {
+  min-width: 200px;
 }
 
 .labeled-slider {
@@ -207,7 +216,7 @@ input[type=range]::-webkit-slider-thumb {
   width: 30px;
   height: 30px;
   background: #48A954;
-  /*border: 2px solid ghostwhite;*/
+  border: 1px solid black;
   border-radius: 8px;
   cursor: pointer;
   -webkit-appearance: none;
