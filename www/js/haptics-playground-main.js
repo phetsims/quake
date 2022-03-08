@@ -116,19 +116,33 @@ function onDeviceReady() {
     }
   } );
 
+  // Map of the nav bar button IDs to the screens with which each is associated.
+  const navBarButtonIdToScreenIdMap = new Map();
+  navBarButtonIdToScreenIdMap.set( 'clicks', 'clicks-page' );
+  navBarButtonIdToScreenIdMap.set( 'buzzes', 'buzzes-page' );
+  navBarButtonIdToScreenIdMap.set( 'patterns', 'patterns-page' );
+
+  // Handler that activates the clicked button and page and deactivates the others.
+  const handleNavBarButtonClick = event => {
+    navBarButtonIdToScreenIdMap.forEach( ( value, key ) => {
+      const page = document.getElementById( value );
+      page.style.display = key === event.currentTarget.id ? 'block' : 'none';
+    } );
+  };
+
+  // Initialize the screen states.
+  navBarButtonIdToScreenIdMap.forEach( ( value, key ) => {
+    const page = document.getElementById( value );
+    page.style.display = key === 'clicks' ? 'block' : 'none';
+  } );
+
   // Hook up handlers for the navigation bar buttons.
   const clicksNavBarButton = document.getElementById( 'clicks' );
-  clicksNavBarButton.addEventListener( 'click', () => {
-    alert( 'Clicks nav bar button pressed' );
-  } );
+  clicksNavBarButton.addEventListener( 'click', handleNavBarButtonClick );
   const buzzesNavBarButton = document.getElementById( 'buzzes' );
-  buzzesNavBarButton.addEventListener( 'click', () => {
-    alert( 'Buzzes nav bar button pressed' );
-  } );
+  buzzesNavBarButton.addEventListener( 'click', handleNavBarButtonClick );
   const patternsNavBarButton = document.getElementById( 'patterns' );
-  patternsNavBarButton.addEventListener( 'click', () => {
-    alert( 'Patterns nav bar button pressed' );
-  } );
+  patternsNavBarButton.addEventListener( 'click', handleNavBarButtonClick );
 }
 
 /**
