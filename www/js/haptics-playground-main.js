@@ -98,7 +98,7 @@ function onDeviceReady() {
   numberOfClicksInput.value = 3;
   const multiClicksButton = document.getElementById( 'multi-clicks-button' );
   multiClicksButton.addEventListener( 'click', () => {
-    logger.log( 'N clicks button pressed' );
+    logger.log( 'Multi clicks button pressed' );
     try {
       const vibrationSpecList = [];
       for ( let i = 0; i < numberOfClicksInput.value; i++ ) {
