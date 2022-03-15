@@ -212,6 +212,11 @@ function onDeviceReady() {
     patternDisplay.clear();
   } );
 
+  const playPatternButton = document.getElementById( 'play-pattern' );
+  playPatternButton.addEventListener( 'click', () => {
+    nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern );
+  } );
+
   //--------------------------------------------------------------------------------------------------------------------
   // nav bar
   //--------------------------------------------------------------------------------------------------------------------
