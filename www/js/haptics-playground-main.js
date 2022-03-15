@@ -318,6 +318,10 @@ class VibrationPatternDisplay {
     this.label = document.getElementById( labelID );
     assert( this.label, 'label not found' );
 
+    // @private - constants used for rendering
+    this.sineWaveFrequency = 80; // in Hz
+    this.pixelsPerWaveSegment = 1;
+
     // Set up the initial display.
     this.updateLabel( 0 );
 
@@ -374,29 +378,27 @@ class VibrationPatternDisplay {
         context.moveTo( xPos, centerY );
         xPos += patternElementLengthInPixels;
         context.lineTo( xPos, centerY );
-        context.stroke();
       }
       else {
 
-        // TODO: Adjust this, make it a constant.
-        const cyclesPerSecond = 80;
-
-        // TODO: Adjust this, make it a constant.
-        const pixelsPerWaveSegment = 1;
-
         // The intensity is greater than zero, so we need to draw a sine wave.  First calculate the number of cycles.
         // This is set to an integer value so that the patterns will look good.
-        const numberOfCycles = Math.round( cyclesPerSecond * vibrationSpec.duration );
+        const numberOfCycles = Math.round( this.sineWaveFrequency * vibrationSpec.duration );
 
-        for ( let patternElementXPos = 0; patternElementXPos < patternElementLengthInPixels; patternElementXPos += pixelsPerWaveSegment ) {
+        for ( let patternElementXPos = 0;
+              patternElementXPos < patternElementLengthInPixels;
+              patternElementXPos += this.pixelsPerWaveSegment ) {
+
+          // Draw the next small segment of the sine wave that represents the vibration.
           context.lineTo(
             xPos,
             centerY + this.maxPatternAmplitude * vibrationSpec.intensity * Math.sin( Math.PI * 2 * numberOfCycles * ( patternElementXPos / patternElementLengthInPixels ) )
           );
-          xPos += pixelsPerWaveSegment;
-          context.stroke();
+          xPos += this.pixelsPerWaveSegment;
         }
       }
+
+      context.stroke();
     } );
 
     this.updateLabel( totalPatternDuration );
