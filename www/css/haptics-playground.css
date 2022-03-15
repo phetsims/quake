@@ -86,6 +86,11 @@ h2 {
   flex-direction: column;
 }
 
+.horizontal-button-set {
+  display: flex;
+  flex-direction: row;
+}
+
 .vertical-slider-set {
   display: flex;
   flex-direction: column;
@@ -117,6 +122,17 @@ h2 {
 
 #number-of-clicks {
   width: 50px;
+}
+
+#pattern-canvas {
+  background-color: #E9D6B4;
+  border: 1px black solid;
+}
+
+.pattern-display {
+  font-size: large;
+  display: flex;
+  flex-direction: column;
 }
 
 .event {

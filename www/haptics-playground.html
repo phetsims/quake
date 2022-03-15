@@ -77,11 +77,11 @@
 
     <div class="vertical-slider-set">
       <div class="labeled-slider">
-        <label for="click-intensity-slider" id="buzz-intensity-slider-label">Intensity</label>
+        <label for="buzz-intensity-slider" id="buzz-intensity-slider-label">Intensity</label>
         <input type="range" min="0" max="99" value="0" class="slider" id="buzz-intensity-slider">
       </div>
       <div class="labeled-slider">
-        <label for="click-duration-slider" id="buzz-duration-slider-label"></label>
+        <label for="buzz-duration-slider" id="buzz-duration-slider-label"></label>
         <input type="range" min="0" max="99" value="0" class="slider" id="buzz-duration-slider">
       </div>
     </div>
@@ -91,7 +91,31 @@
   <div id="patterns-page" class="app-screen">
     <h1>Patterns</h1>
 
-    <h2>(Coming Soon)</h2>
+    <div class="vertical-slider-set">
+      <div class="labeled-slider">
+        <label for="pattern-element-intensity-slider" id="pattern-element-intensity-slider-label">Intensity</label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="pattern-element-intensity-slider">
+      </div>
+      <div class="labeled-slider">
+        <label for="pattern-element-duration-slider" id="pattern-element-duration-slider-label"></label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="pattern-element-duration-slider">
+      </div>
+    </div>
+
+    <div class="horizontal-button-set">
+      <button id="add-to-pattern-button" class="app-button">Add</button>
+      <button id="clear-pattern-button" class="app-button">Clear</button>
+    </div>
+
+    <div class="pattern-display">
+      <label for="pattern-canvas" id="pattern-canvas-label">Pattern:</label>
+      <canvas id="pattern-canvas" width="400" height="100"></canvas>
+    </div>
+
+    <div class="vertical-button-set">
+      <button id="play-pattern" class="app-button">Play Pattern</button>
+    </div>
+
   </div>
 
 </div>

@@ -122,6 +122,15 @@ function onDeviceReady() {
   // Set up the "Buzzes" screen.
   //--------------------------------------------------------------------------------------------------------------------
 
+  const buzzIntensitySlider = new ParameterSlider(
+    'buzz-intensity-slider',
+    0.1,
+    1,
+    0.1,
+    1,
+    'Buzz Intensity'
+  );
+
   const buzzDurationSlider = new ParameterSlider(
     'buzz-duration-slider',
     200,
@@ -130,15 +139,6 @@ function onDeviceReady() {
     1000,
     'Buzz Duration',
     'ms'
-  );
-
-  const buzzIntensitySlider = new ParameterSlider(
-    'buzz-intensity-slider',
-    0.1,
-    1,
-    0.1,
-    1,
-    'Buzz Intensity'
   );
 
   const buzzButton = document.getElementById( 'buzzButton' );
@@ -155,6 +155,61 @@ function onDeviceReady() {
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
     }
+  } );
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Set up the "Patterns" screen.
+  //--------------------------------------------------------------------------------------------------------------------
+
+  const patternElementIntensitySlider = new ParameterSlider(
+    'pattern-element-intensity-slider',
+    0,
+    1,
+    0.1,
+    1,
+    'Intensity'
+  );
+
+  const patternElementDurationSlider = new ParameterSlider(
+    'pattern-element-duration-slider',
+    50,
+    1000,
+    50,
+    100,
+    'Duration',
+    'ms'
+  );
+
+  const patternDisplay = new VibrationPatternDisplay( 'pattern-canvas', 'pattern-canvas-label' );
+
+  // The pattern that is constructed by the user and played when the "Play Pattern" button is pressed.  It is an array
+  // vibration specs.
+  const pattern = [];
+
+  const addPatternElementButton = document.getElementById( 'add-to-pattern-button' );
+  addPatternElementButton.addEventListener( 'click', () => {
+
+    // Create a new vibration spec based on the current values of the intensity and duration sliders.
+    const vibrationSpec = nativeVibration.createVibrationSpec(
+      patternElementDurationSlider.value / 1000,
+      patternElementIntensitySlider.value
+    );
+
+    // Add the new vibration spec to the pattern.
+    pattern.push( vibrationSpec );
+    // TODO: At some point the code should be a little more picky about what it accepts as a valid pattern, since some
+    //       things don't really make sense, such as starting a pattern with a zero intensity value, or having two
+    //       consecutive elements with the same intensity.  See https://github.com/phetsims/quake/issues/9.
+
+    // Render the pattern.
+    patternDisplay.clear();
+    patternDisplay.renderPattern( pattern );
+  } );
+
+  const clearPatternElementButton = document.getElementById( 'clear-pattern-button' );
+  clearPatternElementButton.addEventListener( 'click', () => {
+    pattern.length = 0;
+    patternDisplay.clear();
   } );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -240,5 +295,119 @@ class ParameterSlider {
 
   get value() {
     return this.inputSlider.value;
+  }
+}
+
+/**
+ * VibrationPatternDisplay portrays a vibration pattern that consists of vibrations, shown as sine waves, and spaces.
+ * It is essentially a graph with time on the X axis.
+ */
+class VibrationPatternDisplay {
+
+  /**
+   * @param {string} canvasID - ID of the HTML canvas element that will be used to display the pattern.
+   * @param {string} labelID - ID of the label for the dispaly.
+   */
+  constructor( canvasID, labelID ) {
+
+    // @private {HTMLCanvas}
+    this.canvas = document.getElementById( canvasID );
+    assert( this.canvas, 'canvas not found' );
+
+    // @private {HTMLLabel}
+    this.label = document.getElementById( labelID );
+    assert( this.label, 'label not found' );
+
+    // Set up the initial display.
+    this.updateLabel( 0 );
+
+    this.maxPatternAmplitude = this.canvas.height * 0.45;
+  }
+
+  /**
+   * Clear whatever is currently displayed.
+   * @public
+   */
+  clear( providedContext ) {
+    const context = providedContext || this.canvas.getContext( '2d' );
+    context.clearRect( 0, 0, this.canvas.width, this.canvas.height );
+    this.updateLabel( 0 );
+  }
+
+  /**
+   * Draw the provided pattern into the display.
+   * @param {VibrationSpec[]} pattern
+   * @public
+   */
+  renderPattern( pattern ) {
+
+    const context = this.canvas.getContext( '2d' );
+
+    // Clear out the old stuff.
+    this.clear( context );
+
+    // Start a new path
+    context.beginPath();
+
+    // Calculate the total duration of the pattern.
+    const totalPatternDuration = pattern.reduce(
+      ( totalDurationSoFar, vibrationSpec ) => totalDurationSoFar + vibrationSpec.duration,
+      0
+    );
+
+    // Calculate the amount of time represented per pixel for rendering this pattern.
+    const secondsPerPixel = totalPatternDuration / this.canvas.width;
+
+    // running x position value
+    let xPos = 0;
+
+    // other useful value for rendering
+    const centerY = this.canvas.height / 2;
+
+    pattern.forEach( vibrationSpec => {
+
+      const patternElementLengthInPixels = vibrationSpec.duration / secondsPerPixel;
+
+      if ( vibrationSpec.intensity === 0 ) {
+
+        // The intensity is zero, to this is essentially a pause.  Draw a line for this duration.
+        context.moveTo( xPos, centerY );
+        xPos += patternElementLengthInPixels;
+        context.lineTo( xPos, centerY );
+        context.stroke();
+      }
+      else {
+
+        // TODO: Adjust this, make it a constant.
+        const cyclesPerSecond = 80;
+
+        // TODO: Adjust this, make it a constant.
+        const pixelsPerWaveSegment = 1;
+
+        // The intensity is greater than zero, so we need to draw a sine wave.  First calculate the number of cycles.
+        // This is set to an integer value so that the patterns will look good.
+        const numberOfCycles = Math.round( cyclesPerSecond * vibrationSpec.duration );
+
+        for ( let patternElementXPos = 0; patternElementXPos < patternElementLengthInPixels; patternElementXPos += pixelsPerWaveSegment ) {
+          context.lineTo(
+            xPos,
+            centerY + this.maxPatternAmplitude * vibrationSpec.intensity * Math.sin( Math.PI * 2 * numberOfCycles * ( patternElementXPos / patternElementLengthInPixels ) )
+          );
+          xPos += pixelsPerWaveSegment;
+          context.stroke();
+        }
+      }
+    } );
+
+    this.updateLabel( totalPatternDuration );
+  }
+
+  /**
+   * Update the label for the pattern display.
+   * @param {number} totalDuration - total duration of the pattern in seconds
+   * @private
+   */
+  updateLabel( totalDuration ) {
+    this.label.innerText = `Pattern (total duration = ${( totalDuration * 1000 ).toFixed( 0 )} ms):`;
   }
 }
