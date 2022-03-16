@@ -75,12 +75,24 @@ class NativeVibration {
    * Trigger a haptic vibration based on a list of vibration specs.
    * @param {function} successCallback
    * @param {function} errorCallback
-   * @param {VibrationSpec[]} vibrationSpecArray
+   * @param {VibrationSpec[]} vibrationPattern
+   * @param {boolean} repeat - whether to repeat the pattern until stopped
    * @public
    */
-  vibrate( successCallback, errorCallback, vibrationSpecArray ) {
-    argscheck.checkArgs( 'FF', 'NativeVibration.vibrate', [ successCallback, errorCallback ] );
-    exec( successCallback, errorCallback, 'NativeVibration', 'vibrate', [ vibrationSpecArray ] );
+  vibrate( successCallback, errorCallback, vibrationPattern, repeat = false ) {
+    argscheck.checkArgs( 'FFA', 'NativeVibration.vibrate', [ successCallback, errorCallback, vibrationPattern ] );
+    exec( successCallback, errorCallback, 'NativeVibration', 'vibrate', [ vibrationPattern, repeat ] );
+  }
+
+  /**
+   * Cancel the currently active vibration.  Does nothing if no vibration is in progress.
+   * @param {function} successCallback
+   * @param {function} errorCallback
+   * @public
+   */
+  cancel( successCallback, errorCallback ) {
+    argscheck.checkArgs( 'FF', 'NativeVibration.cancel', [ successCallback, errorCallback ] );
+    exec( successCallback, errorCallback, 'NativeVibration', 'cancel' );
   }
 
   /**

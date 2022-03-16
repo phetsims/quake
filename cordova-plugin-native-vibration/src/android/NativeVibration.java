@@ -71,15 +71,16 @@ public class NativeVibration extends CordovaPlugin {
             callbackContext.success( r );
         }
         else if ( "vibrate".equals( action ) ) {
-            Log.i( "NativeVibration", "about to vibrate" );
-            Log.i( "NativeVibration", args.getJSONArray( 0 ).toString() );
-            Log.i( "NativeVibration", args.getJSONArray( 0 ).getJSONObject( 0 ).get( "duration" ).toString() );
-            Log.i( "NativeVibration", args.getJSONArray( 0 ).getJSONObject( 0 ).get( "intensity" ).toString() );
-            JSONArray vibrationSpecs = args.getJSONArray( 0 );
-            long[] durations = new long[vibrationSpecs.length()];
-            int[] intensities = new int[vibrationSpecs.length()];
-            for ( int i = 0; i < vibrationSpecs.length(); i++ ) {
-                JSONObject vibrationSpec = vibrationSpecs.getJSONObject( i );
+            Log.i( "NativeVibration", "recieved vibrate action request" );
+            Log.i( "NativeVibration", "pattern spec: " + args.getJSONArray( 0 ).toString() );
+            boolean repeat = args.getBoolean( 1 );
+            Log.i( "NativeVibration", "repeat: " + String.valueOf( repeat ) );
+            int repeatIndex = repeat ? 0 : -1;
+            JSONArray patternSpec = args.getJSONArray( 0 );
+            long[] durations = new long[patternSpec.length()];
+            int[] intensities = new int[patternSpec.length()];
+            for ( int i = 0; i < patternSpec.length(); i++ ) {
+                JSONObject vibrationSpec = patternSpec.getJSONObject( i );
                 Log.i( "NativeVibration", vibrationSpec.get( "duration" ).toString() );
                 durations[i] = Math.round( vibrationSpec.getDouble( "duration" ) * 1000 );
                 Log.i( "NativeVibration", vibrationSpec.get( "intensity" ).toString() );
@@ -87,7 +88,14 @@ public class NativeVibration extends CordovaPlugin {
                 Log.i( "NativeVibration", String.valueOf( adjustedIntensity ) );
                 intensities[i] = adjustedIntensity;
             }
-            this.vibrator.vibrate( VibrationEffect.createWaveform( durations, intensities, -1 ) );
+            this.vibrator.vibrate( VibrationEffect.createWaveform( durations, intensities, repeatIndex ) );
+            Log.i( "NativeVibration", "done" );
+            JSONObject r = new JSONObject();
+            callbackContext.success( r );
+        }
+        else if ( "cancel".equals( action ) ) {
+            Log.i( "NativeVibration", "received cancel action request" );
+            this.vibrator.cancel();
             Log.i( "NativeVibration", "done" );
             JSONObject r = new JSONObject();
             callbackContext.success( r );

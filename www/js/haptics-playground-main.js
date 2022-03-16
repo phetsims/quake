@@ -214,7 +214,12 @@ function onDeviceReady() {
 
   const playPatternButton = document.getElementById( 'play-pattern' );
   playPatternButton.addEventListener( 'click', () => {
-    nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern );
+    nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern, document.getElementById( 'repeat-checkbox' ).checked );
+  } );
+
+  const stopPatternButton = document.getElementById( 'stop-pattern' );
+  stopPatternButton.addEventListener( 'click', () => {
+    nativeVibration.cancel( NOOP, ALERT_ERROR );
   } );
 
   //--------------------------------------------------------------------------------------------------------------------

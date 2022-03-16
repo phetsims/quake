@@ -120,6 +120,21 @@ h2 {
   display: grid;
 }
 
+.labeled-checkbox {
+  font-size: large;
+  display: block;
+}
+
+input[type=checkbox] {
+
+  /* larger-than-default checkboxes */
+  -moz-transform: scale(1.5); /* FF */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  transform: scale(1.5);
+  padding: 10px;
+}
+
 #number-of-clicks {
   width: 50px;
 }
