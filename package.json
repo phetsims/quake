@@ -1,7 +1,7 @@
 {
   "name": "quake",
   "displayName": "haptics-playground",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "An Apache Cordova application that allows experimentation with haptic vibration.",
   "main": "haptics-playground-main.js",
   "scripts": {
