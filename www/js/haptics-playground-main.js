@@ -34,10 +34,10 @@ function onDeviceReady() {
 
   const clickDurationSlider = new ParameterSlider(
     'click-duration-slider',
-    50,
+    25,
     500,
     25,
-    200,
+    100,
     'Click Duration',
     'ms'
   );
@@ -53,10 +53,10 @@ function onDeviceReady() {
 
   const interClickTimeSlider = new ParameterSlider(
     'inter-click-time-slider',
-    50,
+    25,
     500,
     25,
-    200,
+    100,
     'Inter-Click Time'
   );
 
@@ -136,7 +136,7 @@ function onDeviceReady() {
     200,
     2000,
     25,
-    1000,
+    500,
     'Buzz Duration',
     'ms'
   );
