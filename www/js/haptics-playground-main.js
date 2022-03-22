@@ -210,11 +210,21 @@ function onDeviceReady() {
   clearPatternElementButton.addEventListener( 'click', () => {
     pattern.length = 0;
     patternDisplay.clear();
+
+    // Stop any vibration that is in progress.
+    nativeVibration.cancel( NOOP, ALERT_ERROR );
+  } );
+
+  const repeatCheckbox = document.getElementById( 'repeat-checkbox' );
+  repeatCheckbox.addEventListener( 'click', () => {
+
+    // If there is a vibration already in progress when this is changed, cancel it.
+    nativeVibration.cancel( NOOP, ALERT_ERROR );
   } );
 
   const playPatternButton = document.getElementById( 'play-pattern' );
   playPatternButton.addEventListener( 'click', () => {
-    nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern, document.getElementById( 'repeat-checkbox' ).checked );
+    nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern, repeatCheckbox.checked );
   } );
 
   const stopPatternButton = document.getElementById( 'stop-pattern' );
