@@ -161,8 +161,8 @@ function onDeviceReady() {
   // Set up the "Patterns" screen.
   //--------------------------------------------------------------------------------------------------------------------
 
-  const patternElementIntensitySlider = new ParameterSlider(
-    'pattern-element-intensity-slider',
+  const vibrationIntensitySlider = new ParameterSlider(
+    'vibration-intensity-slider',
     0,
     1,
     0.1,
@@ -170,8 +170,18 @@ function onDeviceReady() {
     'Intensity'
   );
 
-  const patternElementDurationSlider = new ParameterSlider(
-    'pattern-element-duration-slider',
+  const vibrationDurationSlider = new ParameterSlider(
+    'vibration-duration-slider',
+    50,
+    1000,
+    50,
+    100,
+    'Duration',
+    'ms'
+  );
+
+  const spaceDurationSlider = new ParameterSlider(
+    'space-duration-slider',
     50,
     1000,
     50,
@@ -186,16 +196,33 @@ function onDeviceReady() {
   // vibration specs.
   const pattern = [];
 
-  const addPatternElementButton = document.getElementById( 'add-to-pattern-button' );
-  addPatternElementButton.addEventListener( 'click', () => {
+  const addVibrationToPatternButton = document.getElementById( 'add-vibration-to-pattern-button' );
+  addVibrationToPatternButton.addEventListener( 'click', () => {
 
     // Create a new vibration spec based on the current values of the intensity and duration sliders.
     const vibrationSpec = nativeVibration.createVibrationSpec(
-      patternElementDurationSlider.value / 1000,
-      patternElementIntensitySlider.value
+      vibrationDurationSlider.value / 1000,
+      vibrationIntensitySlider.value
     );
 
     // Add the new vibration spec to the pattern.
+    pattern.push( vibrationSpec );
+    // TODO: At some point the code should be a little more picky about what it accepts as a valid pattern, since some
+    //       things don't really make sense, such as starting a pattern with a zero intensity value, or having two
+    //       consecutive elements with the same intensity.  See https://github.com/phetsims/quake/issues/9.
+
+    // Render the pattern.
+    patternDisplay.clear();
+    patternDisplay.renderPattern( pattern );
+  } );
+
+  const addSpaceToPatternButton = document.getElementById( 'add-space-to-pattern-button' );
+  addSpaceToPatternButton.addEventListener( 'click', () => {
+
+    // Create a new space spec based on the current values of the intensity and duration sliders.
+    const vibrationSpec = nativeVibration.createVibrationSpec( spaceDurationSlider.value / 1000, 0 );
+
+    // Add the new space spec to the pattern.
     pattern.push( vibrationSpec );
     // TODO: At some point the code should be a little more picky about what it accepts as a valid pattern, since some
     //       things don't really make sense, such as starting a pattern with a zero intensity value, or having two
@@ -233,85 +260,6 @@ function onDeviceReady() {
   } );
 
   //--------------------------------------------------------------------------------------------------------------------
-  // Set up the 2nd "Patterns" screen, which is temporary
-  //--------------------------------------------------------------------------------------------------------------------
-
-  const patternElementIntensitySlider2 = new ParameterSlider(
-    'pattern-element-intensity-slider2',
-    0,
-    1,
-    0.1,
-    1,
-    'Vibration Intensity'
-  );
-
-  const patternDisplay2 = new VibrationPatternDisplay( 'pattern-canvas2', 'pattern-canvas2-label' );
-
-  // The pattern that is constructed by the user and played when the "Play Pattern" button is pressed.  It is an array
-  // vibration specs.
-  const pattern2 = [];
-
-  const addVibrationToPatternButton = document.getElementById( 'add-vibration-to-pattern-button' );
-  addVibrationToPatternButton.addEventListener( 'click', () => {
-
-    // Create a new vibration spec based on the current values of the intensity and duration sliders.
-    const vibrationSpec = nativeVibration.createVibrationSpec( 0.05, patternElementIntensitySlider2.value );
-
-    // Add the new vibration spec to the pattern.
-    pattern2.push( vibrationSpec );
-    // TODO: At some point the code should be a little more picky about what it accepts as a valid pattern, since some
-    //       things don't really make sense, such as starting a pattern with a zero intensity value, or having two
-    //       consecutive elements with the same intensity.  See https://github.com/phetsims/quake/issues/9.
-
-    // Render the pattern.
-    patternDisplay2.clear();
-    patternDisplay2.renderPattern( pattern2 );
-  } );
-
-  const addSpaceToPatternButton = document.getElementById( 'add-space-to-pattern-button' );
-  addSpaceToPatternButton.addEventListener( 'click', () => {
-
-    // Create a new vibration spec based on the current values of the intensity and duration sliders.
-    const vibrationSpec = nativeVibration.createVibrationSpec( 0.05, 0 );
-
-    // Add the new vibration spec to the pattern.
-    pattern2.push( vibrationSpec );
-    // TODO: At some point the code should be a little more picky about what it accepts as a valid pattern, since some
-    //       things don't really make sense, such as starting a pattern with a zero intensity value, or having two
-    //       consecutive elements with the same intensity.  See https://github.com/phetsims/quake/issues/9.
-
-    // Render the pattern.
-    patternDisplay2.clear();
-    patternDisplay2.renderPattern( pattern2 );
-  } );
-
-  const clearPatternElementButton2 = document.getElementById( 'clear-pattern-button2' );
-  clearPatternElementButton2.addEventListener( 'click', () => {
-    pattern2.length = 0;
-    patternDisplay2.clear();
-
-    // Stop any vibration that is in progress.
-    nativeVibration.cancel( NOOP, ALERT_ERROR );
-  } );
-
-  const repeatCheckbox2 = document.getElementById( 'repeat-checkbox2' );
-  repeatCheckbox2.addEventListener( 'click', () => {
-
-    // If there is a vibration already in progress when this is changed, cancel it.
-    nativeVibration.cancel( NOOP, ALERT_ERROR );
-  } );
-
-  const playPatternButton2 = document.getElementById( 'play-pattern2' );
-  playPatternButton2.addEventListener( 'click', () => {
-    nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern2, repeatCheckbox2.checked );
-  } );
-
-  const stopPatternButton2 = document.getElementById( 'stop-pattern2' );
-  stopPatternButton2.addEventListener( 'click', () => {
-    nativeVibration.cancel( NOOP, ALERT_ERROR );
-  } );
-
-  //--------------------------------------------------------------------------------------------------------------------
   // nav bar
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -320,7 +268,6 @@ function onDeviceReady() {
   navBarButtonIdToScreenIdMap.set( 'clicks', 'clicks-page' );
   navBarButtonIdToScreenIdMap.set( 'buzzes', 'buzzes-page' );
   navBarButtonIdToScreenIdMap.set( 'patterns', 'patterns-page' );
-  navBarButtonIdToScreenIdMap.set( 'patterns2', 'patterns-page2' );
 
   // Define a function that will highlight the button and show only the selected screen.
   const selectButtonAndScreen = buttonID => {
