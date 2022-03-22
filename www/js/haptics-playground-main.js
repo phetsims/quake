@@ -37,7 +37,7 @@ function onDeviceReady() {
     25,
     500,
     25,
-    100,
+    75,
     'Click Duration',
     'ms'
   );
@@ -56,7 +56,7 @@ function onDeviceReady() {
     25,
     500,
     25,
-    100,
+    75,
     'Inter-Click Time'
   );
 
