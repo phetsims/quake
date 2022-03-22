@@ -411,6 +411,10 @@ class VibrationPatternDisplay {
     // other useful value for rendering
     const centerY = this.canvas.height / 2;
 
+    // Set the starting position for the rendering of the pattern.
+    context.lineTo( xPos, centerY );
+
+    // Render the various segments of the pattern.
     pattern.forEach( vibrationSpec => {
 
       const patternElementLengthInPixels = vibrationSpec.duration / secondsPerPixel;
@@ -418,25 +422,25 @@ class VibrationPatternDisplay {
       if ( vibrationSpec.intensity === 0 ) {
 
         // The intensity is zero, to this is essentially a pause.  Draw a line for this duration.
-        context.moveTo( xPos, centerY );
+        context.lineTo( xPos, centerY );
         xPos += patternElementLengthInPixels;
         context.lineTo( xPos, centerY );
       }
       else {
 
         // The intensity is greater than zero, so we need to draw a sine wave.  First calculate the number of cycles.
-        // This is set to an integer value so that the patterns will look good.
+        // This is set to an integer value to make things look good.
         const numberOfCycles = Math.round( this.sineWaveFrequency * vibrationSpec.duration );
 
         for ( let patternElementXPos = 0;
               patternElementXPos < patternElementLengthInPixels;
               patternElementXPos += this.pixelsPerWaveSegment ) {
 
+          const sinWaveAmplitude = centerY + this.maxPatternAmplitude * vibrationSpec.intensity *
+                                   Math.sin( -Math.PI * 2 * numberOfCycles * ( patternElementXPos / patternElementLengthInPixels ) );
+
           // Draw the next small segment of the sine wave that represents the vibration.
-          context.lineTo(
-            xPos,
-            centerY + this.maxPatternAmplitude * vibrationSpec.intensity * Math.sin( Math.PI * 2 * numberOfCycles * ( patternElementXPos / patternElementLengthInPixels ) )
-          );
+          context.lineTo( xPos, sinWaveAmplitude );
           xPos += this.pixelsPerWaveSegment;
         }
       }

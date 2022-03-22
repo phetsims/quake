@@ -227,6 +227,7 @@ h2 {
 #pattern-canvas {
   background-color: #E9D6B4;
   border: 1px black solid;
+  border-radius: 8px;
 }
 
 #pattern-canvas2 {
