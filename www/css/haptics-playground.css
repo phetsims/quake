@@ -64,6 +64,13 @@ h2 {
   margin-top: 10vh;
 }
 
+.app-screen {
+  max-width: 60vw;
+  flex-direction: column;
+  gap: 30px;
+  display: none; /* invisible until made visible by the JS code */
+}
+
 /* landscape layout (with min-width) */
 @media screen and (min-aspect-ratio: 1/1) and (min-width: 400px) {
   .app {
@@ -72,14 +79,11 @@ h2 {
     justify-content: center;
     margin-top: 2vh;
   }
+  .app-screen {
+    max-width: 40vw;
+  }
 }
 
-.app-screen {
-  width: 40vw;
-  flex-direction: column;
-  gap: 30px;
-  display: none; /* invisible until made visible by the JS code */
-}
 
 .vertical-button-set {
   display: flex;
@@ -95,6 +99,8 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 5px 10px;
+  margin: 10px 15px;
 }
 
 .button-and-number {
@@ -118,6 +124,27 @@ h2 {
 .labeled-slider {
   font-size: large;
   display: grid;
+}
+
+.pattern-element-adder {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+  background: aliceblue;
+  border-style: solid;
+  border-color: steelblue;
+  border-width: 1px;
+}
+
+#add-vibration-control {
+  grid-column: 1 / 2;
+  grid-row: 1;
+}
+
+#add-space-control {
+  grid-column: 1 / 2;
+  grid-row: 2;
 }
 
 /*-------- checkbox -------------------*/
