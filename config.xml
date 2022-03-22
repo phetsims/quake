@@ -8,6 +8,7 @@
         PhET Interactive Simulations
     </author>
     <content src="haptics-playground.html" />
+    <preference name="orientation" value="portrait" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
