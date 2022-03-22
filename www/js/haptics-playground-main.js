@@ -63,7 +63,6 @@ function onDeviceReady() {
   // Hook up the buttons for the "Clicks" screen.
   const singleClickButton = document.getElementById( 'singleClickButton' );
   singleClickButton.addEventListener( 'click', () => {
-    logger.log( 'single click button pressed' );
     try {
       nativeVibration.vibrateOnce(
         NOOP,
@@ -79,7 +78,6 @@ function onDeviceReady() {
 
   const doubleClickButton = document.getElementById( 'doubleClickButton' );
   doubleClickButton.addEventListener( 'click', () => {
-    logger.log( 'double button pressed' );
     try {
       nativeVibration.vibrateDoubleClick(
         NOOP,
@@ -98,7 +96,6 @@ function onDeviceReady() {
   numberOfClicksInput.value = 3;
   const multiClicksButton = document.getElementById( 'multi-clicks-button' );
   multiClicksButton.addEventListener( 'click', () => {
-    logger.log( 'Multi clicks button pressed' );
     try {
       const vibrationSpecList = [];
       for ( let i = 0; i < numberOfClicksInput.value; i++ ) {
@@ -143,7 +140,6 @@ function onDeviceReady() {
 
   const buzzButton = document.getElementById( 'buzzButton' );
   buzzButton.addEventListener( 'click', () => {
-    logger.log( 'buzz button pressed' );
     try {
       nativeVibration.vibrateOnce(
         NOOP,

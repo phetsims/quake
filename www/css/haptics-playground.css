@@ -93,6 +93,7 @@ h2 {
 .horizontal-button-set {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 }
 
 .vertical-slider-set {
@@ -117,6 +118,10 @@ h2 {
   border-radius: 8px;
 }
 
+.app-button:active {
+  background-color: #4BFF0A
+}
+
 #multi-clicks-button {
   min-width: 200px;
 }
@@ -135,6 +140,7 @@ h2 {
   border-style: solid;
   border-color: steelblue;
   border-width: 1px;
+  border-radius: 8px;
 }
 
 #add-vibration-control {
@@ -153,7 +159,7 @@ h2 {
   display: block;
   position: relative;
   padding-left: 35px;
-  margin-bottom: 12px;
+  margin-left: 12px;
   cursor: pointer;
   font-size: large;
   -webkit-user-select: none;
@@ -291,6 +297,10 @@ h2 {
   border: 1px white solid;
   background-color: #0576FF;
   color: white;
+}
+
+.nav-bar-button:active {
+  background-color: #81C3F8;
 }
 
 .nav-bar-button.selected {
