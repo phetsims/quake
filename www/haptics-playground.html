@@ -124,6 +124,39 @@
 
   </div>
 
+  <div id="patterns-page2" class="app-screen">
+    <h1>Patterns</h1>
+
+    <div class="horizontal-button-set">
+      <button id="add-vibration-to-pattern-button" class="app-button">Add Vibration (50ms)</button>
+      <button id="add-space-to-pattern-button" class="app-button">Add Space (50ms)</button>
+      <button id="clear-pattern-button2" class="app-button">Clear</button>
+    </div>
+
+    <div class="vertical-slider-set">
+      <div class="labeled-slider">
+        <label for="pattern-element-intensity-slider2" id="pattern-element-intensity-slider2-label">Vibration Intensity</label>
+        <input type="range" min="0" max="99" value="0" class="slider" id="pattern-element-intensity-slider2">
+      </div>
+    </div>
+
+    <div class="pattern-display">
+      <label for="pattern-canvas2" id="pattern-canvas2-label">Pattern:</label>
+      <canvas id="pattern-canvas2" width="400" height="100"></canvas>
+    </div>
+
+    <label class="checkbox-container">Repeat
+      <input type="checkbox" id="repeat-checkbox2">
+      <span class="checkmark"></span>
+    </label>
+
+    <div class="horizontal-button-set">
+      <button id="play-pattern2" class="app-button">Play</button>
+      <button id="stop-pattern2" class="app-button">Stop</button>
+    </div>
+
+  </div>
+
 </div>
 
 <!--navigation bar-->
@@ -131,6 +164,7 @@
   <button id="clicks" class="nav-bar-button">Clicks<br><img src="img/clicksIcon.png"/></button>
   <button id="buzzes" class="nav-bar-button">Buzzes<br><img src="img/buzzesIcon.png"/></button>
   <button id="patterns" class="nav-bar-button">Patterns<br><img src="img/patternsIcon.png"/></button>
+  <button id="patterns2" class="nav-bar-button">Patterns2<br><img src="img/patternsIcon.png"/></button>
 </div>
 
 <script src="cordova.js"></script>

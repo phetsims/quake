@@ -196,6 +196,11 @@ h2 {
   border: 1px black solid;
 }
 
+#pattern-canvas2 {
+  background-color: #E9D6B4;
+  border: 1px black solid;
+}
+
 .pattern-display {
   font-size: large;
   display: flex;
