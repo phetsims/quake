@@ -92,8 +92,20 @@ function onDeviceReady() {
     }
   } );
 
+  // Set up the input for the number of clicks that will be played by the "multi clicks" button.
   const numberOfClicksInput = document.getElementById( 'number-of-clicks' );
-  numberOfClicksInput.value = 3;
+  numberOfClicksInput.value = 3; // initial value
+  numberOfClicksInput.addEventListener( 'input', () => {
+    const inputValueAsNumber = parseInt( numberOfClicksInput.value, 10 );
+    if ( inputValueAsNumber > 9 ) {
+      numberOfClicksInput.value = 9;
+    }
+    else if ( inputValueAsNumber < 1 ) {
+      numberOfClicksInput.value = 1;
+    }
+  } );
+
+  // Set up the multi-clicks button.
   const multiClicksButton = document.getElementById( 'multi-clicks-button' );
   multiClicksButton.addEventListener( 'click', () => {
     try {
@@ -261,9 +273,9 @@ function onDeviceReady() {
 
   // Map of the nav bar button IDs to the screens with which each is associated.
   const navBarButtonIdToScreenIdMap = new Map();
-  navBarButtonIdToScreenIdMap.set( 'clicks', 'clicks-page' );
-  navBarButtonIdToScreenIdMap.set( 'buzzes', 'buzzes-page' );
-  navBarButtonIdToScreenIdMap.set( 'patterns', 'patterns-page' );
+  navBarButtonIdToScreenIdMap.set( 'clicks', 'clicks-screen' );
+  navBarButtonIdToScreenIdMap.set( 'buzzes', 'buzzes-screen' );
+  navBarButtonIdToScreenIdMap.set( 'patterns', 'patterns-screen' );
 
   // Define a function that will highlight the button and show only the selected screen.
   const selectButtonAndScreen = buttonID => {
