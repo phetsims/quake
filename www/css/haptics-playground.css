@@ -116,6 +116,7 @@ h2 {
   background-color: #48A954;
   color: ghostwhite;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .app-button:active {
