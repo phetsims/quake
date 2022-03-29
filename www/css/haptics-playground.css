@@ -5,8 +5,12 @@ Main CSS file for the Haptics Playground app.  This was leveraged highly from th
 */
 
 body {
-  background-color: #E4E4E4;
-  background-image: linear-gradient(to bottom, #E4E4E4 0%, #9ACBFF 51%);
+  background-color: #c2b280;
+  background-image: url("../img/playgroundNearJbsHouse.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-blend-mode: soft-light;
   font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
   font-size: 12px;
   color: black;
