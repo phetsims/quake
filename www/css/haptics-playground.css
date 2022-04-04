@@ -61,7 +61,6 @@ h2 {
   box-shadow: inset -1px 1px 10px 7px #c2b280;
 }
 
-/* portrait layout (default) */
 .app {
   display: flex;
   align-items: center;
@@ -70,24 +69,36 @@ h2 {
 
 .app-screen {
   max-width: 60vw;
+  margin-top: 10vh;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
+  padding-bottom: 74px; /* Add space to the bottom that matches the the nav bar height so that scroll bars will work. */
   display: none; /* invisible until made visible by the JS code */
 }
 
-/* landscape layout (with min-width) */
-@media screen and (min-aspect-ratio: 1/1) and (min-width: 400px) {
-  .app {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 2vh;
-  }
+/* for smaller width displays */
+@media screen and (max-width: 550px) {
+
+  /* Use more of the viewport on narrow screens.  This is primarily for phones versus tablets. */
   .app-screen {
-    max-width: 40vw;
+    max-width: 90vw;
   }
 }
 
+/* for smaller height displays */
+@media screen and (max-height: 800px) {
+
+  /* Use less margin at the top when there is less screen to work with */
+  .app {
+    margin-top: 1vh;
+  }
+
+}
+
+/* TEMPORARY! This is for showing screens on the Android emulator where the JS isn't running. */
+#patterns-screen {
+  display: flex;
+}
 
 .vertical-button-set {
   display: flex;
@@ -103,7 +114,7 @@ h2 {
 .vertical-slider-set {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
   padding: 5px 10px;
   margin: 10px 15px;
 }
