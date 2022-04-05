@@ -21,9 +21,10 @@ It is assumed that `node` and `npm` are already set up and available.
 12. Run `cordova platform add android` to install the Android platform files.
 13. Run `cordova platform add browser` to install the browser platform files.
 14. Run `cordova plugin add cordova-plugin-vibration` to add the vibration plugin.
-15. Run `grunt` to build the app.
-16. There is an odd problem that I (jbphet) and other developers ran into where builds fail due to the name of some of the build tools.  If you run into this, follow the steps from this Stack Overflow article and rename some of the tools: https://stackoverflow.com/questions/68387270/android-studio-error-installed-build-tools-revision-31-0-0-is-corrupted
-17. From Android Studio, open the project at <your-dev-root>/quake/platforms/android
+15. Run `cordova plugin add cordova-plugin-app-version` to add the plugin that enables to code to get the app version.
+16. Run `grunt` to build the app.
+17. There is an odd problem that I (jbphet) and other developers ran into where builds fail due to the name of some of the build tools.  If you run into this, follow the steps from this Stack Overflow article and rename some of the tools: https://stackoverflow.com/questions/68387270/android-studio-error-installed-build-tools-revision-31-0-0-is-corrupted
+18. From Android Studio, open the project at <your-dev-root>/quake/platforms/android
 
 TODO: Notes about things that should be added:
 - The debugging process is a combination of testing using the "browser" platform, the Android emulator (run from Android

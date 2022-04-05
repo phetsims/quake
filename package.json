@@ -2,7 +2,7 @@
   "name": "quake",
   "displayName": "haptics-playground",
   "version": "0.0.1",
-  "description": "An Apache Cordova application that allows experimentation with haptic vibration.",
+  "description": "An application that allows experimentation with haptic vibration.",
   "main": "haptics-playground-main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
     "ecosystem:cordova"
   ],
   "author": "PhET Interactive Simulations",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0",
   "devDependencies": {
     "cordova-android": "^9.1.0",
     "cordova-browser": "^6.0.0",

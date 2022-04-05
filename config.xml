@@ -2,7 +2,7 @@
 <widget id="edu.colorado.phet.hapticsPlayground" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>HapticsPlayground</name>
     <description>
-        An app that enables users to experiment with haptic vibrations.
+        An app that enables users to experiment with haptic vibration.
     </description>
     <author email="phethelp@colorado.edu" href="https://phet.colorado.edu">
         PhET Interactive Simulations
