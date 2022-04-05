@@ -268,7 +268,7 @@ function onDeviceReady() {
   } );
 
   //--------------------------------------------------------------------------------------------------------------------
-  // nav bar
+  // Set up the nav bar.
   //--------------------------------------------------------------------------------------------------------------------
 
   // Map of the nav bar button IDs to the screens with which each is associated.
@@ -304,6 +304,16 @@ function onDeviceReady() {
   // Hook up handlers for each of the nav bar buttons.
   Array.from( navBarButtonIdToScreenIdMap.keys() ).forEach( key => {
     document.getElementById( key ).addEventListener( 'click', handleNavBarButtonClick );
+  } );
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Add a handler to the header to display version information.
+  //--------------------------------------------------------------------------------------------------------------------
+
+  document.getElementById( 'image-container' ).addEventListener( 'dblclick', () => {
+    cordova.getAppVersion.getVersionNumber().then( versionNumber => {
+      alert( `version number ${versionNumber}` );
+    } );
   } );
 }
 
