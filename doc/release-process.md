@@ -11,10 +11,15 @@ This doc is helpful for the Play Store part: https://codeburst.io/publish-a-cord
 
 - [ ] Make sure the version number is correct and matches in the `package.json` file and the `config.xml` file that both
 exist at the top level of the `quake` repo.
-- [ ] Build and test on master, verify that this release is ready to publish.
-- [ ] Run `cordova build --release`
-- [ ] `cd` into `platforms/android` and run `./gradlew bundle` to produce the app bundle
-- [ ] Tag the current SHA in git using the command `git tag -a <version> -m "<short-explanatory-message>"` where the
-<version> matches the string in the `package.json` and `config.xml` files, and the message is a short description of the
-reasons for the release.
-- 
+- [ ] Build and test the debug version via the usual `grunt` process on master, verify that this release is ready to
+publish.
+- [ ] Run `cordova build android --release -- --keystore=<path to keystore> --storePassword=<keystore-password> --alias=upload --password=<key-password> --packageType=bundle`
+to build the signed app bundle.
+- [ ] Upload the app via Google Play Console.
+- [ ] Fill in the "Release name" with a message of the following format, but specific to this release: 
+`v0.0.1 - initial prototype release for testing`
+- [ ] Add release notes that describe what is new in this release.
+- [ ] Immediately after the upload has completed and prior to making any changes to the repo, tag the current SHA in git
+using the command `git tag -a <version> -m "<short-explanatory-message>"` where the <version> matches the string in the
+`package.json` and `config.xml` files, and the message is a short description of the reasons for the release.  Example:
+`git tag -a 0.0.1 -m "first release of Haptics Playground to be uploaded to the Play Store"`.
