@@ -19,6 +19,7 @@
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="android-minSdkVersion" value="26" />
+        <preference name="android-targetSdkVersion" value="30" />
         <icon src="res/android/hp-icon-36-by-36.png" density="ldpi" />
         <icon src="res/android/hp-icon-48-by-48.png" density="mdpi" />
         <icon src="res/android/hp-icon-72-by-72.png" density="hdpi" />
