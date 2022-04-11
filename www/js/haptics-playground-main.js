@@ -270,6 +270,26 @@ function onDeviceReady() {
   } );
 
   //--------------------------------------------------------------------------------------------------------------------
+  // Set up the "Settings" screen.
+  //--------------------------------------------------------------------------------------------------------------------
+
+  // Add app and version information.
+  const versionInfoParagraph = document.getElementById( 'version-info' );
+  const versionInfo = {};
+  cordova.getAppVersion.getVersionNumber().then( versionNumber => {
+    versionInfo.versionNumber = versionNumber;
+    cordova.getAppVersion.getPackageName( packageName => {
+      versionInfo.packageName = packageName;
+      cordova.getAppVersion.getAppName( appName => {
+        versionInfo.appName = appName;
+        versionInfoParagraph.innerHTML = `App Name: ${versionInfo.appName}<br>` +
+                                         `Package Name: ${versionInfo.packageName}<br>` +
+                                         `Version: ${versionInfo.versionNumber}`;
+      } );
+    } );
+  } );
+
+  //--------------------------------------------------------------------------------------------------------------------
   // Set up the nav bar.
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -278,6 +298,7 @@ function onDeviceReady() {
   navBarButtonIdToScreenIdMap.set( 'clicks', 'clicks-screen' );
   navBarButtonIdToScreenIdMap.set( 'buzzes', 'buzzes-screen' );
   navBarButtonIdToScreenIdMap.set( 'patterns', 'patterns-screen' );
+  navBarButtonIdToScreenIdMap.set( 'settings', 'settings-screen' );
 
   // Define a function that will highlight the button and show only the selected screen.
   const selectButtonAndScreen = buttonID => {

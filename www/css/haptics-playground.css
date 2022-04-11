@@ -33,6 +33,10 @@ h2 {
   text-align: center;
 }
 
+p {
+  font-size: medium;
+}
+
 #header {
   overflow: hidden;
   display: flex;
@@ -78,6 +82,7 @@ h2 {
 
 /* for smaller screens, primarily phones */
 @media screen and (max-width: 550px) {
+
   .app-screen {
     max-width: 90vw; /* Use more of the viewport on smaller screens */
     margin-top: 1vw; /* Use less margin so that more of the content will fit. */
@@ -85,7 +90,7 @@ h2 {
 }
 
 /* TODO: This is for showing screens on the Android emulator where the JS isn't running, remove eventually. */
-#patterns-screen {
+#settings-screen {
   display: flex;
 }
 
@@ -286,7 +291,7 @@ h2 {
 
 #navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
   text-align: center;
   position: fixed;
@@ -298,11 +303,22 @@ h2 {
 
 .nav-bar-button {
   padding: 5px 10px;
-  margin: 10px 15px;
+  margin: 8px;
   font-size: large;
   border: 1px white solid;
   background-color: #0576FF;
   color: white;
+}
+
+/* smaller buttons on smaller screens so they fit - mostly for phone support */
+@media screen and (max-width: 550px) {
+
+  .nav-bar-button {
+    max-width: 20vw;
+    margin: 5px;
+    padding: 5px;
+    font-size: medium;
+  }
 }
 
 .nav-bar-button:active {
