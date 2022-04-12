@@ -11,6 +11,218 @@ import ScreenDebugLogger from './ScreenDebugLogger.js';
 // constants
 const NOOP = () => {};
 const ALERT_ERROR = e => { alert( `Error: ${e}` ); };
+const soundURL = './sounds/haptic-buzz-loop.wav';
+const GAIN_CHANGE_TIME_CONSTANT = 0.005;
+
+// Create the logger that will output debug messages to the app's screen.
+const logger = new ScreenDebugLogger();
+
+// Define a singleton object that provides the API to the vibration capabilities and sound generation.
+class VibrationInterface {
+
+  constructor() {
+
+    /*
+
+    // @public {boolean} - flag used to control whether sounds should be played with the vibrations
+    this.soundEnabled = false;
+
+    // @private {AudioContext} - audio context used for sound operations
+    this.audioContext = null;
+
+    // @private {AudioBuffer} - sound that will be played to match vibrations, if enabled
+    this.soundBuffer = null;
+
+    // @private {number} - timer ID for the current in-progress sound timer if there is one, null if not
+    this.soundTimerID = null;
+
+    // @private {AudioBufferSourceNode} - sound that is currently being played if there is one, null if not
+    this.audioBufferSourceNode = null;
+
+    // @private {number} - index into the sound pattern that is currently being played
+    this.soundPatternIndex = 0;
+
+    // Create the audio context, needed for sound generation.
+    try {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      this.audioContext = new window.AudioContext();
+    }
+    catch( e ) {
+      alert( 'Web Audio API is not supported in this browser, no sounds will be generated.' );
+    }
+
+    // @private {GainNode} - gain node through which the sound is routed
+    this.gainNode = this.audioContext.createGain();
+    this.gainNode.gain.setValueAtTime( 0, this.audioContext.currentTime );
+    this.gainNode.connect( this.audioContext.destination );
+
+    // Load and decode the sound.
+    const onDecodeSuccess = decodedAudio => {
+      this.soundBuffer = decodedAudio;
+      console.log( 'sound decoded successfully' );
+    };
+    const onDecodeError = decodeError => {
+      alert( 'decode of audio data failed, sound will not be available, error: ' + decodeError );
+      this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
+    };
+
+    window.fetch( soundURL )
+      .then( response => response.arrayBuffer() )
+      .then( arrayBuffer => this.audioContext.decodeAudioData( arrayBuffer, onDecodeSuccess, onDecodeError ) )
+      .catch( reason => {
+        alert( 'sound load failed: ' + reason );
+        this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
+      } );
+
+     */
+  }
+
+  /**
+   * Play a sound based on the provided pattern.  This is used to play sounds that match vibration.
+   * @param {VibrationSpec[]} pattern
+   * @param {boolean} repeat
+   * @private
+   */
+  playVibrationSoundPattern( pattern, repeat = false ) {
+
+    // Cancel any sound pattern that is already being played.
+    this.cancelSound();
+
+    // Create the audio buffer source and start it playing.
+    this.audioBufferSourceNode = this.audioContext.createBufferSource();
+    this.audioBufferSourceNode.buffer = this.soundBuffer;
+    this.audioBufferSourceNode.loop = true;
+    this.audioBufferSourceNode.connect( this.gainNode );
+    this.audioBufferSourceNode.start();
+
+    // Start the playing of the pattern.
+    this.nextSoundPattern( pattern, repeat );
+  }
+
+  /**
+   * Start the next step in the playing of the sound pattern.  This only alters the gain node and sets timeouts, it is
+   * expected that the sound generation is started elsewhere.
+   * @param {VibrationSpec[]} pattern
+   * @param {boolean} repeat
+   * @private
+   */
+  nextSoundPattern( pattern, repeat ) {
+
+    // If this is a repeating pattern, see if it's time to wrap the index.
+    if ( repeat && this.soundPatternIndex >= pattern.length ) {
+      this.soundPatternIndex = 0;
+    }
+
+    // Determine whether there is more pattern to be played.
+    if ( this.soundPatternIndex < pattern.length ) {
+      const now = this.audioContext.currentTime;
+      this.gainNode.gain.cancelScheduledValues( now );
+      this.gainNode.gain.setTargetAtTime(
+        pattern[ this.soundPatternIndex ].intensity,
+        this.audioContext.currentTime,
+        GAIN_CHANGE_TIME_CONSTANT
+      );
+      this.soundTimerID = setTimeout( () => {
+        this.soundPatternIndex++;
+        this.nextSoundPattern( pattern, repeat );
+      }, pattern[ this.soundPatternIndex ].duration * 1000 );
+    }
+    else {
+
+      // We're done playing the pattern, so stop.
+      this.cancelSound();
+    }
+  }
+
+  /**
+   * Cancel any sound pattern that is currently being played.  This has no effect if no sound pattern is playing.
+   * @public
+   */
+  cancelSound() {
+    if ( this.soundTimerID ) {
+      clearTimeout( this.soundTimerID );
+      this.soundTimerID = null;
+    }
+    if ( this.audioBufferSourceNode ) {
+      this.gainNode.gain.setTargetAtTime( 0, this.audioContext.currentTime, GAIN_CHANGE_TIME_CONSTANT );
+      this.audioBufferSourceNode.stop( GAIN_CHANGE_TIME_CONSTANT * 10 );
+      this.audioBufferSourceNode = null;
+    }
+    this.soundPatternIndex = 0;
+  }
+
+  /**
+   * convenience method for one-shot vibrations
+   * @param {number} duration - in seconds
+   * @param {number} intensity - from 0 (min) to 1 (max)
+   * @public
+   */
+  vibrateOnce( duration, intensity ) {
+    const vibrationSpecList = [ nativeVibration.createVibrationSpec( duration, intensity ) ];
+    this.vibrate( vibrationSpecList );
+  }
+
+  /**
+   * convenience method for double-click vibrations
+   * @param {number} clickDuration - in seconds
+   * @param {number} intensity - from 0 (min) to 1 (max)
+   * @param {number} interClickTime - in seconds
+   * @public
+   */
+  vibrateDoubleClick( clickDuration, intensity, interClickTime ) {
+    const vibrationSpecList = [
+      nativeVibration.createVibrationSpec( clickDuration, intensity ),
+      nativeVibration.createVibrationSpec( interClickTime, 0 ),
+      nativeVibration.createVibrationSpec( clickDuration, intensity )
+    ];
+    this.vibrate( vibrationSpecList );
+  }
+
+  /**
+   * Execute the vibration specified in the parameter.
+   * @param {VibrationSpec[]} vibrationSpecList
+   * @param {boolean} repeat
+   * @public
+   */
+  vibrate( vibrationSpecList, repeat = false ) {
+    if ( this.soundEnabled ) {
+      console.log( 'sound playing attempted, but it is inactive' );
+      console.log( `soundURL = ${soundURL}` );
+      // this.playVibrationSoundPattern( vibrationSpecList, repeat );
+    }
+    try {
+      nativeVibration.vibrate( NOOP, ALERT_ERROR, vibrationSpecList, repeat );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to call vibrate: ' + e );
+    }
+  }
+
+  /**
+   * Create an instance of the VibrationSpec type using the provided parameters.
+   * @param {number} duration - in seconds
+   * @param {number} intensity - from 0 (min) to 1 (max)
+   * @returns {VibrationSpec}
+   * @public
+   */
+  createVibrationSpec( duration, intensity ) {
+    return nativeVibration.createVibrationSpec( duration, intensity );
+  }
+
+  /**
+   * Cancel any in-progress vibration and sound, do nothing if there is nothing in progress.
+   * @public
+   */
+  cancel() {
+    this.cancelSound();
+    try {
+      nativeVibration.cancel( NOOP, ALERT_ERROR );
+    }
+    catch( e ) {
+      logger.log( 'error when trying to call cancel: ' + e );
+    }
+  }
+}
 
 // Wait for the deviceready event before using any of Cordova's device APIs. See
 // https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
@@ -25,8 +237,7 @@ function onDeviceReady() {
   // startup message
   console.log( `Running cordova-${cordova.platformId}@${cordova.version}` );
 
-  // Create the logger that will output debug messages to the app's screen.
-  const logger = new ScreenDebugLogger();
+  const vibration = new VibrationInterface();
 
   //--------------------------------------------------------------------------------------------------------------------
   // Set up the "Clicks" screen.
@@ -63,33 +274,16 @@ function onDeviceReady() {
   // Hook up the buttons for the "Clicks" screen.
   const singleClickButton = document.getElementById( 'singleClickButton' );
   singleClickButton.addEventListener( 'click', () => {
-    try {
-      nativeVibration.vibrateOnce(
-        NOOP,
-        ALERT_ERROR,
-        clickDurationSlider.value / 1000,
-        clickIntensitySlider.value
-      );
-    }
-    catch( e ) {
-      logger.log( 'error when trying to call vibrate: ' + e );
-    }
+    vibration.vibrateOnce( clickDurationSlider.value / 1000, clickIntensitySlider.value );
   } );
 
   const doubleClickButton = document.getElementById( 'doubleClickButton' );
   doubleClickButton.addEventListener( 'click', () => {
-    try {
-      nativeVibration.vibrateDoubleClick(
-        NOOP,
-        ALERT_ERROR,
-        clickDurationSlider.value / 1000,
-        clickIntensitySlider.value,
-        interClickTimeSlider.value / 1000
-      );
-    }
-    catch( e ) {
-      logger.log( 'error when trying to call vibrate: ' + e );
-    }
+    vibration.vibrateDoubleClick(
+      clickDurationSlider.value / 1000,
+      clickIntensitySlider.value,
+      interClickTimeSlider.value / 1000
+    );
   } );
 
   // Set up the input for the number of clicks that will be played by the "multi clicks" button.
@@ -112,15 +306,15 @@ function onDeviceReady() {
       const vibrationSpecList = [];
       for ( let i = 0; i < numberOfClicksInput.value; i++ ) {
         vibrationSpecList.push(
-          nativeVibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value )
+          vibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value )
         );
         if ( i !== numberOfClicksInput.value - 1 ) {
           vibrationSpecList.push(
-            nativeVibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 )
+            vibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 )
           );
         }
       }
-      nativeVibration.vibrate( NOOP, ALERT_ERROR, vibrationSpecList );
+      vibration.vibrate( vibrationSpecList );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -153,12 +347,7 @@ function onDeviceReady() {
   const buzzButton = document.getElementById( 'buzzButton' );
   buzzButton.addEventListener( 'click', () => {
     try {
-      nativeVibration.vibrateOnce(
-        NOOP,
-        ALERT_ERROR,
-        buzzDurationSlider.value / 1000,
-        buzzIntensitySlider.value
-      );
+      vibration.vibrateOnce( buzzDurationSlider.value / 1000, buzzIntensitySlider.value );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -208,7 +397,7 @@ function onDeviceReady() {
   addVibrationToPatternButton.addEventListener( 'click', () => {
 
     // Create a new vibration spec based on the current values of the intensity and duration sliders.
-    const vibrationSpec = nativeVibration.createVibrationSpec(
+    const vibrationSpec = vibration.createVibrationSpec(
       vibrationDurationSlider.value / 1000,
       vibrationIntensitySlider.value
     );
@@ -228,7 +417,7 @@ function onDeviceReady() {
   addSpaceToPatternButton.addEventListener( 'click', () => {
 
     // Create a new space spec based on the current values of the intensity and duration sliders.
-    const vibrationSpec = nativeVibration.createVibrationSpec( spaceDurationSlider.value / 1000, 0 );
+    const vibrationSpec = vibration.createVibrationSpec( spaceDurationSlider.value / 1000, 0 );
 
     // Add the new space spec to the pattern.
     pattern.push( vibrationSpec );
@@ -247,31 +436,37 @@ function onDeviceReady() {
     patternDisplay.clear();
 
     // Stop any vibration that is in progress.
-    nativeVibration.cancel( NOOP, ALERT_ERROR );
+    vibration.cancel( NOOP, ALERT_ERROR );
   } );
 
   const repeatCheckbox = document.getElementById( 'repeat-checkbox' );
   repeatCheckbox.addEventListener( 'click', () => {
 
     // If there is a vibration already in progress when this is changed, cancel it.
-    nativeVibration.cancel( NOOP, ALERT_ERROR );
+    vibration.cancel( NOOP, ALERT_ERROR );
   } );
 
   const playPatternButton = document.getElementById( 'play-pattern' );
   playPatternButton.addEventListener( 'click', () => {
     if ( pattern.length > 0 ) {
-      nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern, repeatCheckbox.checked );
+      vibration.vibrate( pattern, repeatCheckbox.checked );
     }
   } );
 
   const stopPatternButton = document.getElementById( 'stop-pattern' );
   stopPatternButton.addEventListener( 'click', () => {
-    nativeVibration.cancel( NOOP, ALERT_ERROR );
+    vibration.cancel();
   } );
 
   //--------------------------------------------------------------------------------------------------------------------
   // Set up the "Settings" screen.
   //--------------------------------------------------------------------------------------------------------------------
+
+  const soundEnabledCheckbox = document.getElementById( 'sound-enabled-checkbox' );
+  soundEnabledCheckbox.checked = vibration.soundEnabled;
+  soundEnabledCheckbox.addEventListener( 'click', () => {
+    vibration.soundEnabled = soundEnabledCheckbox.checked;
+  } );
 
   // Add app and version information.
   const versionInfoParagraph = document.getElementById( 'version-info' );
