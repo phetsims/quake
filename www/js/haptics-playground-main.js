@@ -22,7 +22,6 @@ class VibrationInterface {
 
   constructor() {
 
-    /*
 
     // @public {boolean} - flag used to control whether sounds should be played with the vibrations
     this.soundEnabled = false;
@@ -70,11 +69,9 @@ class VibrationInterface {
       .then( response => response.arrayBuffer() )
       .then( arrayBuffer => this.audioContext.decodeAudioData( arrayBuffer, onDecodeSuccess, onDecodeError ) )
       .catch( reason => {
-        alert( 'sound load failed: ' + reason );
+        console.error( 'sound load failed: ' + reason );
         this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
       } );
-
-     */
   }
 
   /**
@@ -186,9 +183,7 @@ class VibrationInterface {
    */
   vibrate( vibrationSpecList, repeat = false ) {
     if ( this.soundEnabled ) {
-      console.log( 'sound playing attempted, but it is inactive' );
-      console.log( `soundURL = ${soundURL}` );
-      // this.playVibrationSoundPattern( vibrationSpecList, repeat );
+      this.playVibrationSoundPattern( vibrationSpecList, repeat );
     }
     try {
       nativeVibration.vibrate( NOOP, ALERT_ERROR, vibrationSpecList, repeat );
