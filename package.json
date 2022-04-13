@@ -47,7 +47,9 @@
       "alert": "readonly",
       "cordova": "readonly",
       "navigator": "readonly",
-      "nativeVibration": "readonly"
+      "nativeVibration": "readonly",
+      "Response": "readonly",
+      "XMLHttpRequest": "readonly"
     }
   }
 }

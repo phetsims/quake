@@ -17,11 +17,25 @@ const GAIN_CHANGE_TIME_CONSTANT = 0.005;
 // Create the logger that will output debug messages to the app's screen.
 const logger = new ScreenDebugLogger();
 
+function fetchLocal( url ) {
+  return new Promise( ( resolve, reject ) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+      resolve( new Response( xhr.response, { status: xhr.status } ) );
+    };
+    xhr.onerror = () => {
+      reject( new TypeError( 'Local request failed' ) );
+    };
+    xhr.open( 'GET', url );
+    xhr.responseType = 'arraybuffer';
+    xhr.send( null );
+  } );
+}
+
 // Define a singleton object that provides the API to the vibration capabilities and sound generation.
 class VibrationInterface {
 
   constructor() {
-
 
     // @public {boolean} - flag used to control whether sounds should be played with the vibrations
     this.soundEnabled = false;
@@ -65,7 +79,14 @@ class VibrationInterface {
       this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
     };
 
-    window.fetch( soundURL )
+    // window.fetch( soundURL )
+    //   .then( response => response.arrayBuffer() )
+    //   .then( arrayBuffer => this.audioContext.decodeAudioData( arrayBuffer, onDecodeSuccess, onDecodeError ) )
+    //   .catch( reason => {
+    //     console.error( 'sound load failed: ' + reason );
+    //     this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
+    //   } );
+    fetchLocal( soundURL )
       .then( response => response.arrayBuffer() )
       .then( arrayBuffer => this.audioContext.decodeAudioData( arrayBuffer, onDecodeSuccess, onDecodeError ) )
       .catch( reason => {
