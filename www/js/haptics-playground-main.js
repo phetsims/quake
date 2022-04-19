@@ -11,7 +11,7 @@ import ScreenDebugLogger from './ScreenDebugLogger.js';
 // constants
 const NOOP = () => {};
 const ALERT_ERROR = e => { alert( `Error: ${e}` ); };
-const soundURL = './sounds/haptic-buzz-loop.wav';
+const soundURL = './sounds/haptic-buzz-loop-v2-006.wav';
 const GAIN_CHANGE_TIME_CONSTANT = 0.005;
 
 // Create the logger that will output debug messages to the app's screen.
@@ -79,13 +79,7 @@ class VibrationInterface {
       this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
     };
 
-    // window.fetch( soundURL )
-    //   .then( response => response.arrayBuffer() )
-    //   .then( arrayBuffer => this.audioContext.decodeAudioData( arrayBuffer, onDecodeSuccess, onDecodeError ) )
-    //   .catch( reason => {
-    //     console.error( 'sound load failed: ' + reason );
-    //     this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
-    //   } );
+    // Load and decode the sound.
     fetchLocal( soundURL )
       .then( response => response.arrayBuffer() )
       .then( arrayBuffer => this.audioContext.decodeAudioData( arrayBuffer, onDecodeSuccess, onDecodeError ) )
