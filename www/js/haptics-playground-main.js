@@ -645,6 +645,7 @@ class VibrationPatternDisplay {
 
     // Start a new path
     context.beginPath();
+    context.fillStyle = '#333333';
 
     // Calculate the total duration of the pattern.
     const totalPatternDuration = pattern.reduce(
@@ -678,23 +679,41 @@ class VibrationPatternDisplay {
       }
       else {
 
-        // The intensity is greater than zero, so we need to draw a sine wave.  First calculate the number of cycles.
-        // This is set to an integer value to make things look good.
-        const numberOfCycles = Math.round( this.sineWaveFrequency * vibrationSpec.duration );
+        // The intensity is greater than zero.  If there is sufficient space to do so, a sine wave will be drawn.  If
+        // not, a filled rectangle will be rendered.
 
-        for ( let patternElementXPos = 0;
-              patternElementXPos < patternElementLengthInPixels;
-              patternElementXPos += this.pixelsPerWaveSegment ) {
+        const numberOfSineWaveCycles = Math.round( this.sineWaveFrequency * vibrationSpec.duration );
+        const pixelsPerCycle = vibrationSpec.duration / secondsPerPixel / numberOfSineWaveCycles;
 
-          const sinWaveAmplitude = centerY + this.maxPatternAmplitude * vibrationSpec.intensity *
-                                   Math.sin( -Math.PI * 2 * numberOfCycles * ( patternElementXPos / patternElementLengthInPixels ) );
+        // Decide whether to render a sine wave or a rectangle.  The threshold used here was empirically determined by
+        // looking at the display, and can be changed if desired.
+        if ( pixelsPerCycle > 7 ) {
+          for ( let patternElementXPos = 0;
+                patternElementXPos < patternElementLengthInPixels;
+                patternElementXPos += this.pixelsPerWaveSegment ) {
 
-          // Draw the next small segment of the sine wave that represents the vibration.
-          context.lineTo( xPos, sinWaveAmplitude );
-          xPos += this.pixelsPerWaveSegment;
+            const sineWaveValue = centerY + this.maxPatternAmplitude * vibrationSpec.intensity *
+                                  Math.sin( -Math.PI * 2 * numberOfSineWaveCycles * ( patternElementXPos / patternElementLengthInPixels ) );
+
+            // Draw the next small segment of the sine wave that represents the vibration.
+            context.lineTo( xPos, sineWaveValue );
+            xPos += this.pixelsPerWaveSegment;
+          }
+        }
+        else {
+
+          // Add a rectangle that represents the vibration for this section of the pattern.
+          context.rect(
+            xPos,
+            centerY - vibrationSpec.intensity * this.maxPatternAmplitude,
+            patternElementLengthInPixels,
+            vibrationSpec.intensity * this.maxPatternAmplitude * 2
+          );
+          context.fill();
+          xPos += patternElementLengthInPixels;
+          context.moveTo( xPos, centerY );
         }
       }
-
       context.stroke();
     } );
 
