@@ -406,19 +406,23 @@ function onDeviceReady() {
   const addVibrationToPatternButton = document.getElementById( 'add-vibration-to-pattern-button' );
   addVibrationToPatternButton.addEventListener( 'click', () => {
 
-    // Create a new vibration spec based on the current values of the intensity and duration sliders.
-    const vibrationSpec = vibration.createVibrationSpec(
-      vibrationDurationSlider.value / 1000,
-      vibrationIntensitySlider.value
-    );
+    const vibrationDuration = vibrationDurationSlider.value / 1000;
+    const vibrationIntensity = vibrationIntensitySlider.value;
 
-    // Add the new vibration spec to the pattern.
-    pattern.push( vibrationSpec );
-    // TODO: At some point the code should be a little more picky about what it accepts as a valid pattern, since some
-    //       things don't really make sense, such as starting a pattern with a zero intensity value, or having two
-    //       consecutive elements with the same intensity.  See https://github.com/phetsims/quake/issues/9.
+    if ( pattern.length > 0 && pattern[ pattern.length - 1 ].intensity === vibrationIntensity ) {
 
-    // Render the pattern.
+      // This new vibration is at the same intensity as the previous one, so just extend the previous one instead of
+      // adding another element.
+      pattern[ pattern.length - 1 ].duration += vibrationDuration;
+    }
+    else {
+
+      // Create a new vibration spec and add it to the pattern array.
+      const vibrationSpec = vibration.createVibrationSpec( vibrationDuration, vibrationIntensity );
+      pattern.push( vibrationSpec );
+    }
+
+    // Update the pattern display.
     patternDisplay.clear();
     patternDisplay.renderPattern( pattern );
   } );
@@ -426,16 +430,21 @@ function onDeviceReady() {
   const addSpaceToPatternButton = document.getElementById( 'add-space-to-pattern-button' );
   addSpaceToPatternButton.addEventListener( 'click', () => {
 
-    // Create a new space spec based on the current values of the intensity and duration sliders.
-    const vibrationSpec = vibration.createVibrationSpec( spaceDurationSlider.value / 1000, 0 );
+    const spaceDuration = spaceDurationSlider.value / 1000;
 
-    // Add the new space spec to the pattern.
-    pattern.push( vibrationSpec );
-    // TODO: At some point the code should be a little more picky about what it accepts as a valid pattern, since some
-    //       things don't really make sense, such as starting a pattern with a zero intensity value, or having two
-    //       consecutive elements with the same intensity.  See https://github.com/phetsims/quake/issues/9.
+    if ( pattern.length > 0 && pattern[ pattern.length - 1 ].intensity === 0 ) {
 
-    // Render the pattern.
+      // The last pattern element was already a space, so just lengthen it rather than adding a new element.
+      pattern[ pattern.length - 1 ].duration += spaceDuration;
+    }
+    else {
+
+      // Create a new space spec and add it to the pattern.
+      const vibrationSpec = vibration.createVibrationSpec( spaceDurationSlider.value / 1000, 0 );
+      pattern.push( vibrationSpec );
+    }
+
+    // Update the pattern display.
     patternDisplay.clear();
     patternDisplay.renderPattern( pattern );
   } );
