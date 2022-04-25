@@ -137,7 +137,10 @@ class EnhancedVibration {
     }
     if ( this.audioBufferSourceNode ) {
       this.gainNode.gain.setTargetAtTime( 0, this.audioContext.currentTime, GAIN_CHANGE_TIME_CONSTANT );
-      this.audioBufferSourceNode.stop( GAIN_CHANGE_TIME_CONSTANT * 10 );
+
+      // Stop the signal, but not right away or there will be an audible click.  The multiplier for the time was
+      // empirically determined, adjust as needed.
+      this.audioBufferSourceNode.stop( this.audioContext.currentTime + GAIN_CHANGE_TIME_CONSTANT * 10 );
     }
     this.soundPatternIndex = 0;
   }
