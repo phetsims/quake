@@ -7,6 +7,7 @@
  */
 
 import ScreenDebugLogger from './ScreenDebugLogger.js';
+import EnhancedVibration from './EnhancedVibration.js';
 
 // constants
 const NOOP = () => {};
@@ -33,7 +34,7 @@ function fetchLocal( url ) {
 }
 
 // Define a singleton object that provides the API to the vibration capabilities and sound generation.
-class VibrationInterface {
+class VibrationInterfaceX {
 
   constructor() {
 
@@ -247,7 +248,11 @@ function onDeviceReady() {
   // startup message
   console.log( `Running cordova-${cordova.platformId}@${cordova.version}` );
 
-  const vibration = new VibrationInterface();
+  // module testing
+  const enhancedVibration = new EnhancedVibration();
+  enhancedVibration.logMessage();
+
+  const vibration = new VibrationInterfaceX();
 
   //--------------------------------------------------------------------------------------------------------------------
   // Set up the "Clicks" screen.
