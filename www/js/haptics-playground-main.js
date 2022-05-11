@@ -237,6 +237,119 @@ function onDeviceReady() {
     vibration.cancel();
   } );
 
+  // Set up the button and the handler for saving patterns.  This behaves a bit differently depending on the platform.
+  const savePatternButton = document.getElementById( 'save-pattern-button' );
+  savePatternButton.addEventListener( 'click', () => {
+
+    const patternAsJson = JSON.stringify( pattern, null, 2 );
+    const patternBlob = new window.Blob( [ patternAsJson ], { type: 'application/json' } );
+
+    if ( cordova.platformId === 'browser' ) {
+
+      // When saving a pattern on the browser, simply download the file.
+      const a = document.createElement( 'a' );
+      a.download = 'pattern.json';
+      a.href = window.URL.createObjectURL( patternBlob );
+      a.click();
+    }
+    else if ( cordova.platformId === 'android' ) {
+
+      // When saving on Android, bring up the native "Save" dialog and allow the user to save the file.
+      const fileName = 'pattern.json';
+      cordova.plugins.saveDialog.saveFile( patternBlob, fileName )
+        .then( () => {
+          console.info( 'The file has been successfully saved' );
+        } )
+        .catch( reason => {
+          console.warn( reason );
+          alert( `File save failed, reason = ${reason}` );
+        } );
+    }
+    else {
+      alert( 'Saving of patterns is not supported on this platform.' );
+    }
+  } );
+
+  // Set up the button and handler for loading patterns.  There is platform-specific code here.
+  const loadPatternButton = document.getElementById( 'load-pattern-button' );
+  loadPatternButton.addEventListener( 'click', () => {
+
+    if ( cordova.platformId === 'browser' ) {
+
+      // When running on the browser, set up an HTML input type that will allow file selection.
+      let input = document.getElementById( 'file-input' );
+      if ( !input ) {
+
+        // The input element doesn't exist yet, so create it.
+        input = document.createElement( 'input' );
+        input.type = 'file';
+        input.accept = 'application/json';
+        document.body.appendChild( input );
+
+        // Add a handler that will set the pattern to the file contents.
+        input.addEventListener( 'change', () => {
+          input.files[ 0 ].text().then( stuff => {
+            pattern.length = 0;
+            const loadedPattern = JSON.parse( stuff );
+            loadedPattern.forEach( vibrationSpec => {
+              pattern.push( vibrationSpec );
+            } );
+            patternDisplay.renderPattern( pattern );
+          } );
+        } );
+      }
+
+      // Simulate a click in order to bring up the dialog.
+      input.click();
+    }
+    else if ( cordova.platformId === 'android' ) {
+
+      // When running on Android, put up the native file dialog to let the user choose a file, and then open it and load
+      // it into the pattern.
+      chooser.getFiles()
+        .then( files => {
+          const file = files[ 0 ];
+
+          // The nested callbacks below took a lot of trial and error to figure out, but eventually it worked.  It's
+          // ugly, and there may be a better way, but I (jbphet) wasn't able to find one in a reasonable time frame.
+          // See https://github.com/phetsims/quake/issues/18.
+          window.FilePath.resolveNativePath(
+            file.uri,
+            localFileUri => {
+              window.resolveLocalFileSystemURL(
+                localFileUri,
+                fileEntry => {
+                  fileEntry.file( file => {
+
+                    // Read the contents of the file.
+                    const reader = new window.FileReader();
+                    reader.onloadend = function( e ) {
+                      pattern.length = 0;
+                      const loadedPattern = JSON.parse( this.result );
+                      loadedPattern.forEach( vibrationSpec => {
+                        pattern.push( vibrationSpec );
+                      } );
+                      patternDisplay.renderPattern( pattern );
+                    };
+                    reader.onerror = () => {
+                      alert( `read file error, ${Object.keys( reader.error.name )}` );
+                    };
+                    reader.readAsText( file );
+                  }, error => { alert( `File read failed, error = ${error}` ); } );
+                },
+                error => { alert( `error: ${Object.keys( error )}` ); }
+              );
+            },
+            e => alert( e.message )
+          );
+        } )
+        .catch( error => { alert( `file chooser error = ${error}` ); } );
+    }
+    else {
+      alert( 'Loading of patterns is not supported on this platform.' );
+    }
+  } );
+
   const repeatCheckbox = document.getElementById( 'repeat-checkbox' );
   repeatCheckbox.addEventListener( 'click', () => {
 
