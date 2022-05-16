@@ -323,16 +323,21 @@ function onDeviceReady() {
 
                     // Read the contents of the file.
                     const reader = new window.FileReader();
-                    reader.onloadend = function( e ) {
+                    reader.onloadend = () => {
                       pattern.length = 0;
-                      const loadedPattern = JSON.parse( this.result );
-                      loadedPattern.forEach( vibrationSpec => {
-                        pattern.push( vibrationSpec );
-                      } );
-                      patternDisplay.renderPattern( pattern );
+                      if ( reader.result !== undefined && reader.result.length > 0 ) {
+                        const loadedPattern = JSON.parse( reader.result );
+                        loadedPattern.forEach( vibrationSpec => {
+                          pattern.push( vibrationSpec );
+                        } );
+                        patternDisplay.renderPattern( pattern );
+                      }
+                      else {
+                        alert( 'Unable to interpret file.' );
+                      }
                     };
-                    reader.onerror = () => {
-                      alert( `read file error, ${Object.keys( reader.error.name )}` );
+                    reader.onerror = e => {
+                      alert( 'read file error' );
                     };
                     reader.readAsText( file );
                   }, error => { alert( `File read failed, error = ${error}` ); } );

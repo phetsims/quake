@@ -100,9 +100,16 @@ p {
 }
 
 .horizontal-button-set {
+  margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+}
+
+.horizontal-button-set .app-button {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .vertical-slider-set {
@@ -170,6 +177,7 @@ p {
   position: relative;
   padding-left: 35px;
   margin-left: 12px;
+  margin-top: 15px;
   cursor: pointer;
   font-size: large;
   -webkit-user-select: none;
