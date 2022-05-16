@@ -204,6 +204,9 @@ function onDeviceReady() {
     // Update the pattern display.
     patternDisplay.clear();
     patternDisplay.renderPattern( pattern );
+
+    // Update the enabled/disabled state of the buttons.
+    updatePatternButtonStates();
   } );
 
   const addSpaceToPatternButton = document.getElementById( 'add-space-to-pattern-button' );
@@ -226,6 +229,9 @@ function onDeviceReady() {
     // Update the pattern display.
     patternDisplay.clear();
     patternDisplay.renderPattern( pattern );
+
+    // Update the enabled/disabled state of the buttons.
+    updatePatternButtonStates();
   } );
 
   const clearPatternElementButton = document.getElementById( 'clear-pattern-button' );
@@ -235,6 +241,9 @@ function onDeviceReady() {
 
     // Stop any vibration that is in progress.
     vibration.cancel();
+
+    // Update the enabled/disabled state of the buttons.
+    updatePatternButtonStates();
   } );
 
   // Set up the button and the handler for saving patterns.  This behaves a bit differently depending on the platform.
@@ -295,6 +304,7 @@ function onDeviceReady() {
               pattern.push( vibrationSpec );
             } );
             patternDisplay.renderPattern( pattern );
+            updatePatternButtonStates();
           } );
         } );
       }
@@ -331,6 +341,7 @@ function onDeviceReady() {
                           pattern.push( vibrationSpec );
                         } );
                         patternDisplay.renderPattern( pattern );
+                        updatePatternButtonStates();
                       }
                       else {
                         alert( 'Unable to interpret file.' );
@@ -373,6 +384,20 @@ function onDeviceReady() {
   stopPatternButton.addEventListener( 'click', () => {
     vibration.cancel();
   } );
+
+  const updatePatternButtonStates = () => {
+    const playablePatternExists = pattern.reduce(
+      ( playable, vibrationSpec ) => vibrationSpec.intensity > 0 || playable,
+      false
+    );
+    playPatternButton.disabled = !playablePatternExists;
+    stopPatternButton.disabled = !playablePatternExists;
+    clearPatternElementButton.disabled = pattern.length === 0;
+    savePatternButton.disabled = !playablePatternExists;
+  };
+
+  // Do the initial button state update.
+  updatePatternButtonStates();
 
   //--------------------------------------------------------------------------------------------------------------------
   // Set up the "Settings" screen.

@@ -139,6 +139,12 @@ p {
   background-color: #4BFF0A
 }
 
+button:disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
 #multi-clicks-button {
   min-width: 200px;
 }
