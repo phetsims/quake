@@ -371,6 +371,9 @@ function onDeviceReady() {
 
     // If there is a vibration already in progress when this is changed, cancel it.
     vibration.cancel();
+
+    // Update button states.
+    updatePatternButtonStates();
   } );
 
   const playPatternButton = document.getElementById( 'play-pattern' );
@@ -391,7 +394,7 @@ function onDeviceReady() {
       false
     );
     playPatternButton.disabled = !playablePatternExists;
-    stopPatternButton.disabled = !playablePatternExists;
+    stopPatternButton.disabled = !( playablePatternExists && repeatCheckbox.checked );
     clearPatternElementButton.disabled = pattern.length === 0;
     savePatternButton.disabled = !playablePatternExists;
   };
