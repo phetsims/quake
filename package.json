@@ -29,13 +29,13 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-vibration": {},
       "cordova-plugin-app-version": {},
-      "cordova-plugin-native-vibration": {},
       "cordova-plugin-simple-file-chooser": {},
       "cordova-plugin-save-dialog": {},
       "cordova-plugin-file": {
         "ANDROIDX_WEBKIT_VERSION": "1.4.0"
       },
-      "cordova-plugin-filepath": {}
+      "cordova-plugin-filepath": {},
+      "cordova-plugin-native-vibration": {}
     },
     "platforms": [
       "browser",

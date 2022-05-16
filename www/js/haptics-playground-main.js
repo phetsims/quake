@@ -158,9 +158,9 @@ function onDeviceReady() {
 
   const vibrationDurationSlider = new ParameterSlider(
     'vibration-duration-slider',
-    50,
+    25,
     1000,
-    50,
+    25,
     100,
     'Duration',
     'ms'
@@ -168,9 +168,9 @@ function onDeviceReady() {
 
   const spaceDurationSlider = new ParameterSlider(
     'space-duration-slider',
-    50,
+    25,
     1000,
-    50,
+    25,
     100,
     'Duration',
     'ms'
