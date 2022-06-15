@@ -4,6 +4,10 @@ Copyright 2022, University of Colorado Boulder
 Main CSS file for the Haptics Playground app.  This was leveraged highly from the example Apache Cordova app.
 */
 
+:root {
+  --common-control-margin: 10px 15px;
+}
+
 body {
   background-color: #c2b280;
   background-image: url("../img/playgroundNearJbsHouse.jpg");
@@ -117,7 +121,7 @@ p {
   flex-direction: column;
   gap: 15px;
   padding: 5px 10px;
-  margin: 10px 15px;
+  margin: var(--common-control-margin);
 }
 
 .button-and-number {
@@ -126,7 +130,7 @@ p {
 
 .app-button {
   padding: 5px 10px;
-  margin: 10px 15px;
+  margin: var(--common-control-margin);
   font-size: large;
   border: 1px black solid;
   background-color: #48A954;
@@ -178,7 +182,11 @@ button:disabled {
 
 #save-and-load-controls {
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr 2fr;
+}
+
+.save-load-input {
+  margin: var(--common-control-margin);
 }
 
 /* ------------------- checkbox ------------------- */
