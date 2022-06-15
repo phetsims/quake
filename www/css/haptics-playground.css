@@ -104,8 +104,8 @@ p {
 }
 
 .horizontal-button-set {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
