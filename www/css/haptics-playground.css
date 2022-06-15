@@ -76,7 +76,7 @@ p {
   margin-top: 10vh;
   flex-direction: column;
   gap: 20px;
-  padding-bottom: 85px; /* Add space to the bottom that matches the the nav bar height so that scroll bars will work. */
+  padding-bottom: 120px; /* Add space to the bottom that matches the the nav bar height so that scroll bars will work. */
   display: none; /* invisible until made visible by the JS code */
 }
 

@@ -19,6 +19,86 @@ const logger = new ScreenDebugLogger();
 // https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
 document.addEventListener( 'deviceready', onDeviceReady, false );
 
+function onErrorReadFile( e ) {
+  console.log( `read file error: ${e}` );
+}
+
+function onErrorCreateFile( e ) {
+  console.log( `create file error: ${e}` );
+}
+
+function onErrorLoadFs( e ) {
+  console.log( `create file error: ${e}` );
+}
+
+function readFile( fileEntry, onReadSuccess ) {
+
+  fileEntry.file( file => {
+    const reader = new window.FileReader();
+
+    reader.onloadend = function() {
+      console.log( 'Successful file read: ' + this.result );
+      if ( onReadSuccess ) {
+        onReadSuccess( this.result );
+      }
+    };
+
+    reader.readAsText( file );
+
+  }, onErrorReadFile );
+}
+
+function writeFile( fileEntry, dataObj ) {
+
+  // Create a FileWriter object for our FileEntry (log.txt).
+  fileEntry.createWriter( fileWriter => {
+
+    fileWriter.onwriteend = function() {
+      console.log( 'Successful file write...' );
+      readFile( fileEntry );
+    };
+
+    fileWriter.onerror = function( e ) {
+      console.log( 'Failed file write: ' + e.toString() );
+    };
+
+    // If data object is not passed in, create a new Blob instead.
+    if ( !dataObj ) {
+      dataObj = new window.Blob( [ 'some file data' ], { type: 'text/plain' } );
+    }
+
+    fileWriter.write( dataObj );
+  } );
+}
+
+/**
+ * Get a list of the file names in the provided directory.  This does NOT recursively descend the directory tree, it
+ * only gets a list of the files at the top level.
+ * @param {DirectoryEntry} directoryEntry
+ * @param {function} successCallback
+ */
+function getFilesInDirectory( directoryEntry, successCallback ) {
+
+  // Get a reader for this directory.
+  const directoryReader = directoryEntry.createReader();
+  const fileNames = [];
+
+  directoryReader.readEntries(
+    results => {
+      results.forEach( fileEntry => {
+        console.log( `fileEntry.name = ${fileEntry.name}` );
+        if ( fileEntry.isFile ) {
+          fileNames.push( fileEntry.name );
+        }
+      } );
+      successCallback( fileNames );
+    },
+    error => {
+      console.log( `directory reading error = ${error}` );
+    }
+  );
+}
+
 /**
  * This handler function is called when Cordova is fully loaded.  In it, all the behavior that is specific to the
  * Haptics Playground app is set up.
@@ -150,6 +230,29 @@ function onDeviceReady() {
   // Set up the "Patterns" screen.
   //--------------------------------------------------------------------------------------------------------------------
 
+  // TODO - temporary - remove some of the pattern files.  Keep this around until I've got file save/load working, then
+  //  consider making it into a convenience function for future development.
+  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
+    fs.root.getDirectory( '/', {}, directoryEntry => {
+
+      // Get a reader for this directory.
+      const directoryReader = directoryEntry.createReader();
+
+      directoryReader.readEntries(
+        results => {
+          results.forEach( fileEntry => {
+            if ( fileEntry.isFile && fileEntry.name === '.json' ) {
+              fileEntry.remove( file => { alert( 'file removed: ' + file.name ); } );
+            }
+          } );
+        },
+        error => {
+          console.log( `directory reading error = ${error}` );
+        }
+      );
+    } );
+  } );
+
   const vibrationIntensitySlider = new ParameterSlider(
     'vibration-intensity-slider',
     0,
@@ -184,6 +287,16 @@ function onDeviceReady() {
   // The pattern that is constructed by the user and played when the "Play Pattern" button is pressed.  It is an array
   // vibration specs.
   const pattern = [];
+
+  const repeatCheckbox = document.getElementById( 'repeat-checkbox' );
+  repeatCheckbox.addEventListener( 'click', () => {
+
+    // If there is a vibration already in progress when this is changed, cancel it.
+    vibration.cancel();
+
+    // Update button states.
+    updatePatternButtonStates();
+  } );
 
   const addVibrationToPatternButton = document.getElementById( 'add-vibration-to-pattern-button' );
   addVibrationToPatternButton.addEventListener( 'click', () => {
@@ -266,21 +379,72 @@ function onDeviceReady() {
     }
     else if ( cordova.platformId === 'android' ) {
 
-      // When saving on Android, bring up the native "Save" dialog and allow the user to save the file.
-      const fileName = 'pattern.json';
-      cordova.plugins.saveDialog.saveFile( patternBlob, fileName )
-        .then( () => {
-          console.info( 'The file has been successfully saved' );
-        } )
-        .catch( reason => {
-          console.warn( reason );
-          alert( `File save failed, reason = ${reason}` );
-        } );
+      // Get the file name from the document.
+      const saveFileNameTextInputElement = document.getElementById( 'save-file-name' );
+      let saveFileName = saveFileNameTextInputElement.value;
+      let validFileName = true;
+
+      if ( saveFileName.length > 0 && !saveFileName.includes( '.' ) ) {
+
+        // Add the .json file type to the name.
+        saveFileName += '.json';
+        saveFileNameTextInputElement.value = saveFileName;
+      }
+      else if ( !saveFileName.includes( '.json' ) ) {
+        validFileName = false;
+      }
+
+      if ( validFileName ) {
+
+        // Save the file to the local file system.
+        window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
+
+          fs.root.getFile( saveFileName, { create: true, exclusive: false }, fileEntry => {
+
+            writeFile( fileEntry, patternBlob );
+
+            // After writing the file, update the selector that contains the list of loadable files.
+            updateLoadablePatternFileList();
+
+          }, onErrorCreateFile );
+
+        }, onErrorLoadFs );
+      }
+      else {
+        alert( 'Invalid file name.  Please specify a name that ends with ".json", for example, "pattern9.json"' );
+      }
     }
     else {
       alert( 'Saving of patterns is not supported on this platform.' );
     }
   } );
+
+  const loadablePatternFileSelector = document.getElementById( 'loadable-files-selector' );
+
+  // Closure to update the list of loadable patterns.
+  const updateLoadablePatternFileList = () => {
+
+    // Remove everything that is currently an option in the select element.
+    for ( let i = 0; i < loadablePatternFileSelector.options.length; i++ ) {
+      loadablePatternFileSelector.remove( i );
+    }
+
+    // Add a list of all files in the top level of the app's local storage area to the select element.
+    window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
+      fs.root.getDirectory( '/', {}, directoryEntry => {
+        getFilesInDirectory( directoryEntry, fileList => {
+          fileList.forEach( ( fileName, index ) => {
+            const option = document.createElement( 'option' );
+            option.text = fileName;
+            loadablePatternFileSelector.add( option, loadablePatternFileSelector[ index ] );
+          } );
+        } );
+      } );
+    } );
+  };
+
+  // Do the initial setup of the load file selector.
+  updateLoadablePatternFileList();
 
   // Set up the button and handler for loading patterns.  There is platform-specific code here.
   const loadPatternButton = document.getElementById( 'load-pattern-button' );
@@ -317,80 +481,66 @@ function onDeviceReady() {
     }
     else if ( cordova.platformId === 'android' ) {
 
-      // When running on Android, put up the native file dialog to let the user choose a file, and then open it and load
-      // it into the pattern.
-      chooser.getFiles()
-        .then( files => {
-          const file = files[ 0 ];
+      // Load the file specified in the file selector.
+      window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
 
-          // The nested callbacks below took a lot of trial and error to figure out, but eventually it worked.  It's
-          // ugly, and there may be a better way, but I (jbphet) wasn't able to find one in a reasonable time frame.
-          // See https://github.com/phetsims/quake/issues/18.
-          window.FilePath.resolveNativePath(
-            file.uri,
-            localFileUri => {
-              window.resolveLocalFileSystemURL(
-                localFileUri,
-                fileEntry => {
-                  fileEntry.file( file => {
+        const fileNameToOpen = loadablePatternFileSelector.options[ loadablePatternFileSelector.selectedIndex ].text;
+        fs.root.getFile( fileNameToOpen, { create: false, exclusive: false }, fileEntry => {
 
-                    // Read the contents of the file.
-                    const reader = new window.FileReader();
-                    reader.onloadend = () => {
-                      pattern.length = 0;
-                      if ( reader.result !== undefined && reader.result.length > 0 ) {
-                        const loadedPattern = JSON.parse( reader.result );
-                        loadedPattern.forEach( vibrationSpec => {
-                          pattern.push( vibrationSpec );
-                        } );
-                        patternDisplay.renderPattern( pattern );
-                        updatePatternButtonStates();
-                      }
-                      else {
-                        alert( 'Unable to interpret file.' );
-                      }
-                    };
-                    reader.onerror = e => {
-                      alert( 'read file error' );
-                    };
-                    reader.readAsText( file );
-                  }, error => { alert( `File read failed, error = ${error}` ); } );
-                },
-                error => { alert( `error: ${Object.keys( error )}` ); }
-              );
-            },
-            e => alert( e.message )
-          );
-        } )
-        .catch( error => { alert( `file chooser error = ${error}` ); } );
+          console.log( 'fileEntry is file? ' + fileEntry.isFile.toString() );
+          console.log( 'fileEntry name: ' + fileEntry.name );
+          console.log( 'fileEntry fullPath: ' + fileEntry.fullPath );
+          readFile( fileEntry, fileData => {
+            pattern.length = 0;
+            const loadedPattern = JSON.parse( fileData );
+            loadedPattern.forEach( vibrationSpec => {
+              pattern.push( vibrationSpec );
+            } );
+            patternDisplay.renderPattern( pattern );
+            updatePatternButtonStates();
+          } );
+        }, onErrorCreateFile );
+
+      }, onErrorLoadFs );
     }
     else {
       alert( 'Loading of patterns is not supported on this platform.' );
     }
   } );
 
-  const repeatCheckbox = document.getElementById( 'repeat-checkbox' );
-  repeatCheckbox.addEventListener( 'click', () => {
-
-    // If there is a vibration already in progress when this is changed, cancel it.
-    vibration.cancel();
-
-    // Update button states.
-    updatePatternButtonStates();
-  } );
-
-  const playPatternButton = document.getElementById( 'play-pattern' );
+  const playPatternButton = document.getElementById( 'play-pattern-button' );
   playPatternButton.addEventListener( 'click', () => {
     if ( pattern.length > 0 ) {
       vibration.vibrate( pattern, repeatCheckbox.checked );
     }
   } );
 
-  const stopPatternButton = document.getElementById( 'stop-pattern' );
+  const stopPatternButton = document.getElementById( 'stop-pattern-button' );
   stopPatternButton.addEventListener( 'click', () => {
     vibration.cancel();
   } );
 
+  const exportPatternButton = document.getElementById( 'export-pattern-button' );
+  const exportTextArea = document.getElementById( 'export-text-area' );
+  exportTextArea.hidden = true;
+  exportPatternButton.addEventListener( 'click', () => {
+    if ( exportTextArea.hidden ) {
+      updateExportTextArea();
+      exportTextArea.hidden = false;
+      exportPatternButton.innerText = 'Hide Export';
+    }
+    else {
+      exportTextArea.hidden = true;
+      exportPatternButton.innerText = 'Export';
+    }
+  } );
+
+  const updateExportTextArea = () => {
+    const patternAsJson = JSON.stringify( pattern );
+    exportTextArea.innerText = patternAsJson;
+  };
+
+  // A closure that updates the state - enabled or disabled - of the various pattern manipulation buttons.
   const updatePatternButtonStates = () => {
     const playablePatternExists = pattern.reduce(
       ( playable, vibrationSpec ) => vibrationSpec.intensity > 0 || playable,
@@ -399,6 +549,7 @@ function onDeviceReady() {
     playPatternButton.disabled = !playablePatternExists;
     stopPatternButton.disabled = !( playablePatternExists && repeatCheckbox.checked );
     clearPatternElementButton.disabled = pattern.length === 0;
+    exportPatternButton.disabled = !playablePatternExists;
     savePatternButton.disabled = !playablePatternExists;
   };
 

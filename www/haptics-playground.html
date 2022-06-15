@@ -129,12 +129,19 @@
     </label>
 
     <div class="horizontal-button-set">
-      <button id="play-pattern" class="app-button">Play</button>
-      <button id="stop-pattern" class="app-button">Stop</button>
+      <button id="play-pattern-button" class="app-button">Play</button>
+      <button id="stop-pattern-button" class="app-button">Stop</button>
       <button id="clear-pattern-button" class="app-button">Clear</button>
-      <button id="save-pattern-button" class="app-button">Save</button>
-      <button id="load-pattern-button" class="app-button">Load</button>
+      <button id="export-pattern-button" class="app-button">Export</button>
     </div>
+
+    <textarea name="textarea" id="export-text-area" rows="10" cols="50">Write something here</textarea>
+
+    <button id="save-pattern-button" class="app-button">Save</button>
+    <input type="text" id="save-file-name">
+    <button id="load-pattern-button" class="app-button">Load</button>
+    <select id="loadable-files-selector"></select>
+
   </div>
 
   <!--settings screen-->
