@@ -176,7 +176,12 @@ button:disabled {
   grid-row: 2;
 }
 
-/*-------- checkbox -------------------*/
+#save-and-load-controls {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+/* ------------------- checkbox ------------------- */
 
 .checkbox-container {
   display: block;
@@ -242,7 +247,7 @@ button:disabled {
   transform: rotate(45deg);
 }
 
-/*---------------------------*/
+/* ------------------- end checkbox ------------------- */
 
 #number-of-clicks {
   width: 50px;
@@ -301,7 +306,7 @@ button:disabled {
   }
 }
 
-/* Nav bar styling */
+/* ------------------- nav bar ------------------- */
 
 #navbar {
   display: flex;
