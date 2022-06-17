@@ -162,7 +162,7 @@ function onDeviceReady() {
   const numberOfClicksInput = document.getElementById( 'number-of-clicks' );
   numberOfClicksInput.value = 3; // initial value
   numberOfClicksInput.addEventListener( 'input', () => {
-    const inputValueAsNumber = parseInt( numberOfClicksInput.value, 10 );
+    const inputValueAsNumber = Number( numberOfClicksInput.value );
     if ( inputValueAsNumber > 9 ) {
       numberOfClicksInput.value = 9;
     }
