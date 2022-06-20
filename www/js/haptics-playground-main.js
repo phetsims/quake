@@ -362,6 +362,9 @@ function onDeviceReady() {
     updatePatternButtonStates();
   } );
 
+  // Get a reference to the input box for the file name where a pattern can be saved.
+  const saveFileNameTextInputElement = document.getElementById( 'save-file-name' );
+
   // Set up the button and the handler for saving patterns.  This behaves a bit differently depending on the platform.
   const savePatternButton = document.getElementById( 'save-pattern-button' );
   savePatternButton.addEventListener( 'click', () => {
@@ -380,7 +383,6 @@ function onDeviceReady() {
     else if ( cordova.platformId === 'android' ) {
 
       // Get the file name from the document.
-      const saveFileNameTextInputElement = document.getElementById( 'save-file-name' );
       let saveFileName = saveFileNameTextInputElement.value;
       let validFileName = true;
 
@@ -417,6 +419,30 @@ function onDeviceReady() {
     else {
       alert( 'Saving of patterns is not supported on this platform.' );
     }
+  } );
+
+  // Set the initial value of the save file name to the first unused file name of the form "pattern-x.json", where "x"
+  // is a positive integer.
+  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
+    fs.root.getDirectory( '/', {}, directoryEntry => {
+      getFilesInDirectory( directoryEntry, fileList => {
+
+        // Come up with a default file name that is not yet used, but bail if the number gets ridiculous.
+        const fileNameStem = 'pattern-';
+        const fileNameEnding = '.json';
+        let initialFileName = 'temp' + fileNameEnding;
+        let found = false;
+        for ( let i = 1; i < 1000 && !found; i++ ) {
+          const testFileName = `${fileNameStem}${i}${fileNameEnding}`;
+          if ( !fileList.includes( testFileName ) ) {
+            initialFileName = testFileName;
+            found = true;
+          }
+        }
+
+        saveFileNameTextInputElement.value = initialFileName;
+      } );
+    } );
   } );
 
   const loadablePatternFileSelector = document.getElementById( 'loadable-files-selector' );
