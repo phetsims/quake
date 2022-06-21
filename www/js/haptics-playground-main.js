@@ -236,8 +236,9 @@ function onDeviceReady() {
   // Set up the "Patterns" screen.
   //--------------------------------------------------------------------------------------------------------------------
 
-  // TODO - temporary - remove some of the pattern files.  Keep this around until I've got file save/load working, then
-  //  consider making it into a convenience function for future development.
+  // TODO - temporary - Remove some of the previously saved pattern files.  This is useful for getting rid of files
+  //  generated during the debugging of the pattern save/load feature.  Keep this around until the feature is fully
+  //  debugged, then consider making it into a convenience function for future development.
   window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
     fs.root.getDirectory( '/', {}, directoryEntry => {
 
@@ -247,7 +248,10 @@ function onDeviceReady() {
       directoryReader.readEntries(
         results => {
           results.forEach( fileEntry => {
-            if ( fileEntry.isFile && fileEntry.name === '.json' ) {
+
+            // Change the input to the 'includes' method to determine what gets deleted, but BE CAREFUL with this so
+            // that you don't accidentally blow away anything that you need.
+            if ( fileEntry.isFile && fileEntry.name.includes( '.xxx' ) ) {
               fileEntry.remove( file => { alert( 'file removed: ' + file.name ); } );
             }
           } );
@@ -349,7 +353,7 @@ function onDeviceReady() {
 
   const clearPatternElementButton = document.getElementById( 'clear-pattern-button' );
   clearPatternElementButton.addEventListener( 'click', () => {
-    pattern.clear = 0;
+    pattern.clear();
     patternDisplay.clear();
 
     // Stop any vibration that is in progress.
@@ -472,6 +476,7 @@ function onDeviceReady() {
         fs.root.getFile( fileNameToOpen, { create: false, exclusive: false }, fileEntry => {
           readFile( fileEntry, fileData => {
             pattern.loadJSON( fileData );
+            repeatCheckbox.checked = pattern.repeat;
             patternDisplay.renderPattern( pattern );
             updatePatternButtonStates();
           } );

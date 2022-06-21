@@ -79,7 +79,20 @@ class VibrationPattern {
    * @public
    */
   getPatternAsJSON() {
-    return JSON.stringify( this.elements, ( key, val ) => {
+
+    const serializableObject = {
+
+      // Version number of the format.  Increment this if the format changes.
+      formatVersion: 1,
+
+      // boolean value indicating whether this should repeat
+      repeat: this.repeat,
+
+      // array of vibration specs that comprise the pattern
+      elements: this.elements
+    };
+
+    return JSON.stringify( serializableObject, ( key, val ) => {
 
       // Do some rounding to avoid many-digit floating point values.
       if ( typeof val === 'number' ) {
@@ -95,11 +108,17 @@ class VibrationPattern {
    * @public
    */
   loadJSON( jsonPattern ) {
-    this.clear();
-    const loadedPattern = JSON.parse( jsonPattern );
-    loadedPattern.forEach( vibrationSpec => {
-      this.elements.push( vibrationSpec );
-    } );
+    const deserializedObject = JSON.parse( jsonPattern );
+    if ( deserializedObject.formatVersion === 1 ) {
+      this.clear();
+      this.repeat = deserializedObject.repeat;
+      deserializedObject.elements.forEach( vibrationSpec => {
+        this.elements.push( vibrationSpec );
+      } );
+    }
+    else {
+      alert( `Unsupported format for pattern file, value = ${deserializedObject.formatVersion}` );
+    }
   }
 
   /**
