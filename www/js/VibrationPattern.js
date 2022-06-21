@@ -71,6 +71,7 @@ class VibrationPattern {
    */
   clear() {
     this.elements.length = 0;
+    this.repeat = false;
   }
 
   /**

@@ -371,8 +371,13 @@ function onDeviceReady() {
 
   const clearPatternElementButton = document.getElementById( 'clear-pattern-button' );
   clearPatternElementButton.addEventListener( 'click', () => {
+
+    // Clear the pattern and the display.
     pattern.clear();
     patternDisplay.clear();
+
+    // Make sure the "Repeat" checkbox is in sync.
+    repeatCheckbox.checked = pattern.repeat;
 
     // Stop any vibration that is in progress.
     vibration.cancel();
