@@ -252,7 +252,7 @@ function onDeviceReady() {
             // Change the input to the 'includes' method to determine what gets deleted, but BE CAREFUL with this so
             // that you don't accidentally blow away anything that you need.
             if ( fileEntry.isFile && fileEntry.name.includes( '.xxx' ) ) {
-              fileEntry.remove( file => { alert( 'file removed: ' + file.name ); } );
+              fileEntry.remove( () => { alert( 'file removed: ' + fileEntry.name ); } );
             }
           } );
         },
@@ -351,6 +351,18 @@ function onDeviceReady() {
     updatePatternButtonStates();
   } );
 
+  const playPatternButton = document.getElementById( 'play-pattern-button' );
+  playPatternButton.addEventListener( 'click', () => {
+    if ( pattern.length > 0 ) {
+      vibration.vibrate( pattern );
+    }
+  } );
+
+  const stopPatternButton = document.getElementById( 'stop-pattern-button' );
+  stopPatternButton.addEventListener( 'click', () => {
+    vibration.cancel();
+  } );
+
   const clearPatternElementButton = document.getElementById( 'clear-pattern-button' );
   clearPatternElementButton.addEventListener( 'click', () => {
     pattern.clear();
@@ -440,29 +452,6 @@ function onDeviceReady() {
     saveFileNameTextInputElement.value = initialFileName;
   } );
 
-  const loadablePatternFileSelector = document.getElementById( 'loadable-files-selector' );
-
-  // Closure to update the list of loadable patterns.
-  const updateLoadablePatternFileList = () => {
-
-    // Remove everything that is currently an option in the select element.
-    for ( let i = 0; i < loadablePatternFileSelector.options.length; i++ ) {
-      loadablePatternFileSelector.remove( i );
-    }
-
-    // Add a list of all files in the top level of the app's local storage area to the select element.
-    getLocalFiles( '/', fileList => {
-      fileList.forEach( ( fileName, index ) => {
-        const option = document.createElement( 'option' );
-        option.text = fileName;
-        loadablePatternFileSelector.add( option, loadablePatternFileSelector[ index ] );
-      } );
-    } );
-  };
-
-  // Do the initial setup of the load file selector.
-  updateLoadablePatternFileList();
-
   // Set up the button and handler for loading patterns.  There is platform-specific code here.
   const loadPatternButton = document.getElementById( 'load-pattern-button' );
   loadPatternButton.addEventListener( 'click', () => {
@@ -489,17 +478,38 @@ function onDeviceReady() {
     }
   } );
 
-  const playPatternButton = document.getElementById( 'play-pattern-button' );
-  playPatternButton.addEventListener( 'click', () => {
-    if ( pattern.length > 0 ) {
-      vibration.vibrate( pattern );
-    }
-  } );
+  const loadablePatternFileSelector = document.getElementById( 'loadable-files-selector' );
 
-  const stopPatternButton = document.getElementById( 'stop-pattern-button' );
-  stopPatternButton.addEventListener( 'click', () => {
-    vibration.cancel();
-  } );
+  // Closure to update the list of loadable patterns.
+  const updateLoadablePatternFileList = () => {
+
+    // Remove everything that is currently an option in the select element.
+    const numberOfOptionsBeforeClearing = loadablePatternFileSelector.options.length;
+    for ( let i = 0; i < numberOfOptionsBeforeClearing; i++ ) {
+      loadablePatternFileSelector.remove( i );
+    }
+
+    // Add a list of all files in the top level of the app's local storage area to the select element.
+    getLocalFiles( '/', fileList => {
+      if ( fileList.length > 0 ) {
+        fileList.forEach( ( fileName, index ) => {
+          const option = document.createElement( 'option' );
+          option.text = fileName;
+          loadablePatternFileSelector.add( option, loadablePatternFileSelector[ index ] );
+        } );
+        loadPatternButton.disabled = false;
+      }
+      else {
+        const option = document.createElement( 'option' );
+        option.text = '(no pattern files found)';
+        loadablePatternFileSelector.add( option, loadablePatternFileSelector[ 0 ] );
+        loadPatternButton.disabled = true;
+      }
+    } );
+  };
+
+  // Do the initial setup of the load file selector.
+  updateLoadablePatternFileList();
 
   const exportPatternButton = document.getElementById( 'export-pattern-button' );
   const exportTextArea = document.getElementById( 'export-text-area' );
