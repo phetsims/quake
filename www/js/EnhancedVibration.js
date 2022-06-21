@@ -1,5 +1,7 @@
 // Copyright 2022, University of Colorado Boulder
 
+import VibrationPattern from './VibrationPattern.js';
+
 /**
  * EnhancedVibration provides an API to haptic vibration capabilities that is, to some extent, cross-platform.  It also
  * provides other capabilities that support the vibration feature, such as playing a sound to accompany the vibration
@@ -71,11 +73,10 @@ class EnhancedVibration {
 
   /**
    * Play a sound based on the provided pattern.  This is used to play sounds that match vibration.
-   * @param {VibrationSpec[]} pattern
-   * @param {boolean} repeat
+   * @param {VibrationPattern} pattern
    * @private
    */
-  playVibrationSoundPattern( pattern, repeat = false ) {
+  playVibrationSoundPattern( pattern ) {
 
     // Cancel any sound pattern that is already being played.
     this.cancelSound();
@@ -88,20 +89,19 @@ class EnhancedVibration {
     this.audioBufferSourceNode.start();
 
     // Start the playing of the pattern.
-    this.nextSoundPattern( pattern, repeat );
+    this.nextSoundPattern( pattern );
   }
 
   /**
    * Start the next step in the playing of the sound pattern.  This only alters the gain node and sets timeouts, it is
    * expected that the sound generation is started elsewhere.
-   * @param {VibrationSpec[]} pattern
-   * @param {boolean} repeat
+   * @param {VibrationPattern} pattern
    * @private
    */
-  nextSoundPattern( pattern, repeat ) {
+  nextSoundPattern( pattern ) {
 
     // If this is a repeating pattern, see if it's time to wrap the index.
-    if ( repeat && this.soundPatternIndex >= pattern.length ) {
+    if ( pattern.repeat && this.soundPatternIndex >= pattern.length ) {
       this.soundPatternIndex = 0;
     }
 
@@ -110,14 +110,14 @@ class EnhancedVibration {
       const now = this.audioContext.currentTime;
       this.gainNode.gain.cancelScheduledValues( now );
       this.gainNode.gain.setTargetAtTime(
-        pattern[ this.soundPatternIndex ].intensity,
+        pattern.elements[ this.soundPatternIndex ].intensity,
         this.audioContext.currentTime,
         GAIN_CHANGE_TIME_CONSTANT
       );
       this.soundTimerID = setTimeout( () => {
         this.soundPatternIndex++;
-        this.nextSoundPattern( pattern, repeat );
-      }, pattern[ this.soundPatternIndex ].duration * 1000 );
+        this.nextSoundPattern( pattern );
+      }, pattern.elements[ this.soundPatternIndex ].duration * 1000 );
     }
     else {
 
@@ -152,8 +152,9 @@ class EnhancedVibration {
    * @public
    */
   vibrateOnce( duration, intensity ) {
-    const vibrationSpecList = [ nativeVibration.createVibrationSpec( duration, intensity ) ];
-    this.vibrate( vibrationSpecList );
+    const vibrationPattern = new VibrationPattern( this );
+    vibrationPattern.addVibration( duration, intensity );
+    this.vibrate( vibrationPattern );
   }
 
   /**
@@ -164,26 +165,28 @@ class EnhancedVibration {
    * @public
    */
   vibrateDoubleClick( clickDuration, intensity, interClickTime ) {
-    const vibrationSpecList = [
-      nativeVibration.createVibrationSpec( clickDuration, intensity ),
-      nativeVibration.createVibrationSpec( interClickTime, 0 ),
-      nativeVibration.createVibrationSpec( clickDuration, intensity )
-    ];
-    this.vibrate( vibrationSpecList );
+    const vibrationPattern = new VibrationPattern( this );
+    vibrationPattern.addVibration( clickDuration, intensity );
+    vibrationPattern.addSpace( interClickTime );
+    vibrationPattern.addVibration( clickDuration, intensity );
+    this.vibrate( vibrationPattern );
   }
 
   /**
    * Execute the vibration specified in the parameter.
-   * @param {VibrationSpec[]} vibrationSpecList
-   * @param {boolean} repeat
+   * @param {VibrationPattern} pattern
    * @public
    */
-  vibrate( vibrationSpecList, repeat = false ) {
+  vibrate( pattern ) {
+
+    // If sound is enabled, play a sound that will match the vibration.
     if ( this.soundEnabled ) {
-      this.playVibrationSoundPattern( vibrationSpecList, repeat );
+      this.playVibrationSoundPattern( pattern );
     }
+
+    // Perform the haptic vibration.
     try {
-      nativeVibration.vibrate( NOOP, ALERT_ERROR, vibrationSpecList, repeat );
+      nativeVibration.vibrate( NOOP, ALERT_ERROR, pattern.elements, pattern.repeat );
     }
     catch( e ) {
       console.warn( 'error when trying to call vibrate: ' + e );

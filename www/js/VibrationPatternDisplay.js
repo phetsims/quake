@@ -47,7 +47,7 @@ class VibrationPatternDisplay {
 
   /**
    * Draw the provided pattern into the display.
-   * @param {VibrationSpec[]} pattern
+   * @param {VibrationPattern} pattern
    * @public
    */
   renderPattern( pattern ) {
@@ -62,10 +62,7 @@ class VibrationPatternDisplay {
     context.fillStyle = '#333333';
 
     // Calculate the total duration of the pattern.
-    const totalPatternDuration = pattern.reduce(
-      ( totalDurationSoFar, vibrationSpec ) => totalDurationSoFar + vibrationSpec.duration,
-      0
-    );
+    const totalPatternDuration = pattern.getTotalDuration();
 
     // Calculate the amount of time represented per pixel for rendering this pattern.
     const secondsPerPixel = totalPatternDuration / this.canvas.width;
@@ -80,7 +77,7 @@ class VibrationPatternDisplay {
     context.lineTo( xPos, centerY );
 
     // Render the various segments of the pattern.
-    pattern.forEach( vibrationSpec => {
+    pattern.elements.forEach( vibrationSpec => {
 
       const patternElementLengthInPixels = vibrationSpec.duration / secondsPerPixel;
 

@@ -10,6 +10,7 @@
 import EnhancedVibration from './EnhancedVibration.js';
 import ParameterSlider from './ParameterSlider.js';
 import ScreenDebugLogger from './ScreenDebugLogger.js';
+import VibrationPattern from './VibrationPattern.js';
 import VibrationPatternDisplay from './VibrationPatternDisplay.js';
 
 // Create the logger that will output debug messages to the app's screen.
@@ -100,6 +101,20 @@ function getFilesInDirectory( directoryEntry, successCallback ) {
 }
 
 /**
+ * Read the list of files from the specified directory path for this app's local file storage.  This does not return
+ * directories and does not recursively descend the file tree.
+ * @param {string} path
+ * @param {function} callback
+ */
+function getLocalFiles( path, callback ) {
+  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
+    fs.root.getDirectory( path, {}, directoryEntry => {
+      getFilesInDirectory( directoryEntry, callback );
+    } );
+  } );
+}
+
+/**
  * This handler function is called when Cordova is fully loaded.  In it, all the behavior that is specific to the
  * Haptics Playground app is set up.
  */
@@ -175,18 +190,16 @@ function onDeviceReady() {
   const multiClicksButton = document.getElementById( 'multi-clicks-button' );
   multiClicksButton.addEventListener( 'click', () => {
     try {
-      const vibrationSpecList = [];
+      const vibrationPattern = new VibrationPattern( vibration );
       for ( let i = 0; i < numberOfClicksInput.value; i++ ) {
-        vibrationSpecList.push(
-          vibration.createVibrationSpec( clickDurationSlider.value / 1000, clickIntensitySlider.value )
-        );
-        if ( i !== numberOfClicksInput.value - 1 ) {
-          vibrationSpecList.push(
-            vibration.createVibrationSpec( interClickTimeSlider.value / 1000, 0 )
-          );
-        }
+
+        // Add the vibration portion.
+        vibrationPattern.addVibration( clickDurationSlider.value / 1000, clickIntensitySlider.value );
+
+        // Add the inter-vibration space.
+        vibrationPattern.addSpace( interClickTimeSlider.value / 1000 );
       }
-      vibration.vibrate( vibrationSpecList );
+      vibration.vibrate( vibrationPattern );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -286,7 +299,7 @@ function onDeviceReady() {
 
   // The pattern that is constructed by the user and played when the "Play Pattern" button is pressed.  It is an array
   // vibration specs.
-  const pattern = [];
+  const pattern = new VibrationPattern( vibration );
 
   const repeatCheckbox = document.getElementById( 'repeat-checkbox' );
   repeatCheckbox.addEventListener( 'click', () => {
@@ -294,32 +307,31 @@ function onDeviceReady() {
     // If there is a vibration already in progress when this is changed, cancel it.
     vibration.cancel();
 
+    // Update the vibration pattern.
+    pattern.repeat = repeatCheckbox.checked;
+
     // Update button states.
     updatePatternButtonStates();
+
+    // Update export area.
+    updateExportTextArea();
   } );
+
+  // Make sure the pattern and the checkbox are initially in sync.
+  pattern.repeat = repeatCheckbox.checked;
 
   const addVibrationToPatternButton = document.getElementById( 'add-vibration-to-pattern-button' );
   addVibrationToPatternButton.addEventListener( 'click', () => {
 
-    const vibrationDuration = vibrationDurationSlider.value / 1000;
-    const vibrationIntensity = vibrationIntensitySlider.value;
-
-    if ( pattern.length > 0 && pattern[ pattern.length - 1 ].intensity === vibrationIntensity ) {
-
-      // This new vibration is at the same intensity as the previous one, so just extend the previous one instead of
-      // adding another element.
-      pattern[ pattern.length - 1 ].duration += vibrationDuration;
-    }
-    else {
-
-      // Create a new vibration spec and add it to the pattern array.
-      const vibrationSpec = vibration.createVibrationSpec( vibrationDuration, vibrationIntensity );
-      pattern.push( vibrationSpec );
-    }
+    // Add the vibration to the pattern.
+    pattern.addVibration( vibrationDurationSlider.value / 1000, vibrationIntensitySlider.value );
 
     // Update the pattern display.
     patternDisplay.clear();
     patternDisplay.renderPattern( pattern );
+
+    // Update export area.
+    updateExportTextArea();
 
     // Update the enabled/disabled state of the buttons.
     updatePatternButtonStates();
@@ -328,23 +340,15 @@ function onDeviceReady() {
   const addSpaceToPatternButton = document.getElementById( 'add-space-to-pattern-button' );
   addSpaceToPatternButton.addEventListener( 'click', () => {
 
-    const spaceDuration = spaceDurationSlider.value / 1000;
-
-    if ( pattern.length > 0 && pattern[ pattern.length - 1 ].intensity === 0 ) {
-
-      // The last pattern element was already a space, so just lengthen it rather than adding a new element.
-      pattern[ pattern.length - 1 ].duration += spaceDuration;
-    }
-    else {
-
-      // Create a new space spec and add it to the pattern.
-      const vibrationSpec = vibration.createVibrationSpec( spaceDurationSlider.value / 1000, 0 );
-      pattern.push( vibrationSpec );
-    }
+    // Add the space to the pattern.
+    pattern.addSpace( spaceDurationSlider.value / 1000 );
 
     // Update the pattern display.
     patternDisplay.clear();
     patternDisplay.renderPattern( pattern );
+
+    // Update export area.
+    updateExportTextArea();
 
     // Update the enabled/disabled state of the buttons.
     updatePatternButtonStates();
@@ -352,11 +356,15 @@ function onDeviceReady() {
 
   const clearPatternElementButton = document.getElementById( 'clear-pattern-button' );
   clearPatternElementButton.addEventListener( 'click', () => {
-    pattern.length = 0;
+    pattern.clear = 0;
     patternDisplay.clear();
 
     // Stop any vibration that is in progress.
     vibration.cancel();
+
+    // Update the state of the export functionality.
+    exportTextArea.hidden = true;
+    exportPatternButton.innerText = 'Export';
 
     // Update the enabled/disabled state of the buttons.
     updatePatternButtonStates();
@@ -369,7 +377,7 @@ function onDeviceReady() {
   const savePatternButton = document.getElementById( 'save-pattern-button' );
   savePatternButton.addEventListener( 'click', () => {
 
-    const patternAsJson = JSON.stringify( pattern, null, 2 );
+    const patternAsJson = pattern.getPatternAsJSON();
     const patternBlob = new window.Blob( [ patternAsJson ], { type: 'application/json' } );
 
     if ( cordova.platformId === 'browser' ) {
@@ -382,8 +390,10 @@ function onDeviceReady() {
     }
     else if ( cordova.platformId === 'android' ) {
 
-      // Get the file name from the document.
+      // Get the file name.
       let saveFileName = saveFileNameTextInputElement.value;
+
+      // Check the validity of the name, and add the correct file type if needed.
       let validFileName = true;
 
       if ( saveFileName.length > 0 && !saveFileName.includes( '.' ) ) {
@@ -423,26 +433,22 @@ function onDeviceReady() {
 
   // Set the initial value of the save file name to the first unused file name of the form "pattern-x.json", where "x"
   // is a positive integer.
-  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
-    fs.root.getDirectory( '/', {}, directoryEntry => {
-      getFilesInDirectory( directoryEntry, fileList => {
+  getLocalFiles( '/', fileList => {
 
-        // Come up with a default file name that is not yet used, but bail if the number gets ridiculous.
-        const fileNameStem = 'pattern-';
-        const fileNameEnding = '.json';
-        let initialFileName = 'temp' + fileNameEnding;
-        let found = false;
-        for ( let i = 1; i < 1000 && !found; i++ ) {
-          const testFileName = `${fileNameStem}${i}${fileNameEnding}`;
-          if ( !fileList.includes( testFileName ) ) {
-            initialFileName = testFileName;
-            found = true;
-          }
-        }
+    // Come up with a default file name that is not yet used, but bail if the number gets ridiculous.
+    const fileNameStem = 'pattern-';
+    const fileNameEnding = '.json';
+    let initialFileName = 'temp' + fileNameEnding;
+    let found = false;
+    for ( let i = 1; i < 1000 && !found; i++ ) {
+      const testFileName = `${fileNameStem}${i}${fileNameEnding}`;
+      if ( !fileList.includes( testFileName ) ) {
+        initialFileName = testFileName;
+        found = true;
+      }
+    }
 
-        saveFileNameTextInputElement.value = initialFileName;
-      } );
-    } );
+    saveFileNameTextInputElement.value = initialFileName;
   } );
 
   const loadablePatternFileSelector = document.getElementById( 'loadable-files-selector' );
@@ -456,15 +462,11 @@ function onDeviceReady() {
     }
 
     // Add a list of all files in the top level of the app's local storage area to the select element.
-    window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
-      fs.root.getDirectory( '/', {}, directoryEntry => {
-        getFilesInDirectory( directoryEntry, fileList => {
-          fileList.forEach( ( fileName, index ) => {
-            const option = document.createElement( 'option' );
-            option.text = fileName;
-            loadablePatternFileSelector.add( option, loadablePatternFileSelector[ index ] );
-          } );
-        } );
+    getLocalFiles( '/', fileList => {
+      fileList.forEach( ( fileName, index ) => {
+        const option = document.createElement( 'option' );
+        option.text = fileName;
+        loadablePatternFileSelector.add( option, loadablePatternFileSelector[ index ] );
       } );
     } );
   };
@@ -490,12 +492,8 @@ function onDeviceReady() {
 
         // Add a handler that will set the pattern to the file contents.
         input.addEventListener( 'change', () => {
-          input.files[ 0 ].text().then( stuff => {
-            pattern.length = 0;
-            const loadedPattern = JSON.parse( stuff );
-            loadedPattern.forEach( vibrationSpec => {
-              pattern.push( vibrationSpec );
-            } );
+          input.files[ 0 ].text().then( jsonPattern => {
+            pattern.loadJSON( jsonPattern );
             patternDisplay.renderPattern( pattern );
             updatePatternButtonStates();
           } );
@@ -517,11 +515,7 @@ function onDeviceReady() {
           console.log( 'fileEntry name: ' + fileEntry.name );
           console.log( 'fileEntry fullPath: ' + fileEntry.fullPath );
           readFile( fileEntry, fileData => {
-            pattern.length = 0;
-            const loadedPattern = JSON.parse( fileData );
-            loadedPattern.forEach( vibrationSpec => {
-              pattern.push( vibrationSpec );
-            } );
+            pattern.loadJSON( fileData );
             patternDisplay.renderPattern( pattern );
             updatePatternButtonStates();
           } );
@@ -537,7 +531,7 @@ function onDeviceReady() {
   const playPatternButton = document.getElementById( 'play-pattern-button' );
   playPatternButton.addEventListener( 'click', () => {
     if ( pattern.length > 0 ) {
-      vibration.vibrate( pattern, repeatCheckbox.checked );
+      vibration.vibrate( pattern );
     }
   } );
 
@@ -562,16 +556,12 @@ function onDeviceReady() {
   } );
 
   const updateExportTextArea = () => {
-    const patternAsJson = JSON.stringify( pattern );
-    exportTextArea.innerText = patternAsJson;
+    exportTextArea.innerText = pattern.getPatternAsJSON();
   };
 
   // A closure that updates the state - enabled or disabled - of the various pattern manipulation buttons.
   const updatePatternButtonStates = () => {
-    const playablePatternExists = pattern.reduce(
-      ( playable, vibrationSpec ) => vibrationSpec.intensity > 0 || playable,
-      false
-    );
+    const playablePatternExists = pattern.getTotalDuration();
     playPatternButton.disabled = !playablePatternExists;
     stopPatternButton.disabled = !( playablePatternExists && repeatCheckbox.checked );
     clearPatternElementButton.disabled = pattern.length === 0;
