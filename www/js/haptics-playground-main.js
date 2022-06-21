@@ -48,10 +48,16 @@ function readFile( fileEntry, onReadSuccess ) {
   }, onErrorReadFile );
 }
 
-function writeFile( fileEntry, dataObj ) {
+const noop = () => {};
+
+function writeFile( fileEntry, dataObj, onSuccess = noop ) {
 
   // Create a FileWriter object for our FileEntry (log.txt).
   fileEntry.createWriter( fileWriter => {
+
+    if ( onSuccess !== noop ) {
+      fileWriter.onwriteend = onSuccess;
+    }
 
     fileWriter.onerror = function( e ) {
       alert( 'Failed file write: ' + e.toString() );
@@ -251,7 +257,7 @@ function onDeviceReady() {
 
             // Change the input to the 'includes' method to determine what gets deleted, but BE CAREFUL with this so
             // that you don't accidentally blow away anything that you need.
-            if ( fileEntry.isFile && fileEntry.name.includes( '.xxx' ) ) {
+            if ( fileEntry.isFile && fileEntry.name.includes( '.xxxx' ) ) {
               fileEntry.remove( () => { alert( 'file removed: ' + fileEntry.name ); } );
             }
           } );
@@ -414,7 +420,7 @@ function onDeviceReady() {
 
           fs.root.getFile( saveFileName, { create: true, exclusive: false }, fileEntry => {
 
-            writeFile( fileEntry, patternBlob );
+            writeFile( fileEntry, patternBlob, () => { alert( `File ${saveFileName} successfully written.` ); } );
 
             // After writing the file, update the selector that contains the list of loadable files.
             updateLoadablePatternFileList();
@@ -485,7 +491,7 @@ function onDeviceReady() {
 
     // Remove everything that is currently an option in the select element.
     const numberOfOptionsBeforeClearing = loadablePatternFileSelector.options.length;
-    for ( let i = 0; i < numberOfOptionsBeforeClearing; i++ ) {
+    for ( let i = numberOfOptionsBeforeClearing - 1; i >= 0; i-- ) {
       loadablePatternFileSelector.remove( i );
     }
 
