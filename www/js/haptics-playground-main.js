@@ -21,15 +21,15 @@ const logger = new ScreenDebugLogger();
 document.addEventListener( 'deviceready', onDeviceReady, false );
 
 function onErrorReadFile( e ) {
-  console.log( `read file error: ${e}` );
+  alert( `read file error: ${e}` );
 }
 
 function onErrorCreateFile( e ) {
-  console.log( `create file error: ${e}` );
+  alert( `create file error: ${e}` );
 }
 
 function onErrorLoadFs( e ) {
-  console.log( `create file error: ${e}` );
+  alert( `create file error: ${e}` );
 }
 
 function readFile( fileEntry, onReadSuccess ) {
@@ -38,7 +38,6 @@ function readFile( fileEntry, onReadSuccess ) {
     const reader = new window.FileReader();
 
     reader.onloadend = function() {
-      console.log( 'Successful file read: ' + this.result );
       if ( onReadSuccess ) {
         onReadSuccess( this.result );
       }
@@ -54,13 +53,8 @@ function writeFile( fileEntry, dataObj ) {
   // Create a FileWriter object for our FileEntry (log.txt).
   fileEntry.createWriter( fileWriter => {
 
-    fileWriter.onwriteend = function() {
-      console.log( 'Successful file write...' );
-      readFile( fileEntry );
-    };
-
     fileWriter.onerror = function( e ) {
-      console.log( 'Failed file write: ' + e.toString() );
+      alert( 'Failed file write: ' + e.toString() );
     };
 
     // If data object is not passed in, create a new Blob instead.
@@ -87,7 +81,6 @@ function getFilesInDirectory( directoryEntry, successCallback ) {
   directoryReader.readEntries(
     results => {
       results.forEach( fileEntry => {
-        console.log( `fileEntry.name = ${fileEntry.name}` );
         if ( fileEntry.isFile ) {
           fileNames.push( fileEntry.name );
         }
@@ -95,7 +88,7 @@ function getFilesInDirectory( directoryEntry, successCallback ) {
       successCallback( fileNames );
     },
     error => {
-      console.log( `directory reading error = ${error}` );
+      alert( `directory reading error = ${error}` );
     }
   );
 }
@@ -260,7 +253,7 @@ function onDeviceReady() {
           } );
         },
         error => {
-          console.log( `directory reading error = ${error}` );
+          alert( `directory reading error = ${error}` );
         }
       );
     } );
@@ -377,20 +370,12 @@ function onDeviceReady() {
   const savePatternButton = document.getElementById( 'save-pattern-button' );
   savePatternButton.addEventListener( 'click', () => {
 
-    const patternAsJson = pattern.getPatternAsJSON();
-    const patternBlob = new window.Blob( [ patternAsJson ], { type: 'application/json' } );
+    if ( cordova.platformId === 'browser' || cordova.platformId === 'android' ) {
 
-    if ( cordova.platformId === 'browser' ) {
+      const patternAsJson = pattern.getPatternAsJSON();
+      const patternBlob = new window.Blob( [ patternAsJson ], { type: 'application/json' } );
 
-      // When saving a pattern on the browser, simply download the file.
-      const a = document.createElement( 'a' );
-      a.download = 'pattern.json';
-      a.href = window.URL.createObjectURL( patternBlob );
-      a.click();
-    }
-    else if ( cordova.platformId === 'android' ) {
-
-      // Get the file name.
+      // Get the file name from the text input element.
       let saveFileName = saveFileNameTextInputElement.value;
 
       // Check the validity of the name, and add the correct file type if needed.
@@ -427,7 +412,7 @@ function onDeviceReady() {
       }
     }
     else {
-      alert( 'Saving of patterns is not supported on this platform.' );
+      alert( 'Saving patterns to files is not supported on this platform.' );
     }
   } );
 
@@ -478,42 +463,13 @@ function onDeviceReady() {
   const loadPatternButton = document.getElementById( 'load-pattern-button' );
   loadPatternButton.addEventListener( 'click', () => {
 
-    if ( cordova.platformId === 'browser' ) {
-
-      // When running on the browser, set up an HTML input type that will allow file selection.
-      let input = document.getElementById( 'file-input' );
-      if ( !input ) {
-
-        // The input element doesn't exist yet, so create it.
-        input = document.createElement( 'input' );
-        input.type = 'file';
-        input.accept = 'application/json';
-        document.body.appendChild( input );
-
-        // Add a handler that will set the pattern to the file contents.
-        input.addEventListener( 'change', () => {
-          input.files[ 0 ].text().then( jsonPattern => {
-            pattern.loadJSON( jsonPattern );
-            patternDisplay.renderPattern( pattern );
-            updatePatternButtonStates();
-          } );
-        } );
-      }
-
-      // Simulate a click in order to bring up the dialog.
-      input.click();
-    }
-    else if ( cordova.platformId === 'android' ) {
+    if ( cordova.platformId === 'browser' || cordova.platformId === 'android' ) {
 
       // Load the file specified in the file selector.
       window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
 
         const fileNameToOpen = loadablePatternFileSelector.options[ loadablePatternFileSelector.selectedIndex ].text;
         fs.root.getFile( fileNameToOpen, { create: false, exclusive: false }, fileEntry => {
-
-          console.log( 'fileEntry is file? ' + fileEntry.isFile.toString() );
-          console.log( 'fileEntry name: ' + fileEntry.name );
-          console.log( 'fileEntry fullPath: ' + fileEntry.fullPath );
           readFile( fileEntry, fileData => {
             pattern.loadJSON( fileData );
             patternDisplay.renderPattern( pattern );
