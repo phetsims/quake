@@ -149,7 +149,7 @@
   // Set up a listener that will play a haptic pulse when the pulseAtLimitsSlider reaches its limits.
   const pulseAtLimitsSlider = document.getElementById( 'pulseAtLimitsSlider' );
   pulseAtLimitsSlider.oninput = () => {
-    const value = Number.parseInt( pulseAtLimitsSlider.value );
+    const value = Number( pulseAtLimitsSlider.value );
     if ( value === 1 || value === 100 ) {
       const pulseLength = 100; // in milliseconds
       try {
