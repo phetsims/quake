@@ -15,7 +15,7 @@ exist at the top level of the `quake` repo.
 publish.
 - [ ] Run `cordova build android --release -- --keystore=<path to keystore> --storePassword=<keystore-password> --alias=upload --password=<key-password> --packageType=bundle`
 to build the signed app bundle.
-- [ ] Upload the app via Google Play Console.  The path to the app bundle will be something like `c\git-dev\quake\platforms\android\app\build\outputs\bundle\release\app-release.aab`.
+- [ ] Upload the app via Google Play Console.  The path to the app bundle will be something like `c\git-dev\quake\platforms\android\app\build\outputs\bundle\release\app-release.aab`.  The upload is done via Internal Testing -> Create New Release.
 - [ ] Fill in the "Release name" with a message of the following format, but specific to this release: 
 `v0.0.1 - initial prototype release for testing`
 - [ ] Add release notes that describe what is new in this release.
