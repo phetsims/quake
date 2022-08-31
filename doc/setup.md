@@ -7,10 +7,12 @@ app to run on different platforms.  This document describes the steps necessary 
 
 It is assumed that `node` and `npm` are already set up and available.
 
+TODO: Add a paragraph about there being a "potential problems" section below, and add that section.  Describe the recent setup.
+
 1. Make sure you have a Java 1.8.x JDK installed.  Cordova requires this.  The latest JDKs don't work.  Don't know why.
 2. You'll need an environment variable `JAVA_HOME` that points to the root direction of the JDK.  The value will look something like `C:\Program Files\Java\jdk1.8.0_301` on a Windows system.
-3. Install Android Studio.  The SDKs are needed to build the Android app, and the studio is used for testing and debugging.
-4. From within Android Studio, use Tools->SDK Manager to install SDK 8.0 (Oreo), API version 26.
+3. Install Android Studio.  The SDKs that come with it are needed to build the Android app, and the studio is used for testing and debugging.
+4. From within Android Studio, use Tools->SDK Manager to install SDK 11.0 (Oreo), API version 30.
 5. Add an environment variable (if it doesn't already exist) `ANDROID_SDK_ROOT` that points to your Android SDK root.  The value will be something like `C:\Users\bob\AppData\Local\Android\Sdk`
 6. Install `gradle`, which is a build tool used by Android Studio, by following the instructions in the section "Installing manually" of the installation guide at https://gradle.org/install/ (binary only).
 7. Add the path to gradle to your system path, e.g. `C:\gradle-7.4.2\bin`
