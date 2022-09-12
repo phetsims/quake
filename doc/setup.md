@@ -52,7 +52,7 @@ install virtual devices and/or connect physical devices, and run the app using t
 ### If Problems Occur During Setup
 
 - There is an odd problem that came up every time this development environment was set up by either @jbphet or
-@jessegreenberg.  The symptoms were that builds fail with a message like ""Installed Build Tools revision 30.0.0 is
+@jessegreenberg.  The symptoms were that builds fail with a message like "Installed Build Tools revision 30.0.0 is
 corrupted".  If you run into this, follow the steps from this Stack
 Overflow article and rename some of the tools: 
 https://stackoverflow.com/questions/68387270/android-studio-error-installed-build-tools-revision-31-0-0-is-corrupted
