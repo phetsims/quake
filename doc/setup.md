@@ -44,9 +44,9 @@ successful.
   - Run `cordova plugin add cordova-plugin-app-version` to add the plugin that enables to code to get the app version.
   - Run `cordova plugin add cordova-plugin-file` to add the plugin for file system interactions.
   - Run `grunt` to build the app.
-11. If the build succeeded, the app should be able to run in a browser.  The runnable root will be in
+12. If the build succeeded, the app should be able to run in a browser.  The runnable root will be in
 <your-dev-root>/quake/platforms/browser/www/haptics-playground.html.
-12. To run/debug on Android devices, open Android Studio, open the project at <your-dev-root>/quake/platforms/android,
+13. To run/debug on Android devices, open Android Studio, open the project at <your-dev-root>/quake/platforms/android,
 install virtual devices and/or connect physical devices, and run the app using the icons in Android Studio.
 
 ### If Problems Occur During Setup
