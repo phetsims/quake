@@ -12,7 +12,6 @@
 
 const argscheck = require( 'cordova/argscheck' );
 const channel = require( 'cordova/channel' );
-const utils = require( 'cordova/utils' );
 const exec = require( 'cordova/exec' );
 const cordova = require( 'cordova' );
 
@@ -26,49 +25,14 @@ class NativeVibration {
 
   constructor() {
     this.available = false;
-    this.platform = null;
-    this.version = null;
-    this.uuid = null;
-    this.cordova = null;
-    this.model = null;
-    this.manufacturer = null;
-    this.isVirtual = null;
-    this.serial = null;
 
     channel.onCordovaReady.subscribe( () => {
-      this.getInfo(
-        info => {
-          // ignoring info.cordova returning from native, we should use value from cordova.version defined in cordova.js
-          // TODO: CB-5105 native implementations should not return info.cordova
-          const buildLabel = cordova.version;
-          this.available = true;
-          this.platform = info.platform;
-          this.version = info.version;
-          this.uuid = info.uuid;
-          this.cordova = buildLabel;
-          this.model = info.model;
-          this.isVirtual = info.isVirtual;
-          this.manufacturer = info.manufacturer || 'unknown';
-          this.serial = info.serial || 'unknown';
-          channel.onCordovaInfoReady.fire();
-        },
-        e => {
-          this.available = false;
-          utils.alert( '[ERROR] Error initializing Cordova: ' + e );
-        } );
+      const buildLabel = cordova.version;
+      this.cordova = buildLabel;
+      this.available = true;
+      channel.onCordovaInfoReady.fire();
+      console.log( 'NativeVibration instance received onCordovaReady' );
     } );
-  }
-
-  /**
-   * Get device info.
-   * TODO: This should be removed once vibration is fully functional.
-   * @param {Function} successCallback The function to call when the heading data is available
-   * @param {Function} errorCallback The function to call when there is an error getting the heading data. (OPTIONAL)
-   * @public
-   */
-  getInfo( successCallback, errorCallback ) {
-    argscheck.checkArgs( 'FF', 'NativeVibration.getInfo', [ successCallback, errorCallback ] );
-    exec( successCallback, errorCallback, 'NativeVibration', 'getDeviceInfo', [] );
   }
 
   /**
