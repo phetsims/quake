@@ -5,6 +5,3 @@ JSON format.
 
 Please see the documentation in the `doc` directory for information on how to set up the development environment for
 this app.
-
-
-
