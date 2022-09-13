@@ -183,6 +183,9 @@ const onDeviceReady = () => {
     'ms'
   );
 
+  // Track the state of the pattern playing so that the buttons can be enabled and disabled as things change.
+  let playingRepeatingPattern = false;
+
   const patternDisplay = new VibrationPatternDisplay( 'pattern-canvas', 'pattern-canvas-label' );
 
   // The pattern that is constructed by the user and played when the "Play Pattern" button is pressed.  It is an array
@@ -246,12 +249,18 @@ const onDeviceReady = () => {
   playPatternButton.addEventListener( 'click', () => {
     if ( pattern.length > 0 ) {
       vibration.vibrate( pattern );
+      if ( repeatCheckbox.checked ) {
+        playingRepeatingPattern = true;
+      }
+      updatePatternButtonStates();
     }
   } );
 
   const stopPatternButton = document.getElementById( 'stop-pattern-button' );
   stopPatternButton.addEventListener( 'click', () => {
     vibration.cancel();
+    playingRepeatingPattern = false;
+    updatePatternButtonStates();
   } );
 
   const clearPatternElementButton = document.getElementById( 'clear-pattern-button' );
@@ -266,6 +275,7 @@ const onDeviceReady = () => {
 
     // Stop any vibration that is in progress.
     vibration.cancel();
+    playingRepeatingPattern = false;
 
     // Update the state of the export functionality.
     exportTextArea.hidden = true;
@@ -429,8 +439,8 @@ const onDeviceReady = () => {
   // A closure that updates the state - enabled or disabled - of the various pattern manipulation buttons.
   const updatePatternButtonStates = () => {
     const playablePatternExists = pattern.getTotalDuration();
-    playPatternButton.disabled = !playablePatternExists;
-    stopPatternButton.disabled = !( playablePatternExists && repeatCheckbox.checked );
+    playPatternButton.disabled = !( playablePatternExists && !playingRepeatingPattern );
+    stopPatternButton.disabled = !( playablePatternExists && playingRepeatingPattern );
     clearPatternElementButton.disabled = pattern.length === 0;
     exportPatternButton.disabled = !playablePatternExists;
     savePatternButton.disabled = !playablePatternExists;

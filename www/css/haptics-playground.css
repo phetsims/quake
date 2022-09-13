@@ -142,6 +142,21 @@ p {
   background-color: #4BFF0A
 }
 
+.stop-button {
+  padding: 5px 10px;
+  margin: var(--common-control-margin);
+  font-size: large;
+  border: 1px black solid;
+  background-color: #aa0000;
+  color: ghostwhite;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.stop-button:active {
+  background-color: #ff0000
+}
+
 button:disabled {
   border: 1px solid #999999;
   background-color: #cccccc;
