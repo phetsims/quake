@@ -60,7 +60,7 @@ public class NativeVibration extends CordovaPlugin {
      */
     public boolean execute( String action, JSONArray args, CallbackContext callbackContext ) throws JSONException {
         if ( "vibrate".equals( action ) ) {
-            Log.i( "NativeVibration", "recieved vibrate action request" );
+            Log.i( "NativeVibration", "received vibrate action request" );
             Log.i( "NativeVibration", "pattern spec: " + args.getJSONArray( 0 ).toString() );
             boolean repeat = args.getBoolean( 1 );
             Log.i( "NativeVibration", "repeat: " + String.valueOf( repeat ) );

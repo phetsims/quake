@@ -1,7 +1,7 @@
 // Copyright 2022, University of Colorado Boulder
 
 /**
- * Main entry point for the Cordova-based Haptics Playground application.  This sets up each of the screens and the nva
+ * Main entry point for the Cordova-based Haptics Playground application.  This sets up each of the screens and the nav
  * bar once the Cordova framework signals that the device is ready.
  *
  * @author John Blanco (PhET Interactive Simulations)
@@ -13,26 +13,22 @@ import ScreenDebugLogger from './ScreenDebugLogger.js';
 import VibrationPattern from './VibrationPattern.js';
 import VibrationPatternDisplay from './VibrationPatternDisplay.js';
 
-// Create the logger that will output debug messages to the app's screen.
+// Create a logger that can output debug messages to the screen or console depending on how it is configured.
 const logger = new ScreenDebugLogger();
 
-// Wait for the deviceready event before using any of Cordova's device APIs. See
-// https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
-document.addEventListener( 'deviceready', onDeviceReady, false );
-
-function onErrorReadFile( e ) {
+const onErrorReadFile = e => {
   alert( `read file error: ${e}` );
-}
+};
 
-function onErrorCreateFile( e ) {
+const onErrorCreateFile = e => {
   alert( `create file error: ${e}` );
-}
+};
 
-function onErrorLoadFs( e ) {
+const onErrorLoadFs = e => {
   alert( `create file error: ${e}` );
-}
+};
 
-function readFile( fileEntry, onReadSuccess ) {
+const readFile = ( fileEntry, onReadSuccess ) => {
 
   fileEntry.file( file => {
     const reader = new window.FileReader();
@@ -46,11 +42,11 @@ function readFile( fileEntry, onReadSuccess ) {
     reader.readAsText( file );
 
   }, onErrorReadFile );
-}
+};
 
 const noop = () => {};
 
-function writeFile( fileEntry, dataObj, onSuccess = noop ) {
+const writeFile = ( fileEntry, dataObj, onSuccess = noop ) => {
 
   // Create a FileWriter object for our FileEntry (log.txt).
   fileEntry.createWriter( fileWriter => {
@@ -70,7 +66,7 @@ function writeFile( fileEntry, dataObj, onSuccess = noop ) {
 
     fileWriter.write( dataObj );
   } );
-}
+};
 
 /**
  * Get a list of the file names in the provided directory.  This does NOT recursively descend the directory tree, it
@@ -78,7 +74,7 @@ function writeFile( fileEntry, dataObj, onSuccess = noop ) {
  * @param {DirectoryEntry} directoryEntry
  * @param {function} successCallback
  */
-function getFilesInDirectory( directoryEntry, successCallback ) {
+const getFilesInDirectory = ( directoryEntry, successCallback ) => {
 
   // Get a reader for this directory.
   const directoryReader = directoryEntry.createReader();
@@ -97,7 +93,7 @@ function getFilesInDirectory( directoryEntry, successCallback ) {
       alert( `directory reading error = ${error}` );
     }
   );
-}
+};
 
 /**
  * Read the list of files from the specified directory path for this app's local file storage.  This does not return
@@ -105,19 +101,19 @@ function getFilesInDirectory( directoryEntry, successCallback ) {
  * @param {string} path
  * @param {function} callback
  */
-function getLocalFiles( path, callback ) {
+const getLocalFiles = ( path, callback ) => {
   window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
     fs.root.getDirectory( path, {}, directoryEntry => {
       getFilesInDirectory( directoryEntry, callback );
     } );
   } );
-}
+};
 
 /**
  * This handler function is called when Cordova is fully loaded.  In it, all the behavior that is specific to the
  * Haptics Playground app is set up.
  */
-function onDeviceReady() {
+const onDeviceReady = () => {
 
   // startup message
   console.log( `Running cordova-${cordova.platformId}@${cordova.version}` );
@@ -241,33 +237,6 @@ function onDeviceReady() {
   //--------------------------------------------------------------------------------------------------------------------
   // Set up the "Patterns" screen.
   //--------------------------------------------------------------------------------------------------------------------
-
-  // TODO - temporary - Remove some of the previously saved pattern files.  This is useful for getting rid of files
-  //  generated during the debugging of the pattern save/load feature.  Keep this around until the feature is fully
-  //  debugged, then consider making it into a convenience function for future development.
-  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
-    fs.root.getDirectory( '/', {}, directoryEntry => {
-
-      // Get a reader for this directory.
-      const directoryReader = directoryEntry.createReader();
-
-      directoryReader.readEntries(
-        results => {
-          results.forEach( fileEntry => {
-
-            // Change the input to the 'includes' method to determine what gets deleted, but BE CAREFUL with this so
-            // that you don't accidentally blow away anything that you need.
-            if ( fileEntry.isFile && fileEntry.name.includes( '.xxxx' ) ) {
-              fileEntry.remove( () => { alert( 'file removed: ' + fileEntry.name ); } );
-            }
-          } );
-        },
-        error => {
-          alert( `directory reading error = ${error}` );
-        }
-      );
-    } );
-  } );
 
   const vibrationIntensitySlider = new ParameterSlider(
     'vibration-intensity-slider',
@@ -629,4 +598,40 @@ function onDeviceReady() {
       alert( `version number ${versionNumber}` );
     } );
   } );
-}
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // For Debug
+  //--------------------------------------------------------------------------------------------------------------------
+
+  // TODO: The following code was created to remove previously generated files.  As of this writing (Sep 2022), there is
+  //       no feature to do this, so I (jbphet) was doing it by modifying the code below to find and delete the files.
+  //       I am reluctant to remove this code in case we need to implement a file delete feature, so it is being left
+  //       for now.
+  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
+    fs.root.getDirectory( '/', {}, directoryEntry => {
+
+      // Get a reader for this directory.
+      const directoryReader = directoryEntry.createReader();
+
+      directoryReader.readEntries(
+        results => {
+          results.forEach( fileEntry => {
+
+            // Change the input to the 'includes' method to determine what gets deleted, but BE CAREFUL with this so
+            // that you don't accidentally blow away anything that you need.
+            if ( fileEntry.isFile && fileEntry.name.includes( '.xxxx' ) ) {
+              fileEntry.remove( () => { alert( 'file removed: ' + fileEntry.name ); } );
+            }
+          } );
+        },
+        error => {
+          alert( `directory reading error = ${error}` );
+        }
+      );
+    } );
+  } );
+};
+
+// Wait for the deviceready event before using any of Cordova's device APIs. See
+// https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
+document.addEventListener( 'deviceready', onDeviceReady, false );
