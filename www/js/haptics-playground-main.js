@@ -12,101 +12,17 @@ import ParameterSlider from './ParameterSlider.js';
 import ScreenDebugLogger from './ScreenDebugLogger.js';
 import VibrationPattern from './VibrationPattern.js';
 import VibrationPatternDisplay from './VibrationPatternDisplay.js';
+import { readFile, writeFile, getLocalFiles } from './fileUtils.js';
 
 // Create a logger that can output debug messages to the screen or console depending on how it is configured.
 const logger = new ScreenDebugLogger();
 
-const onErrorReadFile = e => {
-  alert( `read file error: ${e}` );
-};
-
+// Define some reusable functions for file operation callbacks,
 const onErrorCreateFile = e => {
   alert( `create file error: ${e}` );
 };
-
 const onErrorLoadFs = e => {
   alert( `create file error: ${e}` );
-};
-
-const readFile = ( fileEntry, onReadSuccess ) => {
-
-  fileEntry.file( file => {
-    const reader = new window.FileReader();
-
-    reader.onloadend = function() {
-      if ( onReadSuccess ) {
-        onReadSuccess( this.result );
-      }
-    };
-
-    reader.readAsText( file );
-
-  }, onErrorReadFile );
-};
-
-const noop = () => {};
-
-const writeFile = ( fileEntry, dataObj, onSuccess = noop ) => {
-
-  // Create a FileWriter object for our FileEntry (log.txt).
-  fileEntry.createWriter( fileWriter => {
-
-    if ( onSuccess !== noop ) {
-      fileWriter.onwriteend = onSuccess;
-    }
-
-    fileWriter.onerror = function( e ) {
-      alert( 'Failed file write: ' + e.toString() );
-    };
-
-    // If data object is not passed in, create a new Blob instead.
-    if ( !dataObj ) {
-      dataObj = new window.Blob( [ 'some file data' ], { type: 'text/plain' } );
-    }
-
-    fileWriter.write( dataObj );
-  } );
-};
-
-/**
- * Get a list of the file names in the provided directory.  This does NOT recursively descend the directory tree, it
- * only gets a list of the files at the top level.
- * @param {DirectoryEntry} directoryEntry
- * @param {function} successCallback
- */
-const getFilesInDirectory = ( directoryEntry, successCallback ) => {
-
-  // Get a reader for this directory.
-  const directoryReader = directoryEntry.createReader();
-  const fileNames = [];
-
-  directoryReader.readEntries(
-    results => {
-      results.forEach( fileEntry => {
-        if ( fileEntry.isFile ) {
-          fileNames.push( fileEntry.name );
-        }
-      } );
-      successCallback( fileNames );
-    },
-    error => {
-      alert( `directory reading error = ${error}` );
-    }
-  );
-};
-
-/**
- * Read the list of files from the specified directory path for this app's local file storage.  This does not return
- * directories and does not recursively descend the file tree.
- * @param {string} path
- * @param {function} callback
- */
-const getLocalFiles = ( path, callback ) => {
-  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
-    fs.root.getDirectory( path, {}, directoryEntry => {
-      getFilesInDirectory( directoryEntry, callback );
-    } );
-  } );
 };
 
 /**
