@@ -93,7 +93,6 @@ p {
   }
 }
 
-/* TODO: This is for showing screens on the Android emulator where the JS isn't running, remove eventually. */
 #settings-screen {
   display: flex;
 }
@@ -267,33 +266,10 @@ button:disabled {
   border-radius: 8px;
 }
 
-#pattern-canvas2 {
-  background-color: #E9D6B4;
-  border: 1px black solid;
-}
-
 .pattern-display {
   font-size: large;
   display: flex;
   flex-direction: column;
-}
-
-.event {
-  border-radius: 4px;
-  color: #FFFFFF;
-  font-size: 12px;
-  margin: 0 30px;
-  padding: 2px 0;
-}
-
-.event.listening {
-  background-color: #333333;
-  display: block;
-}
-
-.event.received {
-  background-color: #4B946A;
-  display: none;
 }
 
 #debugArea {
@@ -360,6 +336,10 @@ button:disabled {
   max-width: 50px;
 }
 
+/* ------------------- end nav bar ------------------- */
+
+/* ------------------- range input ------------------- */
+
 /*
 * Range input (aka slider) styling.  This was mostly taken from web examples, and seems WAY more complicated than it
 * should be.
@@ -418,3 +398,4 @@ input[type=range]::-moz-range-thumb {
   cursor: pointer;
 }
 
+/* ------------------- end range input ------------------- */
