@@ -12,7 +12,7 @@ import ParameterSlider from './ParameterSlider.js';
 import ScreenDebugLogger from './ScreenDebugLogger.js';
 import VibrationPattern from './VibrationPattern.js';
 import VibrationPatternDisplay from './VibrationPatternDisplay.js';
-import { readFile, writeFile, getLocalFiles } from './fileUtils.js';
+import { readFile, writeFile, getLocalFiles, removeAllLocalFilesAtRoot } from './fileUtils.js';
 
 // Create a logger that can output debug messages to the screen or console depending on how it is configured.
 const logger = new ScreenDebugLogger();
@@ -317,16 +317,14 @@ const onDeviceReady = () => {
 
         // Save the file to the local file system.
         window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
-
           fs.root.getFile( saveFileName, { create: true, exclusive: false }, fileEntry => {
-
-            writeFile( fileEntry, patternBlob, () => { alert( `File ${saveFileName} successfully written.` ); } );
-
-            // After writing the file, update the selector that contains the list of loadable files.
             updateLoadablePatternFileList();
-
+            writeFile( fileEntry, patternBlob, () => {
+              updateLoadablePatternFileList();
+              updatePatternButtonStates();
+              updateDefaultSaveFileName();
+            } );
           }, onErrorCreateFile );
-
         }, onErrorLoadFs );
       }
       else {
@@ -338,25 +336,30 @@ const onDeviceReady = () => {
     }
   } );
 
-  // Set the initial value of the save file name to the first unused file name of the form "pattern-x.json", where "x"
-  // is a positive integer.
-  getLocalFiles( '/', fileList => {
+  // Define a close for updating the default name to which the next pattern will be saved.  The user can, of course,
+  // change this name if they so choose by editing the value in the text box.
+  const updateDefaultSaveFileName = () => {
+    getLocalFiles( '/', fileList => {
 
-    // Come up with a default file name that is not yet used, but bail if the number gets ridiculous.
-    const fileNameStem = 'pattern-';
-    const fileNameEnding = '.json';
-    let initialFileName = 'temp' + fileNameEnding;
-    let found = false;
-    for ( let i = 1; i < 1000 && !found; i++ ) {
-      const testFileName = `${fileNameStem}${i}${fileNameEnding}`;
-      if ( !fileList.includes( testFileName ) ) {
-        initialFileName = testFileName;
-        found = true;
+      // Come up with a default file name that is not yet used, but bail if the number gets ridiculous.
+      const fileNameStem = 'pattern-';
+      const fileNameEnding = '.json';
+      let initialFileName = 'temp' + fileNameEnding;
+      let found = false;
+      for ( let i = 1; i < 1000 && !found; i++ ) {
+        const testFileName = `${fileNameStem}${i}${fileNameEnding}`;
+        if ( !fileList.includes( testFileName ) ) {
+          initialFileName = testFileName;
+          found = true;
+        }
       }
-    }
 
-    saveFileNameTextInputElement.value = initialFileName;
-  } );
+      saveFileNameTextInputElement.value = initialFileName;
+    } );
+  };
+
+  // Perform the initial update.
+  updateDefaultSaveFileName();
 
   // Set up the button and handler for loading patterns.  There is platform-specific code here.
   const loadPatternButton = document.getElementById( 'load-pattern-button' );
@@ -417,6 +420,9 @@ const onDeviceReady = () => {
   // Do the initial setup of the load file selector.
   updateLoadablePatternFileList();
 
+  // Add the functionality for exporting the pattern.  This shows a text area on the screen with a JSON representation
+  // of the pattern.  The idea is that users can cut and paste the JSON to share with developers.
+
   const exportPatternButton = document.getElementById( 'export-pattern-button' );
   const exportTextArea = document.getElementById( 'export-text-area' );
   exportTextArea.hidden = true;
@@ -436,14 +442,28 @@ const onDeviceReady = () => {
     exportTextArea.innerText = pattern.getPatternAsJSON();
   };
 
-  // A closure that updates the state - enabled or disabled - of the various pattern manipulation buttons.
+  // Add the functionality for clearing all previously saved patterns.
+  const clearSavedPatternsButton = document.getElementById( 'clear-saved-patterns-button' );
+  clearSavedPatternsButton.addEventListener( 'click', () => {
+    removeAllLocalFilesAtRoot( () => {
+      updateLoadablePatternFileList();
+      updatePatternButtonStates();
+      updateDefaultSaveFileName();
+    } );
+  } );
+
+  // Define a closure that updates the enabled/disabled state of the various pattern manipulation buttons.
   const updatePatternButtonStates = () => {
     const playablePatternExists = pattern.getTotalDuration();
-    playPatternButton.disabled = !( playablePatternExists && !playingRepeatingPattern );
-    stopPatternButton.disabled = !( playablePatternExists && playingRepeatingPattern );
-    clearPatternElementButton.disabled = pattern.length === 0;
-    exportPatternButton.disabled = !playablePatternExists;
-    savePatternButton.disabled = !playablePatternExists;
+    getLocalFiles( '/', fileList => {
+      const localFilesExist = fileList.length > 0;
+      playPatternButton.disabled = !( playablePatternExists && !playingRepeatingPattern );
+      stopPatternButton.disabled = !( playablePatternExists && playingRepeatingPattern );
+      clearPatternElementButton.disabled = !playablePatternExists;
+      exportPatternButton.disabled = !playablePatternExists;
+      savePatternButton.disabled = !playablePatternExists;
+      clearSavedPatternsButton.disabled = !localFilesExist;
+    } );
   };
 
   // Do the initial button state update.
@@ -522,38 +542,6 @@ const onDeviceReady = () => {
   document.getElementById( 'image-container' ).addEventListener( 'dblclick', () => {
     cordova.getAppVersion.getVersionNumber().then( versionNumber => {
       alert( `version number ${versionNumber}` );
-    } );
-  } );
-
-  //--------------------------------------------------------------------------------------------------------------------
-  // For Debug
-  //--------------------------------------------------------------------------------------------------------------------
-
-  // TODO: The following code was created to remove previously generated files.  As of this writing (Sep 2022), there is
-  //       no feature to do this, so I (jbphet) was doing it by modifying the code below to find and delete the files.
-  //       I am reluctant to remove this code in case we need to implement a file delete feature, so it is being left
-  //       for now.
-  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
-    fs.root.getDirectory( '/', {}, directoryEntry => {
-
-      // Get a reader for this directory.
-      const directoryReader = directoryEntry.createReader();
-
-      directoryReader.readEntries(
-        results => {
-          results.forEach( fileEntry => {
-
-            // Change the input to the 'includes' method to determine what gets deleted, but BE CAREFUL with this so
-            // that you don't accidentally blow away anything that you need.
-            if ( fileEntry.isFile && fileEntry.name.includes( '.xxxx' ) ) {
-              fileEntry.remove( () => { alert( 'file removed: ' + fileEntry.name ); } );
-            }
-          } );
-        },
-        error => {
-          alert( `directory reading error = ${error}` );
-        }
-      );
     } );
   } );
 };

@@ -92,4 +92,39 @@ const getLocalFiles = ( path, callback ) => {
   } );
 };
 
-export { readFile, writeFile, getLocalFiles };
+/**
+ * Remove all files at the root of the local directory.  Use with caution.
+ */
+const removeAllLocalFilesAtRoot = callback => {
+
+  window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
+    fs.root.getDirectory( '/', {}, directoryEntry => {
+      const directoryReader = directoryEntry.createReader();
+
+      const fileRemovalPromises = [];
+
+      // Read the directory.
+      directoryReader.readEntries(
+        results => {
+
+          // For each file entry that is actually a file, command it to be deleted and put the resulting promise on a
+          // list so that we can call the callback when all files have been removed.
+          results.forEach( fileEntry => {
+            if ( fileEntry.isFile ) {
+              fileRemovalPromises.push( fileEntry.remove( noop ) );
+            }
+          } );
+        },
+        error => {
+          alert( `directory reading error = ${error}` );
+        }
+      );
+
+      Promise.all( fileRemovalPromises )
+        .then( callback )
+        .catch( e => { alert( `error removing files: ${e}` ); } );
+    } );
+  } );
+};
+
+export { readFile, writeFile, getLocalFiles, removeAllLocalFilesAtRoot };
