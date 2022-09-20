@@ -318,7 +318,6 @@ const onDeviceReady = () => {
         // Save the file to the local file system.
         window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, fs => {
           fs.root.getFile( saveFileName, { create: true, exclusive: false }, fileEntry => {
-            updateLoadablePatternFileList();
             writeFile( fileEntry, patternBlob, () => {
               updateLoadablePatternFileList();
               updatePatternButtonStates();
@@ -398,7 +397,8 @@ const onDeviceReady = () => {
       loadablePatternFileSelector.remove( i );
     }
 
-    // Add a list of all files in the top level of the app's local storage area to the select element.
+    // Get a list of all files in the top level directory of this app's local storage area and add them to the selector.
+    // If there are no files, add a placeholder message.
     getLocalFiles( '/', fileList => {
       if ( fileList.length > 0 ) {
         fileList.forEach( ( fileName, index ) => {
