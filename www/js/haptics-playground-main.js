@@ -445,11 +445,14 @@ const onDeviceReady = () => {
   // Add the functionality for clearing all previously saved patterns.
   const clearSavedPatternsButton = document.getElementById( 'clear-saved-patterns-button' );
   clearSavedPatternsButton.addEventListener( 'click', () => {
-    removeAllLocalFilesAtRoot( () => {
-      updateLoadablePatternFileList();
-      updatePatternButtonStates();
-      updateDefaultSaveFileName();
-    } );
+    const confirmed = window.confirm( 'Remove all saved patterns?' );
+    if ( confirmed ) {
+      removeAllLocalFilesAtRoot( () => {
+        updateLoadablePatternFileList();
+        updatePatternButtonStates();
+        updateDefaultSaveFileName();
+      } );
+    }
   } );
 
   // Define a closure that updates the enabled/disabled state of the various pattern manipulation buttons.
