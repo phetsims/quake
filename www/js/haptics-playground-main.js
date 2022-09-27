@@ -8,11 +8,11 @@
  */
 
 import EnhancedVibration from './EnhancedVibration.js';
+import { getLocalFiles, readFile, removeAllLocalFilesAtRoot, writeFile } from './fileUtils.js';
 import ParameterSlider from './ParameterSlider.js';
 import ScreenDebugLogger from './ScreenDebugLogger.js';
 import VibrationPattern from './VibrationPattern.js';
 import VibrationPatternDisplay from './VibrationPatternDisplay.js';
-import { readFile, writeFile, getLocalFiles, removeAllLocalFilesAtRoot } from './fileUtils.js';
 
 // Create a logger that can output debug messages to the screen or console depending on how it is configured.
 const logger = new ScreenDebugLogger();
@@ -375,6 +375,7 @@ const onDeviceReady = () => {
             pattern.loadJSON( fileData );
             repeatCheckbox.checked = pattern.repeat;
             patternDisplay.renderPattern( pattern );
+            loadablePatternFileSelector.selectedIndex = 0;
             updatePatternButtonStates();
           } );
         }, onErrorCreateFile );
@@ -387,6 +388,9 @@ const onDeviceReady = () => {
   } );
 
   const loadablePatternFileSelector = document.getElementById( 'loadable-files-selector' );
+
+  // Update button states when the loadable file selector changes.
+  loadablePatternFileSelector.addEventListener( 'change', () => { updatePatternButtonStates(); } );
 
   // Closure to update the list of loadable patterns.
   const updateLoadablePatternFileList = () => {
@@ -401,18 +405,22 @@ const onDeviceReady = () => {
     // If there are no files, add a placeholder message.
     getLocalFiles( '/', fileList => {
       if ( fileList.length > 0 ) {
+
+        // Add a message about choosing a file in the first element of the selector.
+        const firstOption = document.createElement( 'option' );
+        firstOption.text = '(select pattern file to load)';
+        loadablePatternFileSelector.add( firstOption );
+
         fileList.forEach( ( fileName, index ) => {
-          const option = document.createElement( 'option' );
-          option.text = fileName;
-          loadablePatternFileSelector.add( option, loadablePatternFileSelector[ index ] );
+          const fileNameOption = document.createElement( 'option' );
+          fileNameOption.text = fileName;
+          loadablePatternFileSelector.add( fileNameOption, 1 );
         } );
-        loadPatternButton.disabled = false;
       }
       else {
         const option = document.createElement( 'option' );
         option.text = '(no pattern files found)';
-        loadablePatternFileSelector.add( option, loadablePatternFileSelector[ 0 ] );
-        loadPatternButton.disabled = true;
+        loadablePatternFileSelector.add( option );
       }
     } );
   };
@@ -458,15 +466,15 @@ const onDeviceReady = () => {
   // Define a closure that updates the enabled/disabled state of the various pattern manipulation buttons.
   const updatePatternButtonStates = () => {
     const playablePatternExists = pattern.getTotalDuration();
-    getLocalFiles( '/', fileList => {
-      const localFilesExist = fileList.length > 0;
-      playPatternButton.disabled = !( playablePatternExists && !playingRepeatingPattern );
-      stopPatternButton.disabled = !( playablePatternExists && playingRepeatingPattern );
-      clearPatternElementButton.disabled = !playablePatternExists;
-      exportPatternButton.disabled = !playablePatternExists;
-      savePatternButton.disabled = !playablePatternExists;
-      clearSavedPatternsButton.disabled = !localFilesExist;
-    } );
+    const localFilesExist = loadablePatternFileSelector.options.length > 1;
+    const loadableFileSelected = loadablePatternFileSelector.selectedIndex > 0;
+    playPatternButton.disabled = !( playablePatternExists && !playingRepeatingPattern );
+    stopPatternButton.disabled = !( playablePatternExists && playingRepeatingPattern );
+    clearPatternElementButton.disabled = !playablePatternExists;
+    exportPatternButton.disabled = !playablePatternExists;
+    savePatternButton.disabled = !playablePatternExists;
+    clearSavedPatternsButton.disabled = !localFilesExist;
+    loadPatternButton.disabled = !loadableFileSelected;
   };
 
   // Do the initial button state update.
