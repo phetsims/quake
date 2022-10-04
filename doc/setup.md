@@ -21,21 +21,22 @@ Setup" with some suggestions about what to try if things don't go well.
 
 ### Setup Steps
 
-1. Make sure you have a Java 1.8.x JDK installed.  Cordova requires this.  The latest JDKs don't work.  Don't know why.
+1. Make sure you have a Java 11.x JDK installed.  Cordova 11.0.0 requires this.
 2. You'll need an environment variable `JAVA_HOME` that points to the root direction of the JDK.  The value will look
-something like `C:\Program Files\Java\jdk1.8.0_301` on a Windows system.
+something like `C:\Program Files\Java\jdk-11.0.15.1` on a Windows system.
 3. Install Android Studio.  The SDKs that come with it are needed to build the Android app, and the studio is used for
 testing and debugging.
-4. From within Android Studio, use Tools->SDK Manager to install SDK 11.0 (Oreo), API version 30.
-5. Add an environment variable (if it doesn't already exist) `ANDROID_SDK_ROOT` that points to your Android SDK root.
-6. The value will be something like `C:\Users\bob\AppData\Local\Android\Sdk`
-7. Install `gradle`, which is a build tool used by Android Studio, by following the instructions in the section
+4. From within Android Studio, use Tools->SDK Manager to install SDK 12.0, API level 31.
+5. Also from the SDK manager, install the latest build tools.  By the end of this effort, we were using version 33.
+6. Add an environment variable (if it doesn't already exist) `ANDROID_SDK_ROOT` that points to your Android SDK root.
+7. The value will be something like `C:\Users\bob\AppData\Local\Android\Sdk`
+8. Install `gradle`, which is a build tool used by Android Studio, by following the instructions in the section
 "Installing manually" of the installation guide at https://gradle.org/install/ (binary only).
-8. Add the path to gradle to your system path, e.g. `C:\gradle-7.4.2\bin`
-9. If cordova isn't already installed, install it globally using `npm install -g cordova`
-10. Clone this repo (quake).  This repo has no dependencies on other PhET repos, so it isn't necessary to clone or pull
-any others.
-11. From the root of your local copy of this repo, run each of the following commands, making sure that each one is
+9. Add the path to gradle to your system path, e.g. `C:\gradle-7.4.2\bin`
+10. If cordova isn't already installed, install it globally using `npm install -g cordova`
+11. Clone this repo (quake) if you haven't already.  This repo has no dependencies on other PhET repos, so it isn't\
+necessary to clone or pull any others.
+13. From the root of your local copy of this repo, run each of the following commands, making sure that each one is
 successful.
   - Run `npm install` to get the needed node modules.
   - Run `cordova platform add android` to install the Android platform files.
@@ -53,8 +54,7 @@ install virtual devices and/or connect physical devices, and run the app using t
 
 - There is an odd problem that came up every time this development environment was set up by either @jbphet or
 @jessegreenberg.  The symptoms were that builds fail with a message like "Installed Build Tools revision 30.0.0 is
-corrupted".  If you run into this, follow the steps from this Stack
-Overflow article and rename some of the tools: 
+corrupted".  If you run into this, follow the steps from this Stack Overflow article and rename some of the tools: 
 https://stackoverflow.com/questions/68387270/android-studio-error-installed-build-tools-revision-31-0-0-is-corrupted
 - During one setup of the development environment on a Windows 11 PC, the installation of Android Studio didn't install
 the desired SDKs, and I (jbphet) had to use the command line tools to uninstall the SDK and install the ones that were
