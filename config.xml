@@ -12,7 +12,8 @@
     <access origin="*" />
     <platform name="android">
         <preference name="android-minSdkVersion" value="26" />
-        <preference name="android-targetSdkVersion" value="30" />
+        <preference name="android-targetSdkVersion" value="31" />
+        <preference name="android-buildToolsVersion" value="32" />
         <preference name="AndroidPersistentFileLocation" value="Internal" />
         <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
         <icon src="res/android/hp-icon-36-by-36.png" density="ldpi" />
