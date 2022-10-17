@@ -70,22 +70,16 @@ public class NativeVibration extends CordovaPlugin {
             int[] intensities = new int[patternSpec.length()];
             for ( int i = 0; i < patternSpec.length(); i++ ) {
                 JSONObject vibrationSpec = patternSpec.getJSONObject( i );
-                Log.i( "NativeVibration", vibrationSpec.get( "duration" ).toString() );
                 durations[i] = Math.round( vibrationSpec.getDouble( "duration" ) * 1000 );
-                Log.i( "NativeVibration", vibrationSpec.get( "intensity" ).toString() );
                 int adjustedIntensity = (int) Math.round( vibrationSpec.getDouble( "intensity" ) * 255 );
-                Log.i( "NativeVibration", String.valueOf( adjustedIntensity ) );
                 intensities[i] = adjustedIntensity;
             }
             this.vibrator.vibrate( VibrationEffect.createWaveform( durations, intensities, repeatIndex ) );
-            Log.i( "NativeVibration", "done" );
             JSONObject r = new JSONObject();
             callbackContext.success( r );
         }
         else if ( "cancel".equals( action ) ) {
-            Log.i( "NativeVibration", "received cancel action request" );
             this.vibrator.cancel();
-            Log.i( "NativeVibration", "done" );
             JSONObject r = new JSONObject();
             callbackContext.success( r );
         }
