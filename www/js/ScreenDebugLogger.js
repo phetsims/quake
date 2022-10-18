@@ -31,7 +31,7 @@ class ScreenDebugLogger {
    * @public
    */
   log( message ) {
-    const messageWithTimestamp = ( ( Date.now() - this.timeOfConstruction ) / 1000 ).toFixed( 3 ) + ': ' + message; // eslint-disable-line bad-sim-text
+    const messageWithTimestamp = ( ( Date.now() - this.timeOfConstruction ) / 1000 ).toFixed( 3 ) + ': ' + message;
     if ( MODE === 'screen' ) {
       if ( this.messageBuffer.length >= MAX_MESSAGES ) {
         this.messageBuffer.pop();

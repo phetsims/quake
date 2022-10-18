@@ -30,4 +30,4 @@ type NativeVibration = {
   serial: string;
 };
 
-declare const device: NativeVibration; // eslint-disable-line
+declare const device: NativeVibration;
