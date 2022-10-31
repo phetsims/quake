@@ -13,13 +13,15 @@
   "author": "PhET Interactive Simulations",
   "license": "GPL-3.0",
   "devDependencies": {
-    "cordova-android": "^11.0.0",
+    "cordova-android": "^10.1.2",
     "cordova-browser": "^6.0.0",
     "cordova-plugin-app-version": "^0.1.13",
     "cordova-plugin-file": "^7.0.0",
     "cordova-plugin-filepath": "^1.6.0",
+    "cordova-plugin-media": "^6.1.0",
     "cordova-plugin-native-vibration": "file:cordova-plugin-native-vibration",
     "cordova-plugin-vibration": "^3.1.1",
+    "device": "^0.3.12",
     "grunt": "~1.5.3"
   },
   "cordova": {
@@ -28,7 +30,8 @@
       "cordova-plugin-app-version": {},
       "cordova-plugin-file": {},
       "cordova-plugin-filepath": {},
-      "cordova-plugin-native-vibration": {}
+      "cordova-plugin-native-vibration": {},
+      "cordova-plugin-media": {}
     },
     "platforms": [
       "browser",
@@ -47,8 +50,8 @@
     ],
     "globals": {
       "alert": "readonly",
-      "chooser": "readonly",
       "cordova": "readonly",
+      "Media": "readonly",
       "navigator": "readonly",
       "nativeVibration": "readonly",
       "Response": "readonly",

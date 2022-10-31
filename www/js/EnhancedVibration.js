@@ -10,10 +10,22 @@ import VibrationPattern from './VibrationPattern.js';
  * @author John Blanco (PhET Interactive Simulations)
  */
 
-const soundURL = './sounds/haptic-buzz-loop-v2-006.wav';
-const GAIN_CHANGE_TIME_CONSTANT = 0.005; // empirically determined to be pretty fast but not cause clicks
+const SOUND_FILE_NAME = 'haptic-buzz-loop-v2-006.wav';
 const NOOP = () => {};
 const ALERT_ERROR = e => { alert( `Error: ${e}` ); };
+
+// TODO - temporary code for testing native audio. ===================================================================
+
+// TODO - do I need the following file-system-related code?
+// function gotFS( fileSystem ) {
+// save the file system for later access
+// window.rootFS = fileSystem.root;
+// }
+
+// window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+// window.requestFileSystem( window.LocalFileSystem.PERSISTENT, 0, gotFS, () => { alert( 'fail' );} );
+
+// End of temporary code =============================================================================================
 
 class EnhancedVibration {
 
@@ -22,53 +34,42 @@ class EnhancedVibration {
     // @public {boolean} - flag used to control whether sounds should be played with the vibrations
     this.soundEnabled = false;
 
-    // @private {AudioContext} - audio context used for sound operations
-    this.audioContext = null;
-
-    // @private {AudioBuffer} - sound that will be played to match vibrations, if enabled
-    this.soundBuffer = null;
-
     // @private {number} - timer ID for the current in-progress sound timer if there is one, null if not
     this.soundTimerID = null;
-
-    // @private {AudioBufferSourceNode} - sound that is currently being played if there is one, null if not
-    this.audioBufferSourceNode = null;
 
     // @private {number} - index of the pattern element that is currently being played, -1 indicates none
     this.soundPatternIndex = -1;
 
-    // Create the audio context, needed for sound generation.
-    try {
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-      this.audioContext = new window.AudioContext();
+    // @private {boolean} - A flag that tracks whether the sound is currently playing.  The sound can be playing but
+    // inaudible if we're in the middle of playing a pattern, and it isn't possible to query the media element for its
+    // playing state, so this is where we track it.
+    this.isSoundPlaying = false;
+
+    // ============================== alternative approach =================
+    // This is a kind of hokey way to find the vibration file on either the browser or Android.  The
+    // "cordova-plugin-device" was breaking everything, so that couldn't be used, and the file system does not seem to
+    // be very consistent across platforms.  This worked, ugly as it is, but if this app lives on, we may want to
+    // improve this someday.
+    let assetDirectoryPath;
+    if ( cordova.file.applicationDirectory.includes( 'http' ) ) {
+
+      // browser platform
+      assetDirectoryPath = './';
     }
-    catch( e ) {
-      alert( 'Web Audio API is not supported in this browser, no sounds will be generated.' );
+    else {
+
+      // android platform
+      assetDirectoryPath = cordova.file.applicationDirectory + 'www/';
     }
 
-    // @private {GainNode} - gain node through which the sound is routed
-    this.gainNode = this.audioContext.createGain();
-    this.gainNode.gain.setValueAtTime( 0, this.audioContext.currentTime );
-    this.gainNode.connect( this.audioContext.destination );
-
-    // Load and decode the sound.
-    const onDecodeSuccess = decodedAudio => {
-      this.soundBuffer = decodedAudio;
-      console.log( 'sound decoded successfully' );
-    };
-    const onDecodeError = decodeError => {
-      alert( 'decode of audio data failed, sound will not be available, error: ' + decodeError );
-      this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
-    };
-
-    // Load and decode the sound.
-    fetchLocal( soundURL )
-      .then( response => response.arrayBuffer() )
-      .then( arrayBuffer => this.audioContext.decodeAudioData( arrayBuffer, onDecodeSuccess, onDecodeError ) )
-      .catch( reason => {
-        console.error( 'sound load failed: ' + reason );
-        this.soundBuffer = this.audioContext.createBuffer( 1, 1, this.audioContext.sampleRate );
-      } );
+    // Create the media (sound) object.
+    const soundFilePath = `${assetDirectoryPath}sounds/${SOUND_FILE_NAME}`;
+    console.log( `soundFilePath = ${soundFilePath}` );
+    this.vibrationSound = new Media(
+      soundFilePath,
+      NOOP,
+      e => { alert( `media error, message = ${e.message}, code = ${e.code}` ); }
+    );
   }
 
   /**
@@ -78,22 +79,18 @@ class EnhancedVibration {
    */
   playVibrationSoundPattern( pattern ) {
 
-    // Cancel any sound pattern that is already being played.
-    this.cancelSound();
-
-    // Turn up the gain so that sound will be heard as soon as it is started.  If a sound was just stopped, this could
-    // cause the tail end of that sound to be heard, but this is a rare situation, and a tradeoff we're willing to live
-    // with.
-    const now = this.audioContext.currentTime;
-    this.gainNode.gain.cancelScheduledValues( now );
-    this.gainNode.gain.setValueAtTime( 1, now );
-
-    // Create the audio buffer source and start it playing.
-    this.audioBufferSourceNode = this.audioContext.createBufferSource();
-    this.audioBufferSourceNode.buffer = this.soundBuffer;
-    this.audioBufferSourceNode.loop = true;
-    this.audioBufferSourceNode.connect( this.gainNode );
-    this.audioBufferSourceNode.start();
+    // Stop any sound pattern that is in progress, start the sound playing for this new pattern.
+    if ( this.soundTimerID ) {
+      clearTimeout( this.soundTimerID );
+      this.soundTimerID = null;
+    }
+    if ( this.isSoundPlaying ) {
+      this.vibrationSound.setVolume( 0 );
+    }
+    else {
+      this.vibrationSound.play();
+      this.isSoundPlaying = true;
+    }
 
     // Set the internal index to the initial value needed for playing patterns.
     this.soundPatternIndex = -1;
@@ -119,15 +116,9 @@ class EnhancedVibration {
 
     // Determine whether there is more pattern to be played.
     if ( this.soundPatternIndex < pattern.length ) {
-      const now = this.audioContext.currentTime;
-      this.gainNode.gain.cancelScheduledValues( now );
 
-      // Set the gain based on the intensity of what is now the current step in the pattern.
-      this.gainNode.gain.setTargetAtTime(
-        pattern.elements[ this.soundPatternIndex ].intensity,
-        now,
-        GAIN_CHANGE_TIME_CONSTANT
-      );
+      // Set the volume based on the intensity of what is now the current step in the pattern.
+      this.vibrationSound.setVolume( pattern.elements[ this.soundPatternIndex ].intensity );
 
       // Set a timer to step to the next step in the pattern what it is time to do so.
       this.soundTimerID = setTimeout(
@@ -151,14 +142,11 @@ class EnhancedVibration {
       clearTimeout( this.soundTimerID );
       this.soundTimerID = null;
     }
-    if ( this.audioBufferSourceNode ) {
-      this.gainNode.gain.setTargetAtTime( 0, this.audioContext.currentTime, GAIN_CHANGE_TIME_CONSTANT );
-
-      // Stop the signal, but not right away or there will be an audible click.  The multiplier for the time was
-      // empirically determined, adjust as needed.
-      this.audioBufferSourceNode.stop( this.audioContext.currentTime + GAIN_CHANGE_TIME_CONSTANT * 10 );
-    }
     this.soundPatternIndex = -1;
+    if ( this.isSoundPlaying ) {
+      this.vibrationSound.stop();
+      this.isSoundPlaying = false;
+    }
   }
 
   /**
@@ -233,28 +221,6 @@ class EnhancedVibration {
       console.warn( 'error when trying to call cancel: ' + e );
     }
   }
-}
-
-/**
- * Helper function for fetching resources.  This was needed for Haptics Playground because window.fetch doesn't work in
- * all of the needed situations.
- *
- * @param {string} url
- * @returns {Promise<ArrayBuffer>}
- */
-function fetchLocal( url ) {
-  return new Promise( ( resolve, reject ) => {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = () => {
-      resolve( new Response( xhr.response, { status: xhr.status } ) );
-    };
-    xhr.onerror = () => {
-      reject( new TypeError( 'Local request failed' ) );
-    };
-    xhr.open( 'GET', url );
-    xhr.responseType = 'arraybuffer';
-    xhr.send( null );
-  } );
 }
 
 export default EnhancedVibration;

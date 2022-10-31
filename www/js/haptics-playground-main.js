@@ -72,14 +72,14 @@ const onDeviceReady = () => {
   // Hook up the buttons for the "Clicks" screen.
   const singleClickButton = document.getElementById( 'singleClickButton' );
   singleClickButton.addEventListener( 'click', () => {
-    vibration.vibrateOnce( clickDurationSlider.value / 1000, clickIntensitySlider.value );
+    vibration.vibrateOnce( clickDurationSlider.value / 1000, Number.parseFloat( clickIntensitySlider.value ) );
   } );
 
   const doubleClickButton = document.getElementById( 'doubleClickButton' );
   doubleClickButton.addEventListener( 'click', () => {
     vibration.vibrateDoubleClick(
       clickDurationSlider.value / 1000,
-      clickIntensitySlider.value,
+      Number.parseFloat( clickIntensitySlider.value ),
       interClickTimeSlider.value / 1000
     );
   } );
@@ -105,7 +105,7 @@ const onDeviceReady = () => {
       for ( let i = 0; i < numberOfClicksInput.value; i++ ) {
 
         // Add the vibration portion.
-        vibrationPattern.addVibration( clickDurationSlider.value / 1000, clickIntensitySlider.value );
+        vibrationPattern.addVibration( clickDurationSlider.value / 1000, Number.parseFloat( clickIntensitySlider.value ) );
 
         // Add the inter-vibration space.
         vibrationPattern.addSpace( interClickTimeSlider.value / 1000 );
@@ -143,7 +143,7 @@ const onDeviceReady = () => {
   const buzzButton = document.getElementById( 'buzzButton' );
   buzzButton.addEventListener( 'click', () => {
     try {
-      vibration.vibrateOnce( buzzDurationSlider.value / 1000, buzzIntensitySlider.value );
+      vibration.vibrateOnce( buzzDurationSlider.value / 1000, Number.parseFloat( buzzIntensitySlider.value ) );
     }
     catch( e ) {
       logger.log( 'error when trying to call vibrate: ' + e );
@@ -215,7 +215,7 @@ const onDeviceReady = () => {
   addVibrationToPatternButton.addEventListener( 'click', () => {
 
     // Add the vibration to the pattern.
-    pattern.addVibration( vibrationDurationSlider.value / 1000, vibrationIntensitySlider.value );
+    pattern.addVibration( vibrationDurationSlider.value / 1000, Number.parseFloat( vibrationIntensitySlider.value ) );
 
     // Update the pattern display.
     patternDisplay.clear();
