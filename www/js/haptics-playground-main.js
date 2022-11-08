@@ -87,13 +87,13 @@ const onDeviceReady = () => {
   // Set up the input for the number of clicks that will be played by the "multi clicks" button.
   const numberOfClicksInput = document.getElementById( 'number-of-clicks' );
   numberOfClicksInput.value = 3; // initial value
-  numberOfClicksInput.addEventListener( 'input', () => {
+  numberOfClicksInput.addEventListener( 'change', () => {
     const inputValueAsNumber = Number( numberOfClicksInput.value );
-    if ( inputValueAsNumber > 9 ) {
-      numberOfClicksInput.value = 9;
+    if ( inputValueAsNumber > 10 ) {
+      numberOfClicksInput.value = 10;
     }
-    else if ( inputValueAsNumber < 1 ) {
-      numberOfClicksInput.value = 1;
+    else if ( inputValueAsNumber < 3 ) {
+      numberOfClicksInput.value = 3;
     }
   } );
 
@@ -411,7 +411,7 @@ const onDeviceReady = () => {
         firstOption.text = '(select pattern file to load)';
         loadablePatternFileSelector.add( firstOption );
 
-        fileList.forEach( ( fileName, index ) => {
+        fileList.forEach( fileName => {
           const fileNameOption = document.createElement( 'option' );
           fileNameOption.text = fileName;
           loadablePatternFileSelector.add( fileNameOption, 1 );
