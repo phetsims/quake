@@ -13,13 +13,13 @@
   "author": "PhET Interactive Simulations",
   "license": "GPL-3.0",
   "devDependencies": {
-    "cordova-android": "^11.0.0",
-    "cordova-browser": "^6.0.0",
-    "cordova-plugin-app-version": "^0.1.13",
-    "cordova-plugin-file": "^7.0.0",
-    "cordova-plugin-filepath": "^1.6.0",
+    "cordova-android": "~11.0.0",
+    "cordova-browser": "~6.0.0",
+    "cordova-plugin-app-version": "~0.1.13",
+    "cordova-plugin-file": "~7.0.0",
+    "cordova-plugin-filepath": "~1.6.0",
     "cordova-plugin-native-vibration": "file:cordova-plugin-native-vibration",
-    "cordova-plugin-vibration": "^3.1.1",
+    "cordova-plugin-vibration": "~3.1.1",
     "grunt": "~1.5.3"
   },
   "cordova": {
