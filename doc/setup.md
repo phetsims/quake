@@ -2,22 +2,22 @@ Setting Up Quake to Build the Haptics Playground Apps
 =====================================================
 
 The quake repo is the home for a multi-platform app that allows users to experiment with haptics on different devices.
-The app uses Apache Cordova, which enables developers to write code in HTML, JavaScript, and CSS, and then build the
-app to run on different platforms. This document describes the steps necessary to set up the build environment.
+The app uses Apache Cordova, which enables developers to write code in HTML, JavaScript, and CSS, and then build the app
+to run on different platforms. This document describes the steps necessary to set up the build environment.
 
-The original goal of the development effort was to create an Android app. Cordova was used so that PhET developers
-could do the development in JavaScript. This allowed the development and debugging to work on Android devices but also
-to run in the browser. The setup process below describes setup for these two target environments. Running on iOS was
-never tested, since iOS tablets do not general support vibrational haptics.
+The original goal of the development effort was to create an Android app. Cordova was used so that PhET developers could
+do the development in JavaScript. This allowed the development and debugging to work on Android devices but also to run
+in the browser. The setup process below describes setup for these two target environments. Running on iOS was never
+tested, since iOS tablets do not general support vibrational haptics.
 
 It is assumed that `node` and `npm` are already installed and available on the machine where this setup is being done.
 If not, they should be installed before continuing.
 
 In practice, the process of setting up the development environment and getting to where the app could be built and run
-on an Android device and in a browser was fiddly and time-consuming. Please be prepared for this. The steps below
-are an attempt to linearize all the gyrations that eventually led to a working setup, but that setup is, in our
-experience, unlikely to be smooth. There is a paragraph below the main setup steps entitled "If Problems Occur During
-Setup" with some suggestions about what to try if things don't go well.
+on an Android device and in a browser was fiddly and time-consuming. Please be prepared for this. The steps below are an
+attempt to linearize all the gyrations that eventually led to a working setup, but that setup is, in our experience,
+unlikely to be smooth. There is a paragraph below the main setup steps entitled "If Problems Occur During Setup" with
+some suggestions about what to try if things don't go well.
 
 ### Setup Steps
 

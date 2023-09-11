@@ -12,8 +12,8 @@ part: https://codeburst.io/publish-a-cordova-generated-android-app-to-the-google
 
 - [ ] Make sure the version number is correct and matches in the `package.json` file and the `config.xml` file that both
   exist at the top level of the `quake` repo.
-- [ ] Build and test the debug version via the usual `grunt` process on main, the do some sanity testing to verify
-  that this release is ready to publish.
+- [ ] Build and test the debug version via the usual `grunt` process on main, the do some sanity testing to verify that
+  this release is ready to publish.
 - [ ] 
   Run `cordova build android --release -- --keystore=<path to keystore> --storePassword=<keystore-password> --alias=upload --password=<key-password> --packageType=bundle`
   to build the signed app bundle.
