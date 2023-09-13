@@ -45,9 +45,6 @@
       "platforms/",
       "plugins/"
     ],
-    "rules": {
-      "todo-should-have-issue": "off"
-    },
     "globals": {
       "alert": "readonly",
       "chooser": "readonly",

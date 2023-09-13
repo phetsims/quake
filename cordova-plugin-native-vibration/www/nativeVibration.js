@@ -15,7 +15,7 @@ const channel = require( 'cordova/channel' );
 const exec = require( 'cordova/exec' );
 const cordova = require( 'cordova' );
 
-// TODO: This was in the leveraged Device plugin.  Can it be removed?
+// TODO: This was in the leveraged Device plugin.  Can it be removed? https://github.com/phetsims/tasks/issues/1129
 channel.createSticky( 'onCordovaInfoReady' );
 
 // Tell cordova channel to wait on the CordovaInfoReady event
