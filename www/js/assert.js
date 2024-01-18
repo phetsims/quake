@@ -2,6 +2,8 @@
 
 /**
  * simple assertion function, aids in debugging
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 const assert = ( conditional, message ) => {
   if ( !conditional ) {

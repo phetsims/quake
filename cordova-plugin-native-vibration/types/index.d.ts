@@ -5,6 +5,8 @@
 /**
  * This plugin defines a global device object, which describes the device's hardware and software.
  * Although the object is in the global scope, it is not available until after the deviceready event.
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 type NativeVibration = {
   /** Get the version of Cordova running on the device. */

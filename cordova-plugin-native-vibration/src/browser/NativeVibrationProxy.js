@@ -1,5 +1,9 @@
 // Copyright 2022, University of Colorado Boulder
 
+/**
+ * @author John Blanco (PhET Interactive Simulations)
+ */
+
 module.exports = {
   vibrate: ( success, error ) => {
     // Note: This doesn't actually do anything yet, and it may not be necessary that it ever does.  Perhaps it could
