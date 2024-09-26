@@ -38,21 +38,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/phetsims/quake.git"
-  },
-  "eslintConfig": {
-    "extends": "../chipper/eslint/node_eslintrc.js",
-    "ignorePatterns": [
-      "platforms/",
-      "plugins/"
-    ],
-    "globals": {
-      "alert": "readonly",
-      "chooser": "readonly",
-      "cordova": "readonly",
-      "navigator": "readonly",
-      "nativeVibration": "readonly",
-      "Response": "readonly",
-      "XMLHttpRequest": "readonly"
-    }
   }
 }
