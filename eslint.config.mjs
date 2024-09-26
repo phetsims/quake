@@ -12,10 +12,6 @@ import nodeEslintConfig from '../chipper/eslint/node.eslint.config.mjs';
 export default [
   ...nodeEslintConfig,
   {
-    ignores: [
-      'platforms/',
-      'plugins/'
-    ],
     languageOptions: {
       globals: {
         alert: 'readonly',
@@ -27,5 +23,11 @@ export default [
         XMLHttpRequest: 'readonly'
       }
     }
+  },
+  {
+    ignores: [
+      'platforms/',
+      'plugins/'
+    ]
   }
 ];
