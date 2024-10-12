@@ -1,7 +1,7 @@
 {
-  "extends": "../chipper/tsconfig-browser.json",
+  "extends": "../chipper/tsconfig/shared/tsconfig-browser.json",
   "include": [
-    "cordova-plugin-native-vibration/types/**/*",
+    "cordova-plugin-native-vibration/types/**/*"
   ],
   "references": [
     {
