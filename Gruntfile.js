@@ -1,6 +1,6 @@
 // Copyright 2020-2024, University of Colorado Boulder
 
-const Gruntfile = require( '../chipper/js/grunt/Gruntfile' );
+const Gruntfile = require( '../chipper/Gruntfile' );
 const registerTasks = require( '../perennial/js/grunt/util/registerTasks' );
 
 /**
