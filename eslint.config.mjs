@@ -11,9 +11,7 @@ const nodeFiles = [
 ];
 
 const browserFilesPattern = {
-  files: [
-    '**/*'
-  ],
+  files: [ '**/*' ],
   ignores: nodeFiles
 };
 
@@ -26,10 +24,7 @@ const browserFilesPattern = {
 export default [
   ...rootEslintConfig,
   ...getBrowserConfiguration( browserFilesPattern ),
-  ...getNodeConfiguration( {
-    files: nodeFiles
-  } ),
-
+  ...getNodeConfiguration( { files: nodeFiles } ),
   {
     ...browserFilesPattern,
     languageOptions: {
