@@ -1,0 +1,11 @@
+{
+  "extends": "../chipper/tsconfig/shared/tsconfig-browser.json",
+  "include": [
+    "cordova-plugin-native-vibration/types/**/*"
+  ],
+  "references": [
+    {
+      "path": "../chipper/tsconfig/buildjson/tsconfig.json"
+    }
+  ]
+}
