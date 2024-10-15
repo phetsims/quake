@@ -7,7 +7,7 @@
  */
 
 import child_process from 'child_process';
-import grunt from '../../../../perennial-alias/js/import-shared/grunt';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt';
 
 // Build the app for all supported platforms.
 grunt.log.writeln( 'Building app for all supported platforms...' );

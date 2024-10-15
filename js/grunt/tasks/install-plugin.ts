@@ -11,7 +11,7 @@
  */
 
 import child_process from 'child_process';
-import grunt from '../../../../perennial-alias/js/import-shared/grunt';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt';
 
 // constants
 const CUSTOM_VIBRATION_PLUGIN_NAME = 'cordova-plugin-native-vibration';
