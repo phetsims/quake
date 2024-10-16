@@ -1,7 +1,7 @@
 // Copyright 2024, University of Colorado Boulder
 
 import { getBrowserConfiguration } from '../chipper/eslint/browser.eslint.config.mjs';
-import { getNodeConfiguration } from '../chipper/eslint/node.eslint.config.mjs';
+import getNodeConfiguration from '../chipper/eslint/getNodeConfiguration.mjs';
 import rootEslintConfig from '../chipper/eslint/root.eslint.config.mjs';
 
 const nodeFiles = [
