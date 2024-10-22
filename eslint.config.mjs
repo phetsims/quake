@@ -1,8 +1,8 @@
 // Copyright 2024, University of Colorado Boulder
 
-import { getBrowserConfiguration } from '../chipper/eslint/browser.eslint.config.mjs';
-import getNodeConfiguration from '../chipper/eslint/getNodeConfiguration.mjs';
-import rootEslintConfig from '../chipper/eslint/root.eslint.config.mjs';
+import { getBrowserConfiguration } from '../perennial-alias/js/eslint/browser.eslint.config.mjs';
+import getNodeConfiguration from '../perennial-alias/js/eslint/getNodeConfiguration.mjs';
+import rootEslintConfig from '../perennial-alias/js/eslint/root.eslint.config.mjs';
 
 const nodeFiles = [
   'js/grunt/**/*',
