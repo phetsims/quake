@@ -14,8 +14,7 @@
  */
 
 ( async () => {
-  // TODO: Comment back in when completed with: https://github.com/phetsims/chipper/issues/1489
-  // await ( await import( '../../../../perennial-alias/js/grunt/tasks/lint.js' ) ).lintTask;
+  await ( await import( '../../../../perennial-alias/js/grunt/tasks/lint.ts' ) ).lintTask;
 
   await import( './build.ts' );
 
