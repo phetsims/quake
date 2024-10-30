@@ -29,14 +29,8 @@ export default [
     ...browserFilesPattern,
     languageOptions: {
       globals: {
-        alert: 'readonly',
-        chooser: 'readonly',
         cordova: 'readonly',
-        // TODO: Aren't many of these redundant with the browser globals? https://github.com/phetsims/chipper/issues/1485
-        navigator: 'readonly',
-        nativeVibration: 'readonly',
-        Response: 'readonly',
-        XMLHttpRequest: 'readonly'
+        nativeVibration: 'readonly'
       }
     }
   },
