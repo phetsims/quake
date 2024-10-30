@@ -3,6 +3,7 @@
 /**
  * @author John Blanco (PhET Interactive Simulations)
  */
+/* global window */
 
 module.exports = {
   vibrate: ( success, error ) => {
