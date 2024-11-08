@@ -1,8 +1,8 @@
 // Copyright 2024, University of Colorado Boulder
 
 import { getBrowserConfiguration } from '../perennial-alias/js/eslint/config/browser.eslint.config.mjs';
-import getNodeConfiguration from '../perennial-alias/js/eslint/config/util/getNodeConfiguration.mjs';
 import rootEslintConfig from '../perennial-alias/js/eslint/config/root.eslint.config.mjs';
+import getNodeConfiguration from '../perennial-alias/js/eslint/config/util/getNodeConfiguration.mjs';
 
 const nodeFiles = [
   'js/grunt/**/*',
