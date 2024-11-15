@@ -1,7 +1,7 @@
 // Copyright 2020-2024, University of Colorado Boulder
 
 const Gruntfile = require( '../chipper/Gruntfile' );
-const registerTasks = require( '../perennial/js/grunt/util/registerTasks' );
+const registerTasks = require( '../perennial-alias/js/grunt/commonjs/registerTasks' );
 
 /**
  * quake-specific grunt configuration, builds the Haptics Playground app
