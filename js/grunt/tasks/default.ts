@@ -14,9 +14,9 @@
  */
 
 ( async () => {
-  await ( await import( '../../../../perennial-alias/js/grunt/tasks/lint.ts' ) ).lintPromise;
+  await ( await import( '../../../../perennial-alias/js/grunt/tasks/lint.js' ) ).lintPromise;
 
-  await import( './build.ts' );
+  await import( './build.js' );
 
-  await import( './install-plugin.ts' );
+  await import( './install-plugin.js' );
 } )();
