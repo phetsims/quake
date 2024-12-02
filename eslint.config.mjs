@@ -1,19 +1,6 @@
 // Copyright 2024, University of Colorado Boulder
 
-import { getBrowserConfiguration } from '../perennial-alias/js/eslint/config/browser.eslint.config.mjs';
-import rootEslintConfig from '../perennial-alias/js/eslint/config/root.eslint.config.mjs';
-import getNodeConfiguration from '../perennial-alias/js/eslint/config/util/getNodeConfiguration.mjs';
-
-const nodeFiles = [
-  'js/grunt/**/*',
-  'cordova-plugin-native-vibration/www/**/*',
-  'cordova-plugin-native-vibration/src/browser/**/*'
-];
-
-const browserFilesPattern = {
-  files: [ '**/*' ],
-  ignores: nodeFiles
-};
+import browserEslintConfig from '../perennial-alias/js/eslint/config/browser.eslint.config.mjs';
 
 /**
  * ESLint configuration for quake.
@@ -22,11 +9,8 @@ const browserFilesPattern = {
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 export default [
-  ...rootEslintConfig,
-  ...getBrowserConfiguration( browserFilesPattern ),
-  ...getNodeConfiguration( { files: nodeFiles } ),
+  ...browserEslintConfig,
   {
-    ...browserFilesPattern,
     languageOptions: {
       globals: {
         cordova: 'readonly',
