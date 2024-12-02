@@ -1,0 +1,11 @@
+{
+  "extends": "../../../perennial-alias/tsconfig/tsconfig-node.json",
+  "include": [
+    "js/grunt/**/*"
+  ],
+  "references": [
+    {
+      "path": "../../../chipper/tsconfig/buildtools/tsconfig.json"
+    }
+  ]
+}

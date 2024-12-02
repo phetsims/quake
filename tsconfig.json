@@ -5,7 +5,7 @@
       "path": "./tsconfig-quake-browser.json"
     },
     {
-      "path": "./tsconfig-quake-node.json"
+      "path": "./js/grunt/tsconfig.json"
     }
   ]
 }
